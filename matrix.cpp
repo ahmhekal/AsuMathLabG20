@@ -1,5 +1,5 @@
 //class implementation
-
+//edit
 class CMatrix
 {
 int nR, nC;
