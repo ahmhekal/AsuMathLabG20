@@ -123,7 +123,74 @@
 
 //**************************************Branch [omarashraf10]**************************************//
 
- //---------------------------------write your code here---------------------------//
+ CMatrix::CMatrix(string s)
+{
+   nR = nC = 0;
+   values = NULL;
+   CopyMatrix(s);
+}
+
+CMatrix::CMatrix(double d)
+{
+   nR = nC = 0;
+   values = NULL;
+   CopyMatrix(d);
+}
+
+void CMatrix::CopyMatrix(CMatrix& m)
+{
+reset();
+this->nR = m.nR;
+this->nC = m.nC;
+if((nR*nC)==0){values=NULL; return;}
+values = new double*[nR];
+for(int iR=0;iR<nR;iR++)
+   {
+     values[iR] = new double[nC];
+     for(int iC=0;iC<nC;iC++)
+        {
+          values[iR][iC] = m.values[iR][iC];
+        }
+   }
+}
+
+void CMatrix::CopyMatrix(string s)
+{
+reset();
+
+char* buffer = new char[s.length()+1];
+strcpy(buffer, s.c_str());
+char* lineContext;
+char* lineSeparators = ";\r\n";
+char* line = strtok_s(buffer, lineSeparators, &lineContext);
+while(line)
+{
+CMatrix row;
+char* context;
+char* separators = " []";
+char* token = strtok_s(line, separators, &context);
+while(token)
+{
+CMatrix item = atof(token);
+row.addColumn(item);
+token = strtok_s(NULL, separators, &context);
+}
+if(row.nC>0 && (row.nC==nC || nR==0))
+addRow(row);
+line = strtok_s(NULL, lineSeparators, &lineContext);
+}
+delete[] buffer;
+}
+
+void CMatrix::CopyMatrix(double d)
+{
+reset();
+this->nR = 1;
+this->nC = 1;
+values = new double*[1];
+values[0] = new double[1];
+values[0][0] = d;
+}
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
