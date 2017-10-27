@@ -166,6 +166,7 @@ istream& operator >> (istream &is, CMatrix& m)
  return is;
 }
 
+
 ostream& operator << (ostream &os, CMatrix& m)
 {
  os<<m.getString();
@@ -186,7 +187,6 @@ int Getn()
 {
 return (this->nC)*(this->nR);
 }
-
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
 
