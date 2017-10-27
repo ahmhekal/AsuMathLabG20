@@ -69,6 +69,7 @@
        case MI_RAND :values[iR][iC] = (rand()%1000000)/1000000.0; break;
        }
      }
+  
  }
  }
 
