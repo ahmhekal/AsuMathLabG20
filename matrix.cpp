@@ -18,12 +18,12 @@
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
 
- 
+
 
 
 //**************************************Block 3**************************************//
 
- //---------------------------------write your code here---------------------------//
+ //--a-------------------------------write your code here---------------------------//
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
@@ -38,7 +38,66 @@
 
 //**************************************Branch [Abduu13]**************************************//
 
- //---------------------------------write your code here---------------------------//
+ CMatrix::CMatrix()
+ {
+ nR = nC = 0;
+ values = NULL;
+ }
+
+ CMatrix::~CMatrix()
+ {
+ reset();
+ }
+
+ CMatrix::CMatrix(int nR, int nC, int initialization, double initializationValue)
+ {
+ this->nR = nR;
+ this->nC = nC;
+ if((nR*nC)==0){values = NULL; return;}
+
+ values = new double*[nR];
+ for(int iR = 0;iR<nR;iR++)
+ {
+ values[iR] = new double[nC];
+     for(int iC = 0;iC<nC;iC++)
+     {
+       switch(initialization)
+       {
+       case MI_ZEROS:values[iR][iC] = 0;break;
+       case MI_ONES :values[iR][iC] = 1;break;
+       case MI_EYE  :values[iR][iC] = (iR==iC)?1:0; break;
+       case MI_RAND :values[iR][iC] = (rand()%1000000)/1000000.0; break;
+       }
+     }
+ }
+ }
+
+ CMatrix::CMatrix(int nR, int nC, double first, ...)
+ {
+ this->nR= nR;
+ this->nC= nC;
+ if((nR*nC)==0){values = NULL; return;}
+
+ values = new double*[nR];
+ va_list va;
+ va_start(va, first);
+ for(int iR=0;iR<nR;iR++)
+ {
+ values[iR] = new double[nC];
+    for(int iC;iC<nC;iC++)
+    {
+     values[iR][iC] = (iR==0&&iC==0)first:va_arg(va, double);
+    }
+ }
+ va_end(va);
+ }
+
+ CMatrix::CMatrix(CMatrix& m)
+ {
+ nR = nC = 0;
+ values = NULL;
+ CopyMatrix(m);
+ }
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
