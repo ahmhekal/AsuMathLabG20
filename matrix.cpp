@@ -116,9 +116,35 @@
 
 //**************************************Branch [Aladdin95]**************************************//
 
- //---------------------------------write your code here---------------------------//
+istream& operator >> (istream &is, CMatrix& m)
+{
+ string s;
+ getline(is, s, ']');
+ s+="]";
+ m = CMatrix(s);
+ return is;
+}
 
+ostream& operator << (ostream &os, CMatrix& m)
+{
+ os<<m.getString();
+ return os;
+}
 
+int GetnC()
+{
+return this->nC;
+}
+
+int GetnR()
+{
+return this->nR;
+}
+
+int Getn()
+{
+return (this->nC)*(this->nR);
+}
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
 
