@@ -198,17 +198,57 @@ values[0][0] = d;
 
 //**************************************Branch [noureddin]**************************************//
 
- //---------------------------------write your code here---------------------------//
+void CMatrix::mul(CMatrix& m) { copy(operator*(m)); }
 
+void CMatrix::operator*=(CMatrix& m) { copy(operator*(m)); }
 
+void CMatrix::operator*=(double d) { copy(operator*(d)); }
+    
+CMatrix CMatrix::operator*(CMatrix& m) {
+    if (nC != m.nR) throw("Matrix dimension error");
+    CMatrix result = CMatrix(nR, m.nC, MI_ZERO);
+    for (size_t i = 0; i < nR; ++i)
+        for (size_t j = 0; j < m.nC; ++j)
+            for (size_t k = 0; k < nC; ++k)
+                result.values[i][j] += values[i][k] * m.values[k][j];
+    return result;
+}
+
+CMatrix CMatrix::operator*(double d) {
+    CMatrix result = CMatrix(nR, nC);
+    for (size_t i = 0; i < nR; ++i)
+        for (size_t j = 0; j < nC; ++j)
+            result.values[i][j] = values[i][j] * d;
+    return result;
+}
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
 
 //**************************************Branch [mafouadm]**************************************//
 
- //---------------------------------write your code here---------------------------//
+void CMatrix::sub(CMatrix& m) { copy(operator-(m)); }
 
+void CMatrix::operator-=(CMatrix& m) { copy(operator-(m)); }
+
+void CMatrix::operator-=(double d) { copy(operator-(d)); }
+    
+CMatrix CMatrix::operator-(CMatrix& m) {
+    if (nR != m.nR || nC != m.nC) throw("Matrix dimension error");
+    CMatrix result = CMatrix(nR, nC);
+    for (size_t i = 0; i < nR; ++i)
+        for (size_t j = 0; j < nC; ++j)
+            result.values[i][j] = values[i][j] - m.values[i][j];
+    return result;
+}
+
+CMatrix CMatrix::operator-(double d) {
+    CMatrix result = CMatrix(nR, nC);
+    for (size_t i = 0; i < nR; ++i)
+        for (size_t j = 0; j < nC; ++j)
+            result.values[i][j] = values[i][j] - d;
+    return result;
+}
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
