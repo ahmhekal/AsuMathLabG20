@@ -3,7 +3,48 @@
 //**************************************Branch [ahmhekal]**************************************//
 
 
- //---------------------------------write your code here---------------------------//
+CMatrix CMatrix: :operator++()
+{
+add(CMatrix(nR, nC, MI_VALUE, 1.0) );
+return *this;
+}
+
+CMatrix CMatrix: :operator++(int)
+{
+CMatrix C = *this;
+add(CMatrix(nR, nC, MI_VALUE, 1.0) );
+return C;
+}
+
+CMatrix CMatrix: :operator--( )
+{
+add (CMatrix(nR, nC, MI_VALUE, -1.0) );
+return *this;
+}
+
+CMatrix CMatrix: :operator--(int)
+{
+CMatrix r = *this;
+add(CMatrix(nR,nC, MI_VALUE, -1.0) );
+return r;
+}
+
+CMatrix CMatrix: :operator-( )
+{
+for(int iR=0;iR<n R;i R++)
+ 
+for(int iC=0;iC<n C;iC++)
+values[iR] [iC] = -values[iR] [iC];
+
+return *this;
+}
+
+
+
+CMatrix CMatrix: :operator+()
+{
+return *this;
+}
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
