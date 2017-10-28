@@ -190,20 +190,7 @@ CMatrix::CMatrix(CMatrix& m)
 }
 
 //**************************************Branch [AbdallahReda]**************************************//
-void CMatrix::addColumn(CMatrix& m)
-{
-	CMatrix n(max(nR, m.nR), nC+m.nC);
-	n.setSubMatrix(0, 0, *this);
-	n.setSubMatrix(0, nC, m);
-	*this = n;
-}
-void CMatrix::addRow(CMatrix& m)
-{
-	CMatrix n(nR+m.nR, max(nC, m.nC));
-	n.setSubMatrix(0, 0, *this);
-	n.setSubMatrix(nR, 0, m);
-	*this = n;
-}
+//**************************************Branch [diaa]**************************************//
 
 void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
 {
@@ -258,31 +245,7 @@ CMatrix CMatrix::getTranspose()
 	return r;
 }
 
-CMatrix CMatrix::getInverse()
-{
-	double Det = 1.0 / (this->getDeterminant());
-	CMatrix r(this->nR, this->nC, CMatrix::MI_ZEROS);
-	double Sign = 1;
-	for (int i = 0; i<this->nR; ++i)
-	{
-		for (int j = 0; j<this->nC; ++j)
-		{
-			r.values[i][j] = getCofactor(i, j).getDeterminant()*Sign;
-			Sign *= -1;
-		}
-		if (r.nC % 2 == 0) Sign *= -1;
-	}
-	CMatrix t = r.getTranspose();
-	t *= Det;
-	return t;
-}
 
-CMatrix CMatrix::div(CMatrix& m) 
-{
-	CMatrix r=m.getInverse();
-	return *this*r;
-}
-CMatrix CMatrix::operator/(CMatrix& m) { return div(m);}
 
 //**************************************Branch [Aladdin95]**************************************//
 
