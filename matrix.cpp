@@ -18,15 +18,56 @@
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
 
 
- 
 
 
-//**************************************Block 3**************************************//
+
+//**************************************Branch [abdozizo111]**************************************//
 
  //---------------------------------write your code here---------------------------//
 
 
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
+void CMatrix::reset
+{
+if (values)
+{
+for(int i=0;i<nR;i++)
+delete[] values[i];
+delete[] values;
+}
+nR=nC=0;
+values=NULL;
+}
+string CMatrix::getstring()
+{
+string s;
+for(int iR=0;iR<nR;iR++)
+{
+for(int iC=0;iC<nC;iC++)
+{
+char buffer[50];
+sprintf_s(buffer,50,"%g\t",values[iR][iC]);
+}
+s+="\n";
+}
+return s;
+}
+CMatrix CMatrix::operator=(CMatrix& m)
+{
+copy(m);
+return *this;
+}
+CMatrix CMatrix::operator=(double d)
+{
+copy(d);
+return *this;
+}
+
+CMatrix CMatrix::operator=(string s)
+{
+copy(s);
+return *this;
+}
+
 
 //**************************************Block 4**************************************//
 
