@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "matrix.h"
 
 //**************************************Branch [ahmhekal]**************************************//
 
@@ -113,6 +113,35 @@ return *this;
 //************************************** ABDO0000 **************************************//
 
  //---------------------------------write your code here---------------------------//
+void CMatrix::add(CMatrix& m)
+{
+  if(nR!=m.nR||nC!=m.nC)
+   throw("Invalid matrix dimension");
+  for(int iR=0;iR<nR;iR++)
+     for(int iC=0;iC<nC;iC++)
+       values[iR][iC] += m.values[iR][iC];
+}
+void CMatrix::operator+=(CMatrix& m)
+{
+  add(m);
+}
+void CMatrix::operator+=(double d)
+{
+  add(CMatrix(nR, nC, MI_VALUE, d));
+}
+CMatrix CMatrix::operator+(CMatrix& m)
+{
+  CMatrix r = *this;
+  r+=m;
+  return r;
+}
+CMatrix CMatrix::operator+(double d)
+{
+  CMatrix r = *this;
+  r+=d;
+  return r;
+}
+
 
 
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$//
