@@ -12,11 +12,11 @@ using namespace std;
 #pragma once
 
 class CMatrix
-{public:
+{
 
 int nR, nC;
 double** values;
-
+public:
 CMatrix();
 ~CMatrix();
 enum MI{MI_ZEROS, MI_ONES, MI_EYE, MI_RAND, MI_VALUE};
@@ -26,12 +26,12 @@ CMatrix(int nR, int nC, double first, ...);
 CMatrix(CMatrix& m);
 CMatrix(double d);
 CMatrix(string s);
-void CopyMatrix(CMatrix& m);
+void CopyMatrix(const CMatrix& m);
 void CopyMatrix(double d);
-void CopyMatrix(string s);
+void CopyMatrix(const string s);
 void reset();
 string getString();
-CMatrix operator=(CMatrix& m);
+CMatrix operator=(const CMatrix& m);
 CMatrix operator=(double d);
 CMatrix operator=(string s);
 void add(CMatrix& m);
@@ -49,7 +49,7 @@ void operator*=(CMatrix& m);
 void operator*=(double d);
 CMatrix operator*(CMatrix& m);
 CMatrix operator*(double d);
-CMatrix div(CMatrix& m); 
+CMatrix div(CMatrix& m);
 void operator/=(CMatrix& m);
 void operator/=(double d);
 CMatrix operator/(CMatrix& m);
@@ -74,6 +74,6 @@ int getn();
 int getnR();
 int getnC();
 double getDeterminant();
-CMatrix getTranspose();
-CMatrix getInverse();
+void getTranspose(CMatrix& r);
+void getInverse(CMatrix& t);
 };
