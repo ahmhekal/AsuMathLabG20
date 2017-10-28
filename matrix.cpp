@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "matrix.h"
 #include <cstdlib>	// atof, rand
 #include <ctime>	// time, for seeding rand
 #include <cstring>	// strtok_r
@@ -93,11 +93,11 @@ CMatrix CMatrix::operator=(double d)
 	return *this;
 }
 
-/*CMatrix CMatrix::operator=(const string s)
+CMatrix CMatrix::operator=(const string s)
 {
 	CopyMatrix(s);
 	return *this;
-}*/
+}
 
 //************************************** ABDO0000 **************************************//
 void CMatrix::add(CMatrix& m)
@@ -305,7 +305,7 @@ void CMatrix::getTranspose(CMatrix& r)
 
 //**************************************Branch [Aladdin95]**************************************//
 
-/*istream& operator >> (istream &is, CMatrix& m)   //need to be edited
+istream& operator >> (istream &is, CMatrix& m)   //need to be edited
 {
 	string s;
 	getline(is, s, ']');
@@ -313,7 +313,7 @@ void CMatrix::getTranspose(CMatrix& r)
 	CMatrix readMatrix(s);
 	m = readMatrix;
 	return is;
-}*/
+}
 
 
 ostream& operator << (ostream &os, CMatrix& m)
@@ -340,12 +340,12 @@ int CMatrix::getn()
 //**************************************Branch [omarashraf10]**************************************//
 
 
-/*CMatrix::CMatrix(string s)   //need to be edited
+CMatrix::CMatrix(string s)   //need to be edited
 {
 	nR = nC = 0;
 	values = NULL;
 	CopyMatrix(s);
-}*/
+}
 
 CMatrix::CMatrix(double d)
 {
@@ -372,7 +372,7 @@ void CMatrix::CopyMatrix(const CMatrix& m)
 }
 
 
-/*void CMatrix::CopyMatrix(string s)   //need to be edited
+void CMatrix::CopyMatrix(string s)   //need to be edited
 {
 	reset();
 
@@ -399,7 +399,7 @@ void CMatrix::CopyMatrix(const CMatrix& m)
 	}
 	delete[] buffer;
 }
-*/
+
 void CMatrix::CopyMatrix(double d)
 {
 	reset();
