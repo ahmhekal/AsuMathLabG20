@@ -1,30 +1,37 @@
 #include "matrix.h"
+#include <cstdlib>	// atof, rand
+#include <ctime>	// time, for seeding rand
+#include <cstring>	// strtok_r
 
 //**************************************Branch [ahmhekal]**************************************//
 
 CMatrix CMatrix::operator++()
 {
-	add(CMatrix(nR, nC, MI_VALUE, 1.0) );
+	CMatrix addend(nR, nC, MI_VALUE, 1.0);
+	add(addend);
 	return *this;
 }
 
 CMatrix CMatrix::operator++(int)
 {
 	CMatrix C = *this;
-	add(CMatrix(nR, nC, MI_VALUE, 1.0) );
+	CMatrix addend(nR, nC, MI_VALUE, 1.0);
+	add(addend);
 	return C;
 }
 
 CMatrix CMatrix::operator--( )
 {
-	add (CMatrix(nR, nC, MI_VALUE, -1.0) );
+	CMatrix addend(nR, nC, MI_VALUE, -1.0);
+	add(addend);
 	return *this;
 }
 
 CMatrix CMatrix::operator--(int)
 {
 	CMatrix r = *this;
-	add(CMatrix(nR,nC, MI_VALUE, -1.0) );
+	CMatrix addend(nR, nC, MI_VALUE, -1.0);
+	add(addend);
 	return r;
 }
 
@@ -110,7 +117,8 @@ void CMatrix::operator+=(CMatrix& m)
 }
 void CMatrix::operator+=(double d)
 {
-	add(CMatrix(nR, nC, MI_VALUE, d));
+	CMatrix addend(nR, nC, MI_VALUE, d);
+	add(addend);
 }
 CMatrix CMatrix::operator+(CMatrix& m)
 {
@@ -254,7 +262,8 @@ istream& operator >> (istream &is, CMatrix& m)
 	string s;
 	getline(is, s, ']');
 	s+="]";
-	m = CMatrix(s);
+	CMatrix readMatrix(s);
+	m = readMatrix;
 	return is;
 }
 
@@ -321,22 +330,22 @@ void CMatrix::CopyMatrix(string s)
 	strcpy(buffer, s.c_str());
 	char* lineContext;
 	char* lineSeparators = ";\r\n";
-	char* line = strtok_s(buffer, lineSeparators, &lineContext);
+	char* line = strtok_r(buffer, lineSeparators, &lineContext);
 	while(line)
 	{
 		CMatrix row;
 		char* context;
 		char* separators = " []";
-		char* token = strtok_s(line, separators, &context);
+		char* token = strtok_r(line, separators, &context);
 		while(token)
 		{
-			CMatrix item = atof(token);
+			CMatrix item(atof(token));
 			row.addColumn(item);
-			token = strtok_s(NULL, separators, &context);
+			token = strtok_r(NULL, separators, &context);
 		}
 		if(row.nC>0 && (row.nC==nC || nR==0))
 			addRow(row);
-		line = strtok_s(NULL, lineSeparators, &lineContext);
+		line = strtok_r(NULL, lineSeparators, &lineContext);
 	}
 	delete[] buffer;
 }
@@ -407,7 +416,8 @@ void CMatrix::operator-=(CMatrix& m)
 }
 void CMatrix::operator-=(double d)
 {
-	sub(CMatrix(nR, nC, MI_VALUE, d));
+	CMatrix subtrahend(nR, nC, MI_VALUE, d);
+	sub(subtrahend);
 }
 CMatrix CMatrix::operator-(CMatrix& m)
 {
