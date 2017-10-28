@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "Matrix.h"
 #include <cstdlib>	// atof, rand
 #include <ctime>	// time, for seeding rand
 #include <cstring>	// strtok_r
@@ -74,7 +74,7 @@ string CMatrix::getString()
 		{
 			//char buffer[50];
 			//sprintf_s(buffer,50,"%g\t",values[iR][iC]);
-			if(values[iR][iC]==0)cout<<"0"<<" ";
+			if(values[iR][iC]==0 || fabs(values[iR][iC])<1e-15)cout<<"0"<<" ";
 			else {cout<<values[iR][iC]<<" ";}
 		}
 		//s+="\n";
@@ -82,7 +82,7 @@ string CMatrix::getString()
 	}
 	return s;
 }
-CMatrix CMatrix::operator =(CMatrix& m)
+CMatrix CMatrix::operator =(const CMatrix& m)
 {
 	CopyMatrix(m);
 	return *this;
@@ -93,11 +93,11 @@ CMatrix CMatrix::operator=(double d)
 	return *this;
 }
 
-CMatrix CMatrix::operator=(string s)
+/*CMatrix CMatrix::operator=(const string s)
 {
 	CopyMatrix(s);
 	return *this;
-}
+}*/
 
 //************************************** ABDO0000 **************************************//
 void CMatrix::add(CMatrix& m)
@@ -210,33 +210,45 @@ void CMatrix::addRow(CMatrix& m)
 	*this = n;
 }
 
-CMatrix CMatrix::getInverse()
+void CMatrix::getInverse(CMatrix& t)
 {
 	double Det = 1.0 / (this->getDeterminant());
 	CMatrix r(this->nR, this->nC, CMatrix::MI_ZEROS);
-	double Sign = 1;
+	double Sign = 1.0;
 	for (int i = 0; i<this->nR; ++i)
 	{
 		for (int j = 0; j<this->nC; ++j)
 		{
 			r.values[i][j] = getCofactor(i, j).getDeterminant()*Sign;
-			Sign *= -1;
+			Sign *= -1.0;
 		}
-		if (r.nC % 2 == 0) Sign *= -1;
+		if (r.nC % 2 == 0) Sign *= -1.0;
 	}
-	CMatrix t(this->nC, this->nR, CMatrix::MI_ZEROS);
-
-	t=r.getTranspose();
-	t *= Det;
-	return t;
+	r.getTranspose(t);
+	t*=Det;
 }
 
-/*CMatrix CMatrix::div(CMatrix& m)
+CMatrix CMatrix::div(CMatrix& m)
 {
-	CMatrix r=m.getInverse();
-	return *this*r;
+    CMatrix d(m);
+    CMatrix This= *this;
+    m.getInverse(d);
+    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
+   // r.CopyMatrix(*this*d);
+    This.mul(d);
+	return This;
 }
-CMatrix CMatrix::operator/(CMatrix& m) { return div(m);}*/
+CMatrix CMatrix::operator/(CMatrix& m)
+{
+    CMatrix d(m);
+    CMatrix This= *this;
+    m.getInverse(d);
+    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
+   // r.CopyMatrix(*this*d);
+    This.mul(d);
+	return This;
+
+    }
 
 //**************************************Branch [diaa]**************************************//
 
@@ -273,31 +285,27 @@ double CMatrix::getDeterminant()
 {
 	if (nR != nC)throw("Invalid matrix dimension");
 	if (nR == 1 && nC == 1)return values[0][0];
-	double value = 0, m = 1;
+	double value = 0.0, m = 1.0;
 	for (int iR = 0; iR<nR; iR++)
 	{
 		value += m * values[0][iR] * getCofactor(0, iR).getDeterminant();
-		m *= -1;
+		m *= -1.0;
 	}
 	return value;
 }
 
-CMatrix CMatrix::getTranspose()
+void CMatrix::getTranspose(CMatrix& r)
 {
-	CMatrix r(this->nC, this->nR, CMatrix::MI_ZEROS);
 	for (int i = 0; i<this->nR; ++i)
 		for (int j = 0; j<this->nC; ++j)
 		{
 			r.values[j][i] = this->values[i][j];
 		}
-	return r;
 }
-
-
 
 //**************************************Branch [Aladdin95]**************************************//
 
-istream& operator >> (istream &is, CMatrix& m)
+/*istream& operator >> (istream &is, CMatrix& m)   //need to be edited
 {
 	string s;
 	getline(is, s, ']');
@@ -305,7 +313,7 @@ istream& operator >> (istream &is, CMatrix& m)
 	CMatrix readMatrix(s);
 	m = readMatrix;
 	return is;
-}
+}*/
 
 
 ostream& operator << (ostream &os, CMatrix& m)
@@ -331,12 +339,13 @@ int CMatrix::getn()
 
 //**************************************Branch [omarashraf10]**************************************//
 
-CMatrix::CMatrix(string s)
+
+/*CMatrix::CMatrix(string s)   //need to be edited
 {
 	nR = nC = 0;
 	values = NULL;
 	CopyMatrix(s);
-}
+}*/
 
 CMatrix::CMatrix(double d)
 {
@@ -345,7 +354,7 @@ CMatrix::CMatrix(double d)
 	CopyMatrix(d);
 }
 
-void CMatrix::CopyMatrix(CMatrix& m)
+void CMatrix::CopyMatrix(const CMatrix& m)
 {
 	reset();
 	this->nR = m.nR;
@@ -363,7 +372,7 @@ void CMatrix::CopyMatrix(CMatrix& m)
 }
 
 
-void CMatrix::CopyMatrix(string s)
+/*void CMatrix::CopyMatrix(string s)   //need to be edited
 {
 	reset();
 
@@ -390,7 +399,7 @@ void CMatrix::CopyMatrix(string s)
 	}
 	delete[] buffer;
 }
-
+*/
 void CMatrix::CopyMatrix(double d)
 {
 	reset();
@@ -412,7 +421,7 @@ void CMatrix::mul(CMatrix& m)
 	for(int iR=0;iR<r.nR;iR++)
 		for(int iC=0;iC<r.nC;iC++)
 		{
-			r.values[iR][iC] = 0;
+			r.values[iR][iC] = 0.0;
 			for(int k=0;k<m.nC;k++)
 				r.values[iR][iC] += values[iR][k]*m.values[k][iC];
 		}
