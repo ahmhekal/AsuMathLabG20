@@ -80,6 +80,7 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  * - LIMITATIONS: (TODO)
  *   1. it doesn't support appending a semicolon to silent the output.
  *   2. it doesn't allow more than one operation per line.
+ *   3. it supports only mono-char operators; './' would need a little different coding.
  **/
 void readCmd(istream& is)
 {
