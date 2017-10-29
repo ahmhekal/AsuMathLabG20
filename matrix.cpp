@@ -20,7 +20,7 @@ CMatrix CMatrix::operator++(int)
 	return C;
 }
 
-CMatrix CMatrix::operator--( )
+CMatrix CMatrix::operator--()
 {
 	CMatrix addend(nR, nC, MI_VALUE, -1.0);
 	add(addend);
@@ -35,14 +35,13 @@ CMatrix CMatrix::operator--(int)
 	return r;
 }
 
-CMatrix CMatrix::operator-( )
+CMatrix CMatrix::operator-()
 {
-	for(int iR=0;iR<nR;iR++)
-
-		for(int iC=0;iC<nC;iC++)
-			values[iR] [iC] = -values[iR] [iC];
-
-	return *this;
+	CMatrix result = *this;
+	for (int iR = 0; iR < nR; iR++)
+		for (int iC = 0; iC < nC; iC++)
+			result.values[iR][iC] = -values[iR][iC];
+	return result;
 }
 
 CMatrix CMatrix::operator+()
@@ -212,20 +211,16 @@ void CMatrix::addRow(CMatrix& m)
 
 void CMatrix::getInverse(CMatrix& t)
 {
-	double Det = 1.0 / (this->getDeterminant());
-	CMatrix r(this->nR, this->nC, CMatrix::MI_ZEROS);
-	double Sign = 1.0;
-	for (int i = 0; i<this->nR; ++i)
-	{
-		for (int j = 0; j<this->nC; ++j)
-		{
-			r.values[i][j] = getCofactor(i, j).getDeterminant()*Sign;
-			Sign *= -1.0;
-		}
-		if (r.nC % 2 == 0) Sign *= -1.0;
-	}
-	r.getTranspose(t);
-	t*=Det;
+	double det = getDeterminant();
+	if (det == 0 || fabs(det) < 1e-15)
+		throw std::runtime_error("Inverting a noninvertible martix");
+	det = 1.0 / det; 
+	CMatrix r(nR, nR);
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nR; ++j)
+			r.values[j][i] = getCofactor(i,j).getDeterminant() * (((i+j)%2==0)?1:-1);
+	r *= det;
+	t = r;
 }
 
 CMatrix CMatrix::div(CMatrix& m)
@@ -249,6 +244,17 @@ CMatrix CMatrix::operator/(CMatrix& m)
 	return This;
 
     }
+
+CMatrix CMatrix::operator/(double d)
+{
+	if (d == 0 || fabs(d) < 1e-15)
+	    throw std::runtime_error("Division by zero");
+	CMatrix result = *this;
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nC; ++j)
+			result.values[i][j] /= d;
+	return result;
+}
 
 //**************************************Branch [diaa]**************************************//
 
@@ -296,11 +302,10 @@ double CMatrix::getDeterminant()
 
 void CMatrix::getTranspose(CMatrix& r)
 {
-	for (int i = 0; i<this->nR; ++i)
-		for (int j = 0; j<this->nC; ++j)
-		{
-			r.values[j][i] = this->values[i][j];
-		}
+    r = CMatrix(nC, nR);
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nC; ++j)
+			r.values[j][i] = values[i][j];
 }
 
 //**************************************Branch [Aladdin95]**************************************//
@@ -480,4 +485,31 @@ CMatrix CMatrix::operator-(double d)
 	CMatrix r = *this;
 	r-=d;
 	return r;
+}
+
+CMatrix operator+(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result += d;
+	return result;
+}
+CMatrix operator-(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result *= -1;
+	result += d;
+	return result;
+}
+CMatrix operator*(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result *= d;
+	return result;
+}
+CMatrix operator/(double d, CMatrix& m)
+{
+	CMatrix result;
+	m.getInverse(result);
+        result *= d;
+	return result;
 }
