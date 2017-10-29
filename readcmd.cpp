@@ -23,31 +23,23 @@ static CMatrix& get(char name)
 /*
  * readexpr() reads an expression from an istream and evaluates it,
  *   and returns the result as a CMatrix.
- *
  **/
 #define RESULT_OF(op) do {                                                  \
     if (isnan(firstoperand_double))                                         \
-	if (isnan(secondoperand_double))                                    \
-	    result = get(firstoperand_matrix) op get(secondoperand_matrix); \
-	else                                                                \
-	    result = get(firstoperand_matrix) op secondoperand_double;      \
+        if (isnan(secondoperand_double))                                    \
+            result = get(firstoperand_matrix) op get(secondoperand_matrix); \
+        else                                                                \
+            result = get(firstoperand_matrix) op secondoperand_double;      \
     else                                                                    \
-	if (isnan(secondoperand_double))                                    \
-	    result = firstoperand_double op get(secondoperand_matrix);      \
-	else                                                                \
-	    result = firstoperand_double op secondoperand_double;           \
+        if (isnan(secondoperand_double))                                    \
+            result = firstoperand_double op get(secondoperand_matrix);      \
+        else                                                                \
+            result = firstoperand_double op secondoperand_double;           \
 } while(0)
 
 static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firstoperand_matrix = '0')
 {
 	CMatrix result;
-	/*double firstoperand_double; is >> firstoperand_double;
-	char firstoperand_matrix;
-	if (is.fail()) { // if received a char not a number
-		is.clear(); // clear the failure state
-		is >> firstoperand_matrix;
-		firstoperand_double = NAN;
-	}*/
 	char operation; is >> operation;
 	if (operation == '\'') {
 		get(firstoperand_matrix).getTranspose(result);
@@ -97,7 +89,6 @@ void readCmd(istream& is)
 		throw std::runtime_error("Equals sign expected");
 	double whatnext_d; is >> whatnext_d;
 	if (is) { // if it was a number
-		//is.putback(whatnext_d);
 		get(rightvar) = readexpr(is, whatnext_d);
 	} else {
 		is.clear();
@@ -105,7 +96,6 @@ void readCmd(istream& is)
 		if (whatnext_c == '[') { // the first form, matrix def
 			is >> get(rightvar);
 		} else {
-			//is.putback(whatnext_c);
 			get(rightvar) = readexpr(is, NAN, whatnext_c);
 		}
 	}
