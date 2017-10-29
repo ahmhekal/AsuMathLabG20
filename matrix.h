@@ -77,3 +77,9 @@ double getDeterminant();
 void getTranspose(CMatrix& r);
 void getInverse(CMatrix& t);
 };
+
+CMatrix operator+(double d, CMatrix& m);
+CMatrix operator-(double d, CMatrix& m);
+CMatrix operator*(double d, CMatrix& m);
+CMatrix operator/(double d, CMatrix& m);
+
