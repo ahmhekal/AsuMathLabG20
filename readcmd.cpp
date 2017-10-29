@@ -86,9 +86,8 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  *     operator.
  *
  * - LIMITATIONS: (TODO)
- *   1. it doesn't understand number operands, only matrices.
- *   2. it doesn't support appending a semicolon to silent the output.
- *   3. it doesn't allow more than one operation per line.
+ *   1. it doesn't support appending a semicolon to silent the output.
+ *   2. it doesn't allow more than one operation per line.
  **/
 void readCmd(istream& is)
 {
