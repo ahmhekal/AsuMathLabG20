@@ -1,3 +1,3 @@
 all:
-	g++ main.cpp matrix.cpp matrix.h
+	g++ main.cpp matrix.cpp -o matrix -Wall -Wextra -O3
 
