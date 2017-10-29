@@ -211,23 +211,16 @@ void CMatrix::addRow(CMatrix& m)
 
 void CMatrix::getInverse(CMatrix& t)
 {
-	double Det = this->getDeterminant();
-	if (Det == 0 || fabs(Det) < 1e-15)
-		throw std::runtime_error("Inverting a martix with no inverse");
-	Det = 1.0 / Det; 
-	CMatrix r(this->nR, this->nC, CMatrix::MI_ZEROS);
-	double Sign = 1.0;
-	for (int i = 0; i<this->nR; ++i)
-	{
-		for (int j = 0; j<this->nC; ++j)
-		{
-			r.values[i][j] = getCofactor(i, j).getDeterminant()*Sign;
-			Sign *= -1.0;
-		}
-		if (r.nC % 2 == 0) Sign *= -1.0;
-	}
-	r.getTranspose(t);
-	t*=Det;
+	double det = getDeterminant();
+	if (det == 0 || fabs(det) < 1e-15)
+		throw std::runtime_error("Inverting a noninvertible martix");
+	det = 1.0 / det; 
+	CMatrix r(nR, nR);
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nR; ++j)
+			r.values[j][i] = getCofactor(i,j).getDeterminant() * (((i+j)%2==0)?1:-1);
+	r *= det;
+	t = r;
 }
 
 CMatrix CMatrix::div(CMatrix& m)
