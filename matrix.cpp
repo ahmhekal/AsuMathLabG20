@@ -20,7 +20,7 @@ CMatrix CMatrix::operator++(int)
 	return C;
 }
 
-CMatrix CMatrix::operator--( )
+CMatrix CMatrix::operator--()
 {
 	CMatrix addend(nR, nC, MI_VALUE, -1.0);
 	add(addend);
@@ -35,14 +35,13 @@ CMatrix CMatrix::operator--(int)
 	return r;
 }
 
-CMatrix CMatrix::operator-( )
+CMatrix CMatrix::operator-()
 {
-	for(int iR=0;iR<nR;iR++)
-
-		for(int iC=0;iC<nC;iC++)
-			values[iR] [iC] = -values[iR] [iC];
-
-	return *this;
+	CMatrix result = *this;
+	for (int iR = 0; iR < nR; iR++)
+		for (int iC = 0; iC < nC; iC++)
+			result.values[iR][iC] = -values[iR][iC];
+	return result;
 }
 
 CMatrix CMatrix::operator+()
@@ -481,3 +480,4 @@ CMatrix CMatrix::operator-(double d)
 	r-=d;
 	return r;
 }
+
