@@ -20,6 +20,16 @@ static CMatrix& get(char name)
 	return vars[ord];
 }
 
+static void readoperand(istream& is, double& operand_double, char& operand_char)
+{
+	is >> operand_double;
+	if (!is) { // if failed; it's a char
+		is.clear(); // clear the failure state
+		is >> operand_char;
+		operand_double = NAN; // make the number invalid
+	}
+}
+
 /*
  * readexpr() reads an expression from an istream and evaluates it,
  *   and returns the result as a CMatrix.
@@ -44,19 +54,20 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
 	if (operation == '\'') {
 		get(firstoperand_matrix).getTranspose(result);
 	} else {
-		double secondoperand_double; is >> secondoperand_double;
-		char secondoperand_matrix;
-		if (is.fail()) { // if received a char not a number
-			is.clear(); // clear the failure state
-			is >> secondoperand_matrix;
-			secondoperand_double = NAN;
-		}
+		double secondoperand_double; char secondoperand_matrix;
+		readoperand(is, secondoperand_double, secondoperand_matrix);
+		if (secondoperand_matrix == '/') // op is './', the element-wise division
+			readoperand(is, secondoperand_double, secondoperand_matrix); // for real this time
 		if (!isnan(firstoperand_double) && !isnan(secondoperand_double))
 		    result = CMatrix(1, 1); // we are working with scalers
 		switch (operation) {
 		case '+': RESULT_OF(+); break;
 		case '-': RESULT_OF(-); break;
 		case '*': RESULT_OF(*); break;
+		case '.': if (isnan(firstoperand_double) && isnan(secondoperand_double)) {
+                                result = adiv(get(firstoperand_matrix), get(secondoperand_matrix));
+                                break;
+                          }  // else? operator/() will take care of the rest.
 		case '/': RESULT_OF(/); break;
 		}
 	}
@@ -76,15 +87,12 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  *   the second form is a matrix binary operation.
  *   the third form is a matrix unary opertion using a postfix
  *     operator.
- *
- * - LIMITATIONS: (TODO)
- *   1. it doesn't support appending a semicolon to silent the output.
- *   2. it doesn't allow more than one operation per line.
- *   3. it supports only mono-char operators; './' would need a little different coding.
  **/
 void readCmd(istream& is)
 {
 	char rightvar; is >> rightvar;
+        if (rightvar == ';')
+            is >> rightvar;
 	char eqsign; is >> eqsign;
 	if (eqsign != '=')
 		throw std::runtime_error("Equals sign expected");
