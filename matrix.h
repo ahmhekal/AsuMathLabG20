@@ -69,10 +69,11 @@ void addColumn(CMatrix& m);
 void addRow(CMatrix& m);
 double& operator[](int i){return values[i/nC][i%nC];}
 double& operator()(int i){return values[i/nC][i%nC];}
+double operator()(int r, int c) const {return values[r][c];}
 double& operator()(int r, int c){return values[r][c];}
-int getn();
-int getnR();
-int getnC();
+int getn() const;
+int getnR() const;
+int getnC() const;
 double getDeterminant();
 void getTranspose(CMatrix& r);
 void getInverse(CMatrix& t);
@@ -83,3 +84,9 @@ CMatrix operator-(double d, CMatrix& m);
 CMatrix operator*(double d, CMatrix& m);
 CMatrix operator/(double d, CMatrix& m);
 
+// element-wise disivison, './'
+CMatrix adiv(const CMatrix& a, const CMatrix& b);
+// the following functions are identical to operator/()
+//CMatrix adiv(const CMatrix& a, double d); 
+//CMatrix adiv(double d, const CMatrix& b);
+//CMatrix adiv(double d, double e);

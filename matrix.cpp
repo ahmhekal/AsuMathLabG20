@@ -327,17 +327,17 @@ ostream& operator << (ostream &os, CMatrix& m)
 	return os;
 }
 
-int CMatrix::getnC()
+int CMatrix::getnC() const
 {
 	return this->nC;
 }
 
-int CMatrix::getnR()
+int CMatrix::getnR() const
 {
 	return this->nR;
 }
 
-int CMatrix::getn()
+int CMatrix::getn() const
 {
 	return (this->nC)*(this->nR);
 }
@@ -513,3 +513,16 @@ CMatrix operator/(double d, CMatrix& m)
         result *= d;
 	return result;
 }
+
+// element-wise disivison, './'
+CMatrix adiv(const CMatrix& a, const CMatrix& b)
+{
+	if (a.getnR() != b.getnR() || a.getnC() != b.getnC())
+	    throw std::runtime_error("Invalid matrix dimensions");
+	CMatrix r(a.getnR(), a.getnC());
+	for (int i = 0; i < a.getnR(); ++i)
+		for (int j = 0; j < a.getnC(); ++j)
+			r(i,j) = a(i,j) / b(i,j);
+	return r;
+}
+
