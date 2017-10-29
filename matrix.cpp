@@ -249,6 +249,15 @@ CMatrix CMatrix::operator/(CMatrix& m)
 
     }
 
+CMatrix CMatrix::operator/(double d)
+{
+	CMatrix result = *this;
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nC; ++j)
+			result.values[i][j] /= d;
+	return result;
+}
+
 //**************************************Branch [diaa]**************************************//
 
 void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
@@ -481,3 +490,29 @@ CMatrix CMatrix::operator-(double d)
 	return r;
 }
 
+CMatrix operator+(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result += d;
+	return result;
+}
+CMatrix operator-(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result *= -1;
+	result += d;
+	return result;
+}
+CMatrix operator*(double d, CMatrix& m)
+{
+	CMatrix result(m);
+	result *= d;
+	return result;
+}
+CMatrix operator/(double d, CMatrix& m)
+{
+	CMatrix result;
+	m.getInverse(result);
+        result *= d;
+	return result;
+}
