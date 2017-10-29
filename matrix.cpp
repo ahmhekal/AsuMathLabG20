@@ -211,7 +211,10 @@ void CMatrix::addRow(CMatrix& m)
 
 void CMatrix::getInverse(CMatrix& t)
 {
-	double Det = 1.0 / (this->getDeterminant());
+	double Det = this->getDeterminant();
+	if (Det == 0 || fabs(Det) < 1e-15)
+		throw std::runtime_error("Inverting a martix with no inverse");
+	Det = 1.0 / Det; 
 	CMatrix r(this->nR, this->nC, CMatrix::MI_ZEROS);
 	double Sign = 1.0;
 	for (int i = 0; i<this->nR; ++i)
@@ -251,6 +254,8 @@ CMatrix CMatrix::operator/(CMatrix& m)
 
 CMatrix CMatrix::operator/(double d)
 {
+	if (d == 0 || fabs(d) < 1e-15)
+	    throw std::runtime_error("Division by zero");
 	CMatrix result = *this;
 	for (int i = 0; i < nR; ++i)
 		for (int j = 0; j < nC; ++j)
