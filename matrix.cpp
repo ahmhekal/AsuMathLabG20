@@ -302,11 +302,10 @@ double CMatrix::getDeterminant()
 
 void CMatrix::getTranspose(CMatrix& r)
 {
-	for (int i = 0; i<this->nR; ++i)
-		for (int j = 0; j<this->nC; ++j)
-		{
-			r.values[j][i] = this->values[i][j];
-		}
+    r = CMatrix(nC, nR);
+	for (int i = 0; i < nR; ++i)
+		for (int j = 0; j < nC; ++j)
+			r.values[j][i] = values[i][j];
 }
 
 //**************************************Branch [Aladdin95]**************************************//
