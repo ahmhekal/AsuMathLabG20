@@ -420,17 +420,17 @@ void CMatrix::CopyMatrix(double d)
 
 void CMatrix::mul(CMatrix& m)
 {
-	if(nR!=m.nR||nC!=m.nC)
+	if(nR != m.nC || nR != m.nC)
 		throw("Invalid matrix dimension");
 	CMatrix r(nR, m.nC);
 	for(int iR=0;iR<r.nR;iR++)
 		for(int iC=0;iC<r.nC;iC++)
 		{
 			r.values[iR][iC] = 0.0;
-			for(int k=0;k<m.nC;k++)
+			for(int k=0;k<nC;k++)
 				r.values[iR][iC] += values[iR][k]*m.values[k][iC];
 		}
-		CopyMatrix(r);
+        CopyMatrix(r);
 }
 void CMatrix::operator*=(CMatrix& m)
 {
