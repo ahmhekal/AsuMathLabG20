@@ -384,13 +384,13 @@ void CMatrix::CopyMatrix(string s)   //need to be edited
 	char* buffer = new char[s.length()+1];
 	strcpy(buffer, s.c_str());
 	char* lineContext;
-	char* lineSeparators = ";\r\n";
+	const char* lineSeparators = ";\r\n";
 	char* line = strtok_r(buffer, lineSeparators, &lineContext);
 	while(line)
 	{
 		CMatrix row;
 		char* context;
-		char* separators = " []";
+		const char* separators = " []";
 		char* token = strtok_r(line, separators, &context);
 		while(token)
 		{
@@ -420,17 +420,17 @@ void CMatrix::CopyMatrix(double d)
 
 void CMatrix::mul(CMatrix& m)
 {
-	if(nR!=m.nR||nC!=m.nC)
+	if(nC != m.nR)
 		throw("Invalid matrix dimension");
 	CMatrix r(nR, m.nC);
 	for(int iR=0;iR<r.nR;iR++)
 		for(int iC=0;iC<r.nC;iC++)
 		{
 			r.values[iR][iC] = 0.0;
-			for(int k=0;k<m.nC;k++)
+			for(int k=0;k<nC;k++)
 				r.values[iR][iC] += values[iR][k]*m.values[k][iC];
 		}
-		CopyMatrix(r);
+        CopyMatrix(r);
 }
 void CMatrix::operator*=(CMatrix& m)
 {
