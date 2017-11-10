@@ -13,11 +13,11 @@ namespace ReadCmd
  **/
 static CMatrix& get(char name)
 {
-	static CMatrix vars[26];
-	// convert A..Z and a..z to 0..25
-	size_t ord = (name|(1<<5)) - 'a';
-	if (ord > 25) // if ord > 25 or ord < 0 (ord is unsigned)
+	static CMatrix vars[52];
+	if (name < 'A' || name > 'z' || (name < 'a' && name > 'Z'))
 		throw std::runtime_error("Impossible variable name");
+	// convert A..Z to 0..25, and a..z to 26..51
+	size_t ord = name >= 'a' ? name - 'a' + 26 : name - 'A';
 	return vars[ord];
 }
 
