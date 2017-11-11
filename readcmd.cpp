@@ -1,6 +1,5 @@
 #include "readcmd.h"
 #include <sstream>
-#include <vector>
 #include <stdexcept>
 
 namespace ReadCmd
@@ -93,15 +92,15 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  **/
 void readCmd(istream& orig_is)
 {
-	std::string input; std::getline(orig_is, input, '\n');
+	std::string input; std::getline(orig_is, input);
+	if (input.size() == 0) return;
+	if (input[input.size()-1] == '\r') input.resize(input.size()-1); // if windows line ending is used
 	if (input.size() == 0) return;
 	std::istringstream is(input);
-	std::vector<char> otherleft; // for chained assignment
 	char leftvar; is >> leftvar;
 	char eqsign; is >> eqsign;
 	if (eqsign != '=')
 		throw std::runtime_error("Equals sign expected");
-readexpersion:
 	double whatnext_d; is >> whatnext_d;
 	if (is) { // if it was a number
 		get(leftvar) = readexpr(is, whatnext_d);
@@ -111,19 +110,9 @@ readexpersion:
 		if (whatnext_c == '[') { // the first form, matrix def
 			is >> get(leftvar);
 		} else {
-			char op; is >> op;
-			if (op == '=') {
-				otherleft.push_back(whatnext_c);
-				goto readexpersion;
-			} else {
-				is.putback(op);
-			}
 			get(leftvar) = readexpr(is, NAN, whatnext_c);
 		}
 	}
-
-	for (size_t v = 0; v < otherleft.size(); ++v)
-		get(otherleft[v]) = get(leftvar);
 
 	// if the last char is not no semicolon, print the value
 	if (input[input.size()-1] != ';')
