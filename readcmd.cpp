@@ -1,4 +1,6 @@
 #include "readcmd.h"
+#include <sstream>
+#include <stdexcept>
 
 namespace ReadCmd
 {
@@ -12,11 +14,11 @@ namespace ReadCmd
  **/
 static CMatrix& get(char name)
 {
-	static CMatrix vars[26];
-	// convert A..Z and a..z to 0..25
-	size_t ord = (name|(1<<5)) - 'a';
-	if (ord > 25) // if ord > 25 or ord < 0 (ord is unsigned)
-	    throw std::runtime_error("Impossible variable name");
+	static CMatrix vars[52];
+	if (name < 'A' || name > 'z' || (name < 'a' && name > 'Z'))
+		throw std::invalid_argument("Impossible variable name");
+	// convert A..Z to 0..25, and a..z to 26..51
+	size_t ord = name >= 'a' ? name - 'a' + 26 : name - 'A';
 	return vars[ord];
 }
 
@@ -59,7 +61,7 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
 		if (secondoperand_matrix == '/') // op is './', the element-wise division
 			readoperand(is, secondoperand_double, secondoperand_matrix); // for real this time
 		if (!isnan(firstoperand_double) && !isnan(secondoperand_double))
-		    result = CMatrix(1, 1); // we are working with scalers
+			result = CMatrix(1, 1); // we are working with scalers
 		switch (operation) {
 		case '+': RESULT_OF(+); break;
 		case '-': RESULT_OF(-); break;
@@ -88,27 +90,33 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  *   the third form is a matrix unary opertion using a postfix
  *     operator.
  **/
-void readCmd(istream& is)
+void readCmd(istream& orig_is)
 {
-	char rightvar; is >> rightvar;
-        if (rightvar == ';')
-            is >> rightvar;
+	std::string input; std::getline(orig_is, input);
+	if (input.size() == 0) return;
+	if (input[input.size()-1] == '\r') input.resize(input.size()-1); // if windows line ending is used
+	if (input.size() == 0) return;
+	std::istringstream is(input);
+	char leftvar; is >> leftvar;
 	char eqsign; is >> eqsign;
 	if (eqsign != '=')
 		throw std::runtime_error("Equals sign expected");
 	double whatnext_d; is >> whatnext_d;
 	if (is) { // if it was a number
-		get(rightvar) = readexpr(is, whatnext_d);
+		get(leftvar) = readexpr(is, whatnext_d);
 	} else {
 		is.clear();
 		char whatnext_c; is >> whatnext_c;
 		if (whatnext_c == '[') { // the first form, matrix def
-			is >> get(rightvar);
+			is >> get(leftvar);
 		} else {
-			get(rightvar) = readexpr(is, NAN, whatnext_c);
+			get(leftvar) = readexpr(is, NAN, whatnext_c);
 		}
 	}
-	cout << get(rightvar);
+
+	// if the last char is not no semicolon, print the value
+	if (input[input.size()-1] != ';')
+		cout << get(leftvar);
 }
 
 }; // namespace ReadCmd
