@@ -2,6 +2,7 @@
 #include <cstdlib>	// atof, rand
 #include <ctime>	// time, for seeding rand
 #include <cstring>	// strtok_r
+#include <stdexcept>	// invalid_argument and other exceptions
 
 //**************************************Branch [ahmhekal]**************************************//
 
@@ -102,7 +103,7 @@ CMatrix CMatrix::operator=(const string s)
 void CMatrix::add(CMatrix& m)
 {
 	if(nR!=m.nR||nC!=m.nC)
-		throw("Invalid matrix dimension");
+		throw std::invalid_argument("Invalid matrix dimension");
 	for(int iR=0;iR<nR;iR++)
 		for(int iC=0;iC<nC;iC++)
 			values[iR][iC] += m.values[iR][iC];
@@ -213,7 +214,7 @@ void CMatrix::getInverse(CMatrix& t)
 {
 	double det = getDeterminant();
 	if (det == 0 || fabs(det) < 1e-15)
-		throw std::runtime_error("Inverting a noninvertible martix");
+		throw std::invalid_argument("Inverting a noninvertible martix");
 	det = 1.0 / det; 
 	CMatrix r(nR, nR);
 	for (int i = 0; i < nR; ++i)
@@ -225,30 +226,25 @@ void CMatrix::getInverse(CMatrix& t)
 
 CMatrix CMatrix::div(CMatrix& m)
 {
-    CMatrix d(m);
-    CMatrix This= *this;
-    m.getInverse(d);
-    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
-   // r.CopyMatrix(*this*d);
-    This.mul(d);
+	CMatrix d(m);
+	CMatrix This= *this;
+	m.getInverse(d);
+	This.mul(d);
 	return This;
 }
 CMatrix CMatrix::operator/(CMatrix& m)
 {
-    CMatrix d(m);
-    CMatrix This= *this;
-    m.getInverse(d);
-    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
-   // r.CopyMatrix(*this*d);
-    This.mul(d);
+	CMatrix d(m);
+	CMatrix This= *this;
+	m.getInverse(d);
+	This.mul(d);
 	return This;
-
-    }
+}
 
 CMatrix CMatrix::operator/(double d)
 {
 	if (d == 0 || fabs(d) < 1e-15)
-	    throw std::runtime_error("Division by zero");
+		throw std::invalid_argument("Division by zero");
 	CMatrix result = *this;
 	for (int i = 0; i < nR; ++i)
 		for (int j = 0; j < nC; ++j)
@@ -260,14 +256,16 @@ CMatrix CMatrix::operator/(double d)
 
 void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
 {
-	if((r+m.nR)>nR || (c+m.nC)>nC)throw("Invalid matrix dimension");
+	if((r+m.nR)>nR || (c+m.nC)>nC)
+		throw std::invalid_argument("Invalid matrix dimension");
 	for(int iR=0;iR<m.nR;iR++)
 		for(int iC=0;iC<m.nC;iC++)
 			values[r+iR][c+iC] = m.values[iR][iC];
 }
 CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc)
 {
-	if((r+nr)>nR || (c+nc)>nC)throw("Invalid matrix dimension");
+	if((r+nr)>nR || (c+nc)>nC)
+		throw std::invalid_argument("Invalid matrix dimension");
 	CMatrix m(nr, nc);
 	for(int iR=0;iR<m.nR;iR++)
 		for(int iC=0;iC<m.nC;iC++)
@@ -276,7 +274,8 @@ CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc)
 }
 CMatrix CMatrix::getCofactor(int r, int c)
 {
-	if (nR <= 1 && nC <= 1)throw("Invalid matrix dimension");
+	if (nR <= 1 && nC <= 1)
+		throw std::invalid_argument("Invalid matrix dimension");
 	CMatrix m(nR - 1, nC - 1);
 	for (int iR = 0; iR<m.nR; iR++)
 		for (int iC = 0; iC<m.nC; iC++)
@@ -289,7 +288,8 @@ CMatrix CMatrix::getCofactor(int r, int c)
 }
 double CMatrix::getDeterminant()
 {
-	if (nR != nC)throw("Invalid matrix dimension");
+	if (nR != nC)
+		throw std::invalid_argument("Invalid matrix dimension");
 	if (nR == 1 && nC == 1)return values[0][0];
 	double value = 0.0, m = 1.0;
 	for (int iR = 0; iR<nR; iR++)
@@ -302,7 +302,7 @@ double CMatrix::getDeterminant()
 
 void CMatrix::getTranspose(CMatrix& r)
 {
-    r = CMatrix(nC, nR);
+	r = CMatrix(nC, nR);
 	for (int i = 0; i < nR; ++i)
 		for (int j = 0; j < nC; ++j)
 			r.values[j][i] = values[i][j];
@@ -421,7 +421,7 @@ void CMatrix::CopyMatrix(double d)
 void CMatrix::mul(CMatrix& m)
 {
 	if(nC != m.nR)
-		throw("Invalid matrix dimension");
+		throw std::invalid_argument("Invalid matrix dimension");
 	CMatrix r(nR, m.nC);
 	for(int iR=0;iR<r.nR;iR++)
 		for(int iC=0;iC<r.nC;iC++)
@@ -430,7 +430,7 @@ void CMatrix::mul(CMatrix& m)
 			for(int k=0;k<nC;k++)
 				r.values[iR][iC] += values[iR][k]*m.values[k][iC];
 		}
-        CopyMatrix(r);
+	CopyMatrix(r);
 }
 void CMatrix::operator*=(CMatrix& m)
 {
@@ -460,7 +460,7 @@ CMatrix CMatrix::operator*(double d)
 void CMatrix::sub(CMatrix& m)
 {
 	if(nR!=m.nR||nC!=m.nC)
-		throw("Invalid matrix dimension");
+		throw std::invalid_argument("Invalid matrix dimension");
 	for(int iR=0;iR<nR;iR++)
 		for(int iC=0;iC<nC;iC++)
 			values[iR][iC] -= m.values[iR][iC];
@@ -510,7 +510,7 @@ CMatrix operator/(double d, CMatrix& m)
 {
 	CMatrix result;
 	m.getInverse(result);
-        result *= d;
+	result *= d;
 	return result;
 }
 
@@ -518,7 +518,7 @@ CMatrix operator/(double d, CMatrix& m)
 CMatrix adiv(const CMatrix& a, const CMatrix& b)
 {
 	if (a.getnR() != b.getnR() || a.getnC() != b.getnC())
-	    throw std::runtime_error("Invalid matrix dimensions");
+		throw std::invalid_argument("Invalid matrix dimensions");
 	CMatrix r(a.getnR(), a.getnC());
 	for (int i = 0; i < a.getnR(); ++i)
 		for (int j = 0; j < a.getnC(); ++j)
