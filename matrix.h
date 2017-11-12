@@ -14,15 +14,15 @@ using namespace std;
 class CMatrix
 {
 
-int nR, nC;
+int nRows, nColumns;
 double** values;
 public:
 CMatrix();
 ~CMatrix();
 enum MI{MI_ZEROS, MI_ONES, MI_EYE, MI_RAND, MI_VALUE};
-CMatrix(int nR, int nC, int initialization = MI_ZEROS, double
+CMatrix(int nRows, int nColumns, int initialization = MI_ZEROS, double
 initializationValue = 0.0);
-CMatrix(int nR, int nC, double first, ...);
+CMatrix(int nRows, int nColumns, double first, ...);
 CMatrix(CMatrix& m);
 CMatrix(double d);
 CMatrix(string s);
@@ -67,13 +67,13 @@ CMatrix getSubMatrix(int r, int c, int nr, int nc);
 CMatrix getCofactor(int r, int c);
 void addColumn(CMatrix& m);
 void addRow(CMatrix& m);
-double& operator[](int i){return values[i/nC][i%nC];}
-double& operator()(int i){return values[i/nC][i%nC];}
+double& operator[](int i){return values[i/nColumns][i%nColumns];}
+double& operator()(int i){return values[i/nColumns][i%nColumns];}
 double operator()(int r, int c) const {return values[r][c];}
 double& operator()(int r, int c){return values[r][c];}
 int getn() const;
-int getnR() const;
-int getnC() const;
+int getnRows() const;
+int getnColumns() const;
 double getDeterminant();
 void getTranspose(CMatrix& r);
 void getInverse(CMatrix& t);
