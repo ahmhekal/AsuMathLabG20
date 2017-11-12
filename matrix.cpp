@@ -6,36 +6,6 @@
 
 //**************************************Branch [ahmhekal]**************************************//
 
-CMatrix CMatrix::operator++()
-{
-	CMatrix addend(nRows, nColumns, MI_VALUE, 1.0);
-	add(addend);
-	return *this;
-}
-
-CMatrix CMatrix::operator++(int)
-{
-	CMatrix C = *this;
-	CMatrix addend(nRows, nColumns, MI_VALUE, 1.0);
-	add(addend);
-	return C;
-}
-
-CMatrix CMatrix::operator--()
-{
-	CMatrix addend(nRows, nColumns, MI_VALUE, -1.0);
-	add(addend);
-	return *this;
-}
-
-CMatrix CMatrix::operator--(int)
-{
-	CMatrix r = *this;
-	CMatrix addend(nRows, nColumns, MI_VALUE, -1.0);
-	add(addend);
-	return r;
-}
-
 CMatrix CMatrix::operator-()
 {
 	CMatrix result = *this;

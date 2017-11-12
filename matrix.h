@@ -50,10 +50,6 @@ void operator/=(CMatrix& m);
 void operator/=(double d);
 CMatrix operator/(CMatrix& m);
 CMatrix operator/(double d);
-CMatrix operator++(); //Pre Increment
-CMatrix operator++(int); //Post Increment, int is not used
-CMatrix operator--(); //Pre Increment
-CMatrix operator--(int); //Post Increment, int is not used
 CMatrix operator-();
 CMatrix operator+();
 friend std::istream& operator >> (std::istream &is, CMatrix& C); //Stream
