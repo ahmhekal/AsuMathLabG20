@@ -3,8 +3,7 @@
 #include <stdexcept>
 #include <math.h>	// NAN, isnan
 
-namespace ReadCmd
-{
+namespace ReadCmd {
 
 /*
  * get() returns a ref a var matrix
@@ -13,8 +12,7 @@ namespace ReadCmd
  *   to be used in the command prompt/files.
  * they are A..Z case-insensitive.
  **/
-static CMatrix& get(char name)
-{
+static CMatrix & get(char name) {
 	static CMatrix vars[52];
 	if (name < 'A' || name > 'z' || (name < 'a' && name > 'Z'))
 		throw std::invalid_argument("Impossible variable name");
@@ -23,20 +21,21 @@ static CMatrix& get(char name)
 	return vars[ord];
 }
 
-static void readoperand(std::istream& is, double& operand_double, char& operand_char)
+static void readoperand(std::istream& is, double &operand_double,
+		                          char &operand_char)
 {
 	is >> operand_double;
-	if (!is) { // if failed; it's a char
-		is.clear(); // clear the failure state
+	if (!is) {  // if failed; it's a char
+		is.clear();  // clear the failure state
 		is >> operand_char;
-		operand_double = NAN; // make the number invalid
+		operand_double = NAN;  // make the number invalid
 	}
 }
 
 /*
- * readexpr() reads an expression from an istream and evaluates it,
- *   and returns the result as a CMatrix.
- **/
+* readexpr() reads an expression from an istream and evaluates it,
+*   and returns the result as a CMatrix.
+**/
 #define RESULT_OF(op) do {                                                  \
     if (isnan(firstoperand_double))                                         \
         if (isnan(secondoperand_double))                                    \
@@ -48,29 +47,40 @@ static void readoperand(std::istream& is, double& operand_double, char& operand_
             result = firstoperand_double op get(secondoperand_matrix);      \
         else                                                                \
             result = firstoperand_double op secondoperand_double;           \
-} while(0)
+    } while(0)
 
-static CMatrix readexpr(std::istream& is, double firstoperand_double = NAN, char firstoperand_matrix = '0')
+static CMatrix readexpr(std::istream& is,
+			double firstoperand_double = NAN,
+			char firstoperand_matrix = '0')
 {
 	CMatrix result;
-	char operation; is >> operation;
+	char operation;
+	is >> operation;
 	if (operation == '\'') {
 		get(firstoperand_matrix).getTranspose(result);
 	} else {
-		double secondoperand_double; char secondoperand_matrix;
+		double secondoperand_double;
+		char secondoperand_matrix;
 		readoperand(is, secondoperand_double, secondoperand_matrix);
-		if (secondoperand_matrix == '/') // op is './', the element-wise division
-			readoperand(is, secondoperand_double, secondoperand_matrix); // for real this time
-		if (!isnan(firstoperand_double) && !isnan(secondoperand_double))
-			result = CMatrix(1, 1); // we are working with scalers
+		// if op is './', the element-wise division
+		if (secondoperand_matrix == '/')
+			readoperand(is, secondoperand_double, secondoperand_matrix);
+			// for real this time
+		if (!isnan(firstoperand_double)
+		    && !isnan(secondoperand_double))
+			result = CMatrix(1, 1);	// we are working with scalers
 		switch (operation) {
 		case '+': RESULT_OF(+); break;
 		case '-': RESULT_OF(-); break;
 		case '*': RESULT_OF(*); break;
-		case '.': if (isnan(firstoperand_double) && isnan(secondoperand_double)) {
-                                result = adiv(get(firstoperand_matrix), get(secondoperand_matrix));
-                                break;
-                          }  // else? operator/() will take care of the rest.
+		case '.':
+			if (isnan(firstoperand_double)
+			    && isnan(secondoperand_double)) {
+				result =
+				    adiv(get(firstoperand_matrix),
+					 get(secondoperand_matrix));
+				break;
+			}  // else? operator/() will take care of the rest.
 		case '/': RESULT_OF(/); break;
 		}
 	}
@@ -79,45 +89,53 @@ static CMatrix readexpr(std::istream& is, double firstoperand_double = NAN, char
 #undef RESULT_OF
 
 /* 
- * readCmd() reads a cmd from a given istream and executes it.
- *
- * - istream can be cin or an ifstream.
- * - currently the supported cmd formats are:
- *   1. A = [...;...]
- *   2. A = B * C
- *   3. A = B'
- *   the first form is a MATLAB-style matrix definition.
- *   the second form is a matrix binary operation.
- *   the third form is a matrix unary opertion using a postfix
- *     operator.
- **/
-void readCmd(std::istream& orig_is)
-{
-	std::string input; std::getline(orig_is, input);
-	if (input.size() == 0) return;
-	if (input[input.size()-1] == '\r') input.resize(input.size()-1); // if windows line ending is used
-	if (input.size() == 0) return;
+* readCmd() reads a cmd from a given istream and executes it.
+*
+* - istream can be cin or an ifstream.
+* - currently the supported cmd formats are:
+*   1. A = [...;...]
+*   2. A = B * C
+*   3. A = B'
+*   the first form is a MATLAB-style matrix definition.
+*   the second form is a matrix binary operation.
+*   the third form is a matrix unary opertion using a postfix
+*     operator.
+**/
+void readCmd(std::istream & orig_is) {
+	std::string input;
+	std::getline(orig_is, input);
+	if (input.size() == 0)
+		return;
+	if (input[input.size() - 1] == '\r')
+		input.resize(input.size() - 1);	// if windows line ending is used
+	if (input.size() == 0)
+		return;
 	std::istringstream is(input);
-	char leftvar; is >> leftvar;
-	char eqsign; is >> eqsign;
+	char leftvar;
+	is >> leftvar;
+	char eqsign;
+	is >> eqsign;
 	if (eqsign != '=')
 		throw std::runtime_error("Equals sign expected");
-	double whatnext_d; is >> whatnext_d;
-	if (is) { // if it was a number
+	double whatnext_d;
+	is >> whatnext_d;
+	if (is) {  // if it was a number
 		get(leftvar) = readexpr(is, whatnext_d);
 	} else {
 		is.clear();
-		char whatnext_c; is >> whatnext_c;
-		if (whatnext_c == '[') { // the first form, matrix def
+		char whatnext_c;
+		is >> whatnext_c;
+		if (whatnext_c == '[') {  // the first form, matrix def
 			is >> get(leftvar);
 		} else {
-			get(leftvar) = readexpr(is, NAN, whatnext_c);
+			get(leftvar) =
+			    readexpr(is, NAN, whatnext_c);
 		}
 	}
 
 	// if the last char is not no semicolon, print the value
-	if (input[input.size()-1] != ';')
+	if (input[input.size() - 1] != ';')
 		std::cout << get(leftvar);
 }
 
-}; // namespace ReadCmd
+};  // namespace ReadCmd
