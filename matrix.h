@@ -1,12 +1,6 @@
 #pragma once
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdarg>
-#include <string.h>
-#include <istream>
-#include <ostream>
-#include <math.h>
+#include <string>	// string
+#include <iostream>	// istream, ostream
 
 class CMatrix
 {

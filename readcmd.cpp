@@ -1,6 +1,7 @@
 #include "readcmd.h"
 #include <sstream>
 #include <stdexcept>
+#include <math.h>	// NAN, isnan
 
 namespace ReadCmd
 {

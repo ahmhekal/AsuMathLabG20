@@ -3,6 +3,9 @@
 #include <ctime>	// time, for seeding rand
 #include <cstring>	// strtok_r
 #include <stdexcept>	// invalid_argument and other exceptions
+#include <cstdarg>	// va_list, etc
+#include <string.h>	// strcpy, strtok_r
+#include <math.h>	// NAN, isnan
 
 //**************************************Branch [ahmhekal]**************************************//
 
