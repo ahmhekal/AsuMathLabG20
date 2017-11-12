@@ -65,20 +65,20 @@ void CMatrix::reset()
 	nRows=nColumns=0;
 	values=NULL;
 }
-string CMatrix::getString()
+std::string CMatrix::getString() // wtf
 {
-	string s;
+	std::string s;
 	for(int iR=0;iR<nRows;iR++)
 	{
 		for(int iC=0;iC<nColumns;iC++)
 		{
 			//char buffer[50];
 			//sprintf_s(buffer,50,"%g\t",values[iR][iC]);
-			if(values[iR][iC]==0 || fabs(values[iR][iC])<1e-15)cout<<"0"<<" ";
-			else {cout<<values[iR][iC]<<" ";}
+			if(values[iR][iC]==0 || fabs(values[iR][iC])<1e-15)std::cout<<"0"<<" ";
+			else {std::cout<<values[iR][iC]<<" ";}
 		}
 		//s+="\n";
-		cout<<endl;
+		std::cout<<"\n";
 	}
 	return s;
 }
@@ -93,7 +93,7 @@ CMatrix CMatrix::operator=(double d)
 	return *this;
 }
 
-CMatrix CMatrix::operator=(const string s)
+CMatrix CMatrix::operator=(const std::string s)
 {
 	CopyMatrix(s);
 	return *this;
@@ -197,14 +197,14 @@ CMatrix::CMatrix(CMatrix& m)
 //**************************************Branch [AbdallahReda]**************************************//
 void CMatrix::addColumn(CMatrix& m)
 {
-	CMatrix n(max(nRows, m.nRows), nColumns+m.nColumns);
+	CMatrix n(std::max(nRows, m.nRows), nColumns+m.nColumns);
 	n.setSubMatrix(0, 0, *this);
 	n.setSubMatrix(0, nColumns, m);
 	*this = n;
 }
 void CMatrix::addRow(CMatrix& m)
 {
-	CMatrix n(nRows+m.nRows, max(nColumns, m.nColumns));
+	CMatrix n(nRows+m.nRows, std::max(nColumns, m.nColumns));
 	n.setSubMatrix(0, 0, *this);
 	n.setSubMatrix(nRows, 0, m);
 	*this = n;
@@ -310,10 +310,10 @@ void CMatrix::getTranspose(CMatrix& r)
 
 //**************************************Branch [Aladdin95]**************************************//
 
-istream& operator >> (istream &is, CMatrix& m)   //need to be edited
+std::istream& operator >> (std::istream &is, CMatrix& m)   //need to be edited
 {
-	string s;
-	getline(is, s, ']');
+	std::string s;
+	std::getline(is, s, ']');
 	s+="]";
 	CMatrix readMatrix(s);
 	m = readMatrix;
@@ -321,7 +321,7 @@ istream& operator >> (istream &is, CMatrix& m)   //need to be edited
 }
 
 
-ostream& operator << (ostream &os, CMatrix& m)
+std::ostream& operator << (std::ostream &os, CMatrix& m)
 {
 	os<<m.getString();
 	return os;
@@ -345,7 +345,7 @@ int CMatrix::getn() const
 //**************************************Branch [omarashraf10]**************************************//
 
 
-CMatrix::CMatrix(string s)   //need to be edited
+CMatrix::CMatrix(std::string s)   //need to be edited
 {
 	nRows = nColumns = 0;
 	values = NULL;
@@ -377,7 +377,7 @@ void CMatrix::CopyMatrix(const CMatrix& m)
 }
 
 
-void CMatrix::CopyMatrix(string s)   //need to be edited
+void CMatrix::CopyMatrix(std::string s)   //need to be edited
 {
 	reset();
 

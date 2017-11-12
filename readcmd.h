@@ -2,5 +2,5 @@
 
 namespace ReadCmd
 {
-	void readCmd(istream& is);
+	void readCmd(std::istream& is);
 };

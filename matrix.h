@@ -7,13 +7,9 @@
 #include <istream>
 #include <ostream>
 #include <math.h>
-using namespace std;
-
-#pragma once
 
 class CMatrix
 {
-
 int nRows, nColumns;
 double** values;
 public:
@@ -25,15 +21,15 @@ initializationValue = 0.0);
 CMatrix(int nRows, int nColumns, double first, ...);
 CMatrix(CMatrix& m);
 CMatrix(double d);
-CMatrix(string s);
+CMatrix(std::string s);
 void CopyMatrix(const CMatrix& m);
 void CopyMatrix(double d);
-void CopyMatrix(const string s);
+void CopyMatrix(const std::string s);
 void reset();
-string getString();
+std::string getString();
 CMatrix operator=(const CMatrix& m);
 CMatrix operator=(double d);
-CMatrix operator=(string s);
+CMatrix operator=(std::string s);
 void add(CMatrix& m);
 void operator+=(CMatrix& m);
 void operator+=(double d);
@@ -60,8 +56,8 @@ CMatrix operator--(); //Pre Increment
 CMatrix operator--(int); //Post Increment, int is not used
 CMatrix operator-();
 CMatrix operator+();
-friend istream& operator >> (istream &is, CMatrix& C); //Stream
-friend ostream& operator << (ostream &os, CMatrix& C); //Stream
+friend std::istream& operator >> (std::istream &is, CMatrix& C); //Stream
+friend std::ostream& operator << (std::ostream &os, CMatrix& C); //Stream
 void setSubMatrix(int iR, int iC, CMatrix& m);
 CMatrix getSubMatrix(int r, int c, int nr, int nc);
 CMatrix getCofactor(int r, int c);

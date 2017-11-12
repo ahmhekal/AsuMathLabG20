@@ -22,7 +22,7 @@ static CMatrix& get(char name)
 	return vars[ord];
 }
 
-static void readoperand(istream& is, double& operand_double, char& operand_char)
+static void readoperand(std::istream& is, double& operand_double, char& operand_char)
 {
 	is >> operand_double;
 	if (!is) { // if failed; it's a char
@@ -49,7 +49,7 @@ static void readoperand(istream& is, double& operand_double, char& operand_char)
             result = firstoperand_double op secondoperand_double;           \
 } while(0)
 
-static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firstoperand_matrix = '0')
+static CMatrix readexpr(std::istream& is, double firstoperand_double = NAN, char firstoperand_matrix = '0')
 {
 	CMatrix result;
 	char operation; is >> operation;
@@ -90,7 +90,7 @@ static CMatrix readexpr(istream& is, double firstoperand_double = NAN, char firs
  *   the third form is a matrix unary opertion using a postfix
  *     operator.
  **/
-void readCmd(istream& orig_is)
+void readCmd(std::istream& orig_is)
 {
 	std::string input; std::getline(orig_is, input);
 	if (input.size() == 0) return;
@@ -116,7 +116,7 @@ void readCmd(istream& orig_is)
 
 	// if the last char is not no semicolon, print the value
 	if (input[input.size()-1] != ';')
-		cout << get(leftvar);
+		std::cout << get(leftvar);
 }
 
 }; // namespace ReadCmd
