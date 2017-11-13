@@ -77,8 +77,8 @@ static CMatrix readexpr(std::istream& is,
 			if (isnan(firstoperand_double)
 			    && isnan(secondoperand_double)) {
 				result =
-				    adiv(get(firstoperand_matrix),
-					 get(secondoperand_matrix));
+				    get(firstoperand_matrix)
+                                    .adiv(get(secondoperand_matrix));
 				break;
 			}  // else? operator/() will take care of the rest.
 		case '/': RESULT_OF(/); break;
