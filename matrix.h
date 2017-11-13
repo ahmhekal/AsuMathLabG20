@@ -5,7 +5,7 @@
 class CMatrix {
 private:
 	size_t nRows, nColumns;
-	double** values;
+	double* values;
 public:
 	CMatrix();
 	~CMatrix();
