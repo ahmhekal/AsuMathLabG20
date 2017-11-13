@@ -7,7 +7,7 @@
 #include <string.h>	// strcpy, strtok_r
 #include <math.h>	// NAN, isnan
 
-CMatrix CMatrix::operator-()
+CMatrix CMatrix::operator-() const
 {
 	CMatrix result = *this;
 	for (int i = 0; i < nRows; ++i)
@@ -16,7 +16,7 @@ CMatrix CMatrix::operator-()
 	return result;
 }
 
-CMatrix CMatrix::operator+()
+CMatrix CMatrix::operator+() const
 {
 	return *this;
 }
@@ -32,7 +32,7 @@ void CMatrix::reset()
 	values = NULL;
 }
 
-std::string CMatrix::getString() // wtf
+std::string CMatrix::getString() const // wtf
 {
 	std::string s;
 	for (int i = 0; i < nRows; ++i) {
@@ -69,7 +69,7 @@ CMatrix CMatrix::operator=(const std::string s)
 	return *this;
 }
 
-void CMatrix::add(CMatrix& m)
+void CMatrix::add(const CMatrix& m)
 {
 	if (nRows != m.nRows || nColumns != m.nColumns)
 		throw std::invalid_argument
@@ -79,7 +79,7 @@ void CMatrix::add(CMatrix& m)
 			values[i][j] += m.values[i][j];
 }
 
-void CMatrix::operator+=(CMatrix& m)
+void CMatrix::operator+=(const CMatrix& m)
 {
 	add(m);
 }
@@ -90,14 +90,14 @@ void CMatrix::operator+=(double d)
 	add(addend);
 }
 
-CMatrix CMatrix::operator+(CMatrix& m)
+CMatrix CMatrix::operator+(const CMatrix& m) const
 {
 	CMatrix r = *this;
 	r += m;
 	return r;
 }
 
-CMatrix CMatrix::operator+(double d)
+CMatrix CMatrix::operator+(double d) const
 {
 	CMatrix r = *this;
 	r += d;
@@ -175,14 +175,14 @@ CMatrix::CMatrix(int nRows, int nColumns, double first, ...)
 	va_end(va);
 }
 
-CMatrix::CMatrix(CMatrix& m)
+CMatrix::CMatrix(const CMatrix& m)
 {
 	nRows = nColumns = 0;
 	values = NULL;
 	CopyMatrix(m);
 }
 
-void CMatrix::addColumn(CMatrix& m)
+void CMatrix::addColumn(const CMatrix& m)
 {
 	CMatrix n(std::max(nRows, m.nRows), nColumns + m.nColumns);
 	n.setSubMatrix(0, 0, *this);
@@ -190,7 +190,7 @@ void CMatrix::addColumn(CMatrix& m)
 	*this = n;
 }
 
-void CMatrix::addRow(CMatrix& m)
+void CMatrix::addRow(const CMatrix& m)
 {
 	CMatrix n(nRows + m.nRows, std::max(nColumns, m.nColumns));
 	n.setSubMatrix(0, 0, *this);
@@ -198,7 +198,7 @@ void CMatrix::addRow(CMatrix& m)
 	*this = n;
 }
 
-void CMatrix::getInverse(CMatrix& t)
+void CMatrix::getInverse(CMatrix& t) const
 {
 	double det = getDeterminant();
 	if (det == 0 || fabs(det) < 1e-15)
@@ -216,7 +216,7 @@ void CMatrix::getInverse(CMatrix& t)
 	t = r;
 }
 
-CMatrix CMatrix::div(CMatrix& m)
+CMatrix CMatrix::div(const CMatrix& m)
 {
 	CMatrix d(m);
 	CMatrix This = *this;
@@ -225,7 +225,7 @@ CMatrix CMatrix::div(CMatrix& m)
 	return This;
 }
 
-CMatrix CMatrix::operator/(CMatrix& m)
+CMatrix CMatrix::operator/(const CMatrix& m) const
 {
 	CMatrix d(m);
 	CMatrix This = *this;
@@ -234,7 +234,7 @@ CMatrix CMatrix::operator/(CMatrix& m)
 	return This;
 }
 
-CMatrix CMatrix::operator/(double d)
+CMatrix CMatrix::operator/(double d) const
 {
 	if (d == 0 || fabs(d) < 1e-15)
 		throw std::invalid_argument("Division by zero");
@@ -245,7 +245,7 @@ CMatrix CMatrix::operator/(double d)
 	return result;
 }
 
-void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
+void CMatrix::setSubMatrix(int r, int c, const CMatrix& m)
 {
 	if ((r + m.nRows) > nRows || (c + m.nColumns) > nColumns)
 		throw std::invalid_argument
@@ -255,7 +255,7 @@ void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
 			values[r + i][c + j] = m.values[i][j];
 }
 
-CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc)
+CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc) const
 {
 	if ((r + nr) > nRows || (c + nc) > nColumns)
 		throw std::invalid_argument
@@ -267,7 +267,7 @@ CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc)
 	return m;
 }
 
-CMatrix CMatrix::getCofactor(int r, int c)
+CMatrix CMatrix::getCofactor(int r, int c) const
 {
 	if (nRows <= 1 && nColumns <= 1)
 		throw std::invalid_argument
@@ -282,7 +282,7 @@ CMatrix CMatrix::getCofactor(int r, int c)
 	return m;
 }
 
-double CMatrix::getDeterminant()
+double CMatrix::getDeterminant() const
 {
 	if (nRows != nColumns)
 		throw std::invalid_argument
@@ -298,7 +298,7 @@ double CMatrix::getDeterminant()
 	return value;
 }
 
-void CMatrix::getTranspose(CMatrix& r)
+void CMatrix::getTranspose(CMatrix& r) const
 {
 	r = CMatrix(nColumns, nRows);
 	for (int i = 0; i < nRows; ++i)
@@ -317,9 +317,17 @@ std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 }
 
 
-std::ostream& operator<<(std::ostream& os, CMatrix& m)
+std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 {
-	os << m.getString();
+	//os << m.getString();
+	for (int i = 0; i < m.getnRows(); ++i) {
+		for (int j = 0; j < m.getnColumns(); ++j) {
+			os << m(i,j);
+			if (j != m.getnColumns() - 1)
+				os << "\t";
+		}
+		os << "\n";
+	}
 	return os;
 }
 
@@ -409,7 +417,7 @@ void CMatrix::CopyMatrix(double d)
 }
 
 
-void CMatrix::mul(CMatrix& m)
+void CMatrix::mul(const CMatrix& m)
 {
 	if (nColumns != m.nRows)
 		throw std::invalid_argument
@@ -425,7 +433,7 @@ void CMatrix::mul(CMatrix& m)
 	CopyMatrix(r);
 }
 
-void CMatrix::operator*=(CMatrix& m)
+void CMatrix::operator*=(const CMatrix& m)
 {
 	mul(m);
 }
@@ -437,21 +445,21 @@ void CMatrix::operator*=(double d)
 			values[i][j] *= d;
 }
 
-CMatrix CMatrix::operator*(CMatrix& m)
+CMatrix CMatrix::operator*(const CMatrix& m) const
 {
 	CMatrix r = *this;
 	r *= m;
 	return r;
 }
 
-CMatrix CMatrix::operator*(double d)
+CMatrix CMatrix::operator*(double d) const
 {
 	CMatrix r = *this;
 	r *= d;
 	return r;
 }
 
-void CMatrix::sub(CMatrix& m)
+void CMatrix::sub(const CMatrix& m)
 {
 	if (nRows != m.nRows || nColumns != m.nColumns)
 		throw std::invalid_argument
@@ -461,7 +469,7 @@ void CMatrix::sub(CMatrix& m)
 			values[i][j] -= m.values[i][j];
 }
 
-void CMatrix::operator-=(CMatrix& m)
+void CMatrix::operator-=(const CMatrix& m)
 {
 	sub(m);
 }
@@ -472,28 +480,28 @@ void CMatrix::operator-=(double d)
 	sub(subtrahend);
 }
 
-CMatrix CMatrix::operator-(CMatrix& m)
+CMatrix CMatrix::operator-(const CMatrix& m) const
 {
 	CMatrix r = *this;
 	r -= m;
 	return r;
 }
 
-CMatrix CMatrix::operator-(double d)
+CMatrix CMatrix::operator-(double d) const
 {
 	CMatrix r = *this;
 	r -= d;
 	return r;
 }
 
-CMatrix operator+(double d, CMatrix& m)
+CMatrix operator+(double d, const CMatrix& m)
 {
 	CMatrix result(m);
 	result += d;
 	return result;
 }
 
-CMatrix operator-(double d, CMatrix& m)
+CMatrix operator-(double d, const CMatrix& m)
 {
 	CMatrix result(m);
 	result *= -1;
@@ -501,14 +509,14 @@ CMatrix operator-(double d, CMatrix& m)
 	return result;
 }
 
-CMatrix operator*(double d, CMatrix& m)
+CMatrix operator*(double d, const CMatrix& m)
 {
 	CMatrix result(m);
 	result *= d;
 	return result;
 }
 
-CMatrix operator/(double d, CMatrix& m)
+CMatrix operator/(double d, const CMatrix& m)
 {
 	CMatrix result;
 	m.getInverse(result);
@@ -530,20 +538,39 @@ CMatrix adiv(const CMatrix& a, const CMatrix& b)
 	return r;
 }
 
-
 double& CMatrix::operator[](int i)
 {
 	return values[i / nColumns][i % nColumns];
 }
+
+double CMatrix::operator[](int i) const
+{
+	return values[i / nColumns][i % nColumns];
+}
+
 double& CMatrix::operator()(int i)
 {
 	return values[i / nColumns][i % nColumns];
 }
+
 double CMatrix::operator()(int r, int c) const
 {
 	return values[r][c];
 }
+
 double& CMatrix::operator()(int r, int c)
 {
 	return values[r][c];
+}
+
+bool operator==(const CMatrix& a, const CMatrix& b)
+{
+	if (a.getnRows() != b.getnRows())
+		return false;
+	if (a.getnColumns() != b.getnColumns())
+		return false;
+	for (int i = 0; i < a.getnRows() * a.getnColumns(); ++i)
+		if (a[i] != b[i])
+			return false;
+	return true;
 }
