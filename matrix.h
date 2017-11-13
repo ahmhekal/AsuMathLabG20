@@ -4,16 +4,16 @@
 
 class CMatrix {
 private:
-	int nRows, nColumns;
+	size_t nRows, nColumns;
 	double** values;
 public:
 	CMatrix();
 	~CMatrix();
 	enum MI { MI_ZEROS, MI_ONES, MI_EYE, MI_RAND, MI_VALUE };
-	CMatrix(int nRows, int nColumns,
+	CMatrix(size_t nRows, size_t nColumns,
 	        int initialization = MI_ZEROS,
 	        double initializationValue = 0.0);
-	CMatrix(int nRows, int nColumns, double first, ...);
+	CMatrix(size_t nRows, size_t nColumns, double first, ...);
 	CMatrix(const CMatrix& m);
 	CMatrix(double d);
 	CMatrix(std::string s);
@@ -47,19 +47,19 @@ public:
 	CMatrix operator/(double d) const;
 	CMatrix operator-() const;
 	CMatrix operator+() const;
-	void setSubMatrix(int iR, int iC, const CMatrix& m);
-	CMatrix getSubMatrix(int r, int c, int nr, int nc) const;
-	CMatrix getCofactor(int r, int c) const;
+	void setSubMatrix(size_t iR, size_t iC, const CMatrix& m);
+	CMatrix getSubMatrix(size_t r, size_t c, size_t nr, size_t nc) const;
+	CMatrix getCofactor(size_t r, size_t c) const;
 	void addColumn(const CMatrix& m);
 	void addRow(const CMatrix& m);
-	double& operator[] (int i);
-	double operator[](int i) const;
-        double& operator() (int i);
-	double operator() (int r, int c) const;
-        double& operator() (int r, int c);
-	int getn() const;
-	int getnRows() const;
-	int getnColumns() const;
+	double& operator[] (size_t i);
+	double operator[](size_t i) const;
+        double& operator() (size_t i);
+	double operator() (size_t r, size_t c) const;
+        double& operator() (size_t r, size_t c);
+	size_t getn() const;
+	size_t getnRows() const;
+	size_t getnColumns() const;
 	double getDeterminant() const;
 	void getTranspose(CMatrix& r) const;
 	void getInverse(CMatrix& t) const;
