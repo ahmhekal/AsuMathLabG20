@@ -5,6 +5,8 @@
 
 namespace ReadCmd {
 
+using namespace asu;
+
 /*
  * get() returns a ref a var matrix
  *
@@ -36,17 +38,17 @@ static void readoperand(std::istream& is, double &operand_double,
 * readexpr() reads an expression from an istream and evaluates it,
 *   and returns the result as a CMatrix.
 **/
-#define RESULT_OF(op) do {                                                  \
-    if (isnan(firstoperand_double))                                         \
-        if (isnan(secondoperand_double))                                    \
-            result = get(firstoperand_matrix) op get(secondoperand_matrix); \
-        else                                                                \
-            result = get(firstoperand_matrix) op secondoperand_double;      \
-    else                                                                    \
-        if (isnan(secondoperand_double))                                    \
-            result = firstoperand_double op get(secondoperand_matrix);      \
-        else                                                                \
-            result = firstoperand_double op secondoperand_double;           \
+#define RESULT_OF(fn) do {                                                    \
+    if (isnan(firstoperand_double))                                           \
+        if (isnan(secondoperand_double))                                      \
+            result = fn(get(firstoperand_matrix), get(secondoperand_matrix)); \
+        else                                                                  \
+            result = fn(get(firstoperand_matrix), secondoperand_double);      \
+    else                                                                      \
+        if (isnan(secondoperand_double))                                      \
+            result = fn(firstoperand_double, get(secondoperand_matrix));      \
+        else                                                                  \
+            result = fn(firstoperand_double, secondoperand_double);           \
     } while(0)
 
 static CMatrix readexpr(std::istream& is,
@@ -57,7 +59,7 @@ static CMatrix readexpr(std::istream& is,
 	char operation;
 	is >> operation;
 	if (operation == '\'') {
-		get(firstoperand_matrix).getTranspose(result);
+		result = get(firstoperand_matrix).getTranspose();
 	} else {
 		double secondoperand_double;
 		char secondoperand_matrix;
@@ -70,18 +72,11 @@ static CMatrix readexpr(std::istream& is,
 		    && !isnan(secondoperand_double))
 			result = CMatrix(1, 1);	// we are working with scalers
 		switch (operation) {
-		case '+': RESULT_OF(+); break;
-		case '-': RESULT_OF(-); break;
-		case '*': RESULT_OF(*); break;
-		case '.':
-			if (isnan(firstoperand_double)
-			    && isnan(secondoperand_double)) {
-				result =
-				    get(firstoperand_matrix)
-                                    .adiv(get(secondoperand_matrix));
-				break;
-			}  // else? operator/() will take care of the rest.
-		case '/': RESULT_OF(/); break;
+		case '+': RESULT_OF(add);  break;
+		case '-': RESULT_OF(sub);  break;
+		case '*': RESULT_OF(mul);  break;
+		case '.': RESULT_OF(adiv); break;
+		case '/': RESULT_OF(div);  break;
 		}
 	}
 	return result;

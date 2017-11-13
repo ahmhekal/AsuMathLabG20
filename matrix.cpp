@@ -1,11 +1,12 @@
 #include "matrix.h"
 #include <cstdlib>	// atof, rand
-#include <ctime>	// time, for seeding rand
-#include <cstring>	// strtok_r
+#include <string>	// string
 #include <stdexcept>	// invalid_argument and other exceptions
 #include <cstdarg>	// va_list, etc
 #include <string.h>	// strcpy, strtok_r
 #include <math.h>	// NAN, isnan
+
+namespace asu {
 
 void CMatrix::reset()
 {
@@ -13,25 +14,6 @@ void CMatrix::reset()
 		delete[] values;
 	nRows = nColumns = 0;
 	values = 0;
-}
-
-std::string CMatrix::getString() const // wtf
-{
-	std::string s;
-	for (size_t i = 0; i < nRows; ++i) {
-		for (size_t j = 0; j < nColumns; ++j) {
-			//char buffer[50];
-			//sprintf_s(buffer,50,"%g\t",(*this)(i, j));
-			if ((*this)(i, j) == 0
-			    || fabs((*this)(i, j) < 1e-15))
-				std::cout << "0" << " ";
-			else
-				std::cout << (*this)(i, j) << " ";
-		}
-		//s+="\n";
-		std::cout << "\n";
-	}
-	return s;
 }
 
 CMatrix CMatrix::operator=(const CMatrix& m)
@@ -46,7 +28,7 @@ CMatrix CMatrix::operator=(double d)
 	return *this;
 }
 
-CMatrix CMatrix::operator=(const std::string s)
+CMatrix CMatrix::operator=(const char* s)
 {
 	CopyMatrix(s);
 	return *this;
@@ -58,10 +40,7 @@ CMatrix::CMatrix()
 	values = 0;
 }
 
-CMatrix::~CMatrix()
-{
-	reset();
-}
+CMatrix::~CMatrix() { reset(); }
 
 CMatrix::CMatrix(size_t nRows, size_t nColumns, int initialization,
 		 double initializationValue)
@@ -100,7 +79,7 @@ CMatrix::CMatrix(size_t nRows, size_t nColumns, double first, ...)
 	this->nRows = nRows;
 	this->nColumns = nColumns;
 	if ((nRows * nColumns) == 0) {
-		values = NULL;
+		values = 0;
 		return;
 	}
 
@@ -141,7 +120,7 @@ void CMatrix::addRow(const CMatrix& m)
 CMatrix CMatrix::getInverse() const
 {
 	double det = getDeterminant();
-	if (det == 0 || fabs(det) < 1e-15)
+	if (det == 0 || fabs(det) < 1e-5)
 		throw std::invalid_argument
 		    ("Inverting a noninvertible martix in CMatrix::getInverse()");
 	det = 1.0 / det;
@@ -151,8 +130,7 @@ CMatrix CMatrix::getInverse() const
 			int sign = (((i + j) % 2 == 0) ? 1 : -1);
 			r(j,i) = sign * getCofactor(i,j).getDeterminant();
 		}
-	r *= det;
-	return r;
+	return mul(r, det);
 }
 
 void CMatrix::setSubMatrix(size_t r, size_t c, const CMatrix& m)
@@ -209,12 +187,13 @@ double CMatrix::getDeterminant() const
 	return value;
 }
 
-void CMatrix::getTranspose(CMatrix& r) const
+CMatrix CMatrix::getTranspose() const
 {
-	r = CMatrix(nColumns, nRows);
+	CMatrix r(nColumns, nRows);
 	for (size_t i = 0; i < nRows; ++i)
 		for (size_t j = 0; j < nColumns; ++j)
 			r(j, i) = (*this)(i, j);
+	return r;
 }
 
 std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
@@ -222,7 +201,7 @@ std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 	std::string s;
 	std::getline(is, s, ']');
 	s += "]";
-	CMatrix readMatrix(s);
+	CMatrix readMatrix(s.c_str());
 	m = readMatrix;
 	return is;
 }
@@ -230,7 +209,6 @@ std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 
 std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 {
-	//os << m.getString();
 	for (size_t i = 0; i < m.getnRows(); ++i) {
 		for (size_t j = 0; j < m.getnColumns(); ++j) {
 			os << m(i,j);
@@ -242,32 +220,23 @@ std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 	return os;
 }
 
-size_t CMatrix::getnColumns() const
-{
-	return this->nColumns;
-}
+size_t CMatrix::getnColumns() const { return nColumns; }
 
-size_t CMatrix::getnRows() const
-{
-	return this->nRows;
-}
+size_t CMatrix::getnRows() const { return nRows; }
 
-size_t CMatrix::getn() const
-{
-	return (this->nColumns) * (this->nRows);
-}
+size_t CMatrix::getn() const { return nColumns * nRows; }
 
-CMatrix::CMatrix(std::string s)   //need to be edited
+CMatrix::CMatrix(const char* s)   //need to be edited
 {
 	nRows = nColumns = 0;
-	values = NULL;
+	values = 0;
 	CopyMatrix(s);
 }
 
 CMatrix::CMatrix(double d)
 {
 	nRows = nColumns = 0;
-	values = NULL;
+	values = 0;
 	CopyMatrix(d);
 }
 
@@ -286,12 +255,10 @@ void CMatrix::CopyMatrix(const CMatrix& m)
 }
 
 
-void CMatrix::CopyMatrix(std::string s)   //need to be edited
+void CMatrix::CopyMatrix(const char* s)   //need to be edited
 {
 	reset();
-
-	char* buffer = new char[s.length() + 1];
-	strcpy(buffer, s.c_str());
+	char* buffer = strdup(s);
 	char* lineContext;
 	const char* lineSeparators = ";\r\n";
 	char* line = strtok_r(buffer, lineSeparators, &lineContext);
@@ -303,12 +270,12 @@ void CMatrix::CopyMatrix(std::string s)   //need to be edited
 		while (token) {
 			CMatrix item(atof(token));
 			row.addColumn(item);
-			token = strtok_r(NULL, separators, &context);
+			token = strtok_r(0, separators, &context);
 		}
 		if (row.nColumns > 0
 		    && (row.nColumns == nColumns || nRows == 0))
 			addRow(row);
-		line = strtok_r(NULL, lineSeparators, &lineContext);
+		line = strtok_r(0, lineSeparators, &lineContext);
 	}
 	delete[] buffer;
 }
@@ -322,36 +289,23 @@ void CMatrix::CopyMatrix(double d)
 	(*this)(0) = d;
 }
 
-// accessing and boolean operators: [], (), ==, !=
 double& CMatrix::operator[](size_t i)
-{
-	return values[i];
-}
+{ return values[i]; }
 
 double CMatrix::operator[](size_t i) const
-{
-	return values[i];
-}
+{ return values[i]; }
 
 double CMatrix::operator()(size_t i) const
-{
-	return values[i];
-}
+{ return values[i]; }
 
 double& CMatrix::operator()(size_t i)
-{
-	return values[i];
-}
+{ return values[i]; }
 
 double CMatrix::operator()(size_t i, size_t j) const
-{
-	return values[j + i * nColumns];
-}
+{ return values[j + i * nColumns]; }
 
 double& CMatrix::operator()(size_t i, size_t j)
-{
-	return values[j + i * nColumns];
-}
+{ return values[j + i * nColumns]; }
 
 bool operator==(const CMatrix& a, const CMatrix& b)
 {
@@ -360,112 +314,81 @@ bool operator==(const CMatrix& a, const CMatrix& b)
 	if (a.getnColumns() != b.getnColumns())
 		return false;
 	for (size_t i = 0; i < a.getnRows() * a.getnColumns(); ++i)
-		if (a[i] != b[i])
+		if (fabs(a[i] - b[i]) > 1e-5)
 			return false;
 	return true;
 }
 
 bool operator!=(const CMatrix& a, const CMatrix& b)
-{
-	return !(a == b);
-}
+{ return !(a == b); }
 
 // arithmatic functions and operators:
 // first, the unique functions: mul, div
-CMatrix& CMatrix::mul(const CMatrix& m)
+CMatrix mul(const CMatrix& a, const CMatrix& b)
 {
-	if (nColumns != m.nRows)
+	if (a.getnColumns() != b.getnRows())
 		throw std::invalid_argument
 		    ("Invalid matrix dimensions in CMatrix::mul()");
-	CMatrix r(nRows, m.nColumns);
-	for (size_t i = 0; i < r.nRows; ++i)
-		for (size_t j = 0; j < r.nColumns; ++j) {
-			r(i, j) = 0.0;
-			for (size_t k = 0; k < nColumns; k++)
-				r(i, j) += (*this)(i, k) * m(k, j);
-		}
-	CopyMatrix(r);
-	return *this;
+	CMatrix r(a.getnRows(), b.getnColumns(), CMatrix::MI_ZEROS);
+	for (size_t i = 0; i < r.getnRows(); ++i)
+		for (size_t j = 0; j < r.getnColumns(); ++j)
+			for (size_t k = 0; k < a.getnColumns(); k++)
+				r(i, j) += a(i, k) * b(k, j);
+	return r;
 }
 
-CMatrix& CMatrix::div(const CMatrix& m)
-{
-	CMatrix denom(m.getInverse());
-	mul(denom);
-	return *this;
+CMatrix mul(const CMatrix& a, double b) { return amul(a, b); }
+CMatrix mul(double a, const CMatrix& b) { return amul(a, b); }
+CMatrix mul(double a, double b)         { return amul(a, b); }
+
+CMatrix div(const CMatrix& a, const CMatrix& b)
+{ return mul(a, b.getInverse()); }
+
+CMatrix div(double a, const CMatrix& b)
+{ return mul(a, b.getInverse()); }
+
+CMatrix div(const CMatrix& a, double b) { return adiv(a, b); }
+CMatrix div(double a, double b)         { return adiv(a, b); }
+
+#define elementwise_fn(name, op)			\
+CMatrix name(const CMatrix& a, const CMatrix& b)	\
+{							\
+	if (a.getnRows() != b.getnRows()		\
+	    || a.getnColumns() != b.getnColumns())	\
+		throw std::invalid_argument		\
+		    ("Invalid matrix dimensions"	\
+		     " in " #name "()");		\
+	CMatrix r(a.getnRows(), a.getnColumns());	\
+	for (size_t i = 0; i < a.getn(); i++)		\
+		r(i) = a(i) op b(i);			\
+	return r;					\
+}							\
+CMatrix name(const CMatrix& a, double b)		\
+{							\
+	CMatrix r(a.getnRows(), a.getnColumns());	\
+	for (size_t i = 0; i < a.getn(); i++)		\
+		r(i) = a(i) op b;			\
+	return r;					\
+}							\
+CMatrix name(double a, const CMatrix& b)		\
+{							\
+	CMatrix r(b.getnRows(), b.getnColumns());	\
+	for (size_t i = 0; i < b.getn(); i++)		\
+		r(i) = a op b(i);			\
+	return r;					\
+}                                                       \
+CMatrix name(double a, double b)                        \
+{                                                       \
+    CMatrix r(1,1);                                     \
+    r(0) = a op b;                                      \
+    return r;                                           \
 }
 
-// second, the element-wise functions: add, sub, amul, adiv
-#define elementwise_fn(name, op)                         \
-CMatrix& CMatrix::name(const CMatrix& m)                 \
-{                                                        \
-	if (nRows != m.nRows || nColumns != m.nColumns)  \
-		throw std::invalid_argument              \
-		    ("Invalid matrix dimensions"         \
-		     " in CMatrix::" #name "()");        \
-	for (size_t i = 0; i < nRows * nColumns; ++i)    \
-		(*this)[i] op m[i];                      \
-	return *this;                                    \
-}
-elementwise_fn(add,  +=);
-elementwise_fn(sub,  -=);
-elementwise_fn(amul, *=);
-elementwise_fn(adiv, /=);
+elementwise_fn(add,  +);
+elementwise_fn(sub,  -);
+elementwise_fn(amul, *);
+elementwise_fn(adiv, /);
+
 #undef elementwise_fn
 
-// third, the operators +=, -=, *=, /=
-// with (CMatrix, CMatrix) and with (CMatrix, double)
-#define def_op_eq(op, fn)                                \
-CMatrix CMatrix::operator op(const CMatrix& m)           \
-{                                                        \
-	return fn(m);                                    \
-}                                                        \
-CMatrix CMatrix::operator op(double d)                   \
-{                                                        \
-	for (size_t i = 0; i < nRows * nColumns; ++i)    \
-		(*this)[i] op d;                         \
-	return *this;                                    \
-}
-def_op_eq(+=, add);
-def_op_eq(-=, sub);
-def_op_eq(*=, mul);
-def_op_eq(/=, div);
-#undef def_op_eq
-
-// fourth, defining all the remaining operators (+,-,*,/)
-// with (CMatrix,CMatrix), (CMatrix,double), (double,CMatrix)
-#define defop(op, A, B, c, statements)                    \
-CMatrix operator op(A,B)                                  \
-{                                                         \
-	CMatrix r(c);  statements;  return r;             \
-}
-defop(+, const CMatrix& a, const CMatrix& b, a,              r += b);
-defop(+, const CMatrix& a, double b,         a,              r += b);
-defop(+, double a,         const CMatrix& b, b,              r += a);
-
-defop(-, const CMatrix& a, const CMatrix& b, a,              r -= b);
-defop(-, const CMatrix& a, double b,         a,              r -= b);
-defop(-, double a,         const CMatrix& b, b,              r -= a; r *= -1);
-
-defop(*, const CMatrix& a, const CMatrix& b, a,              r *= b);
-defop(*, const CMatrix& a, double b,         a,              r *= b);
-defop(*, double a,         const CMatrix& b, b,              r *= a);
-
-defop(/, const CMatrix& a, const CMatrix& b, a,              r /= b);
-defop(/, const CMatrix& a, double b,         a,              r /= b);
-defop(/, double a,         const CMatrix& b, b.getInverse(), r *= a);
-#undef defop
-
-// finally, the unary sign operators
-CMatrix CMatrix::operator-() const
-{
-	CMatrix result = *this;
-	for (size_t i = 0; i < nRows * nColumns; ++i)
-		result(i) = -(*this)(i);
-	return result;
-}
-
-CMatrix CMatrix::operator+() const
-{
-	return *this;
-}
+}; // namespace asu
