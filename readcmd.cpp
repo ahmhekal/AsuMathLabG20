@@ -14,7 +14,8 @@ using namespace asu;
  *   to be used in the command prompt/files.
  * they are A..Z case-insensitive.
  **/
-static CMatrix & get(char name) {
+static CMatrix& get(char name)
+{
 	static CMatrix vars[52];
 	if (name < 'A' || name > 'z' || (name < 'a' && name > 'Z'))
 		throw std::invalid_argument("Impossible variable name");
@@ -23,8 +24,8 @@ static CMatrix & get(char name) {
 	return vars[ord];
 }
 
-static void readoperand(std::istream& is, double &operand_double,
-		                          char &operand_char)
+static void readoperand(std::istream& is, double& operand_double,
+		                          char& operand_char)
 {
 	is >> operand_double;
 	if (!is) {  // if failed; it's a char
@@ -96,16 +97,8 @@ static CMatrix readexpr(std::istream& is,
 *   the third form is a matrix unary opertion using a postfix
 *     operator.
 **/
-void readCmd(std::istream & orig_is) {
-	std::string input;
-	std::getline(orig_is, input);
-	if (input.size() == 0)
-		return;
-	if (input[input.size() - 1] == '\r')
-		input.resize(input.size() - 1);	// if windows line ending is used
-	if (input.size() == 0)
-		return;
-	std::istringstream is(input);
+void readCmd(std::istream& is, std::ostream& os)
+{
 	char leftvar;
 	is >> leftvar;
 	char eqsign;
@@ -127,10 +120,19 @@ void readCmd(std::istream & orig_is) {
 			    readexpr(is, NAN, whatnext_c);
 		}
 	}
-
-	// if the last char is not no semicolon, print the value
-	if (input[input.size() - 1] != ';')
-		std::cout << get(leftvar);
+        // if a line ends in ';', don't print the result
+	if (!is.eof()) {
+		char ending;
+		is.get(ending);
+		if (ending == ';') {
+			return;
+		} else {
+			is.putback(ending);
+			os << get(leftvar);
+		}
+	} else {
+		os << get(leftvar);
+	}
 }
 
 };  // namespace ReadCmd

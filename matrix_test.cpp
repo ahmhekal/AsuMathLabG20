@@ -2,7 +2,7 @@
 using namespace asu;
 int main()
 {
-    std::cout << "If all are ones, without any zero, then all test pass.\n";
+    std::cout << "If all are ones, without any zero, then all tests pass.\n";
     {
         CMatrix a("[8.9 7.3 4.8 2.4; "
                    "2.3 6.5 8.9 1.2; "
@@ -58,7 +58,7 @@ int main()
                   << (f==fe)
                   << (g==ge)
                   << (h==he)
-                  << "\n";
+                  << '\n';
     }{
         CMatrix a("[1.4 2.2 3.2;"
                    "4.4 5.4 6.4;"
@@ -99,6 +99,6 @@ int main()
                   << (e==ee)
                   << (f==fe)
                   << (g==ge)
-                  << "\n";
+                  << '\n';
     }
 }
