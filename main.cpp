@@ -1,5 +1,5 @@
-#include "matrix.h"
 #include "readcmd.h"
+#include <fstream>
 
 int main(int argc, char** argv)
 {
@@ -15,8 +15,11 @@ int main(int argc, char** argv)
 			mfile.close();
 		}
 	} else { // interactive prompt
-		while (!cin.eof())
-			ReadCmd::readCmd(cin);
+		while (!std::cin.eof())
+			ReadCmd::readCmd(std::cin);
 	}
+
 }
 
+
+}

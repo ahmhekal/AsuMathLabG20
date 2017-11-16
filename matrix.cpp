@@ -1,406 +1,283 @@
 #include "matrix.h"
 #include <cstdlib>	// atof, rand
-#include <ctime>	// time, for seeding rand
-#include <cstring>	// strtok_r
+#include <string>	// string
+#include <stdexcept>	// invalid_argument and other exceptions
+#include <cstdarg>	// va_list, etc
+#include <string.h>	// strcpy, strtok_r
+#include <math.h>	// NAN, isnan
 
-//**************************************Branch [ahmhekal]**************************************//
-
-CMatrix CMatrix::operator++()
-{
-	CMatrix addend(nR, nC, MI_VALUE, 1.0);
-	add(addend);
-	return *this;
-}
-
-CMatrix CMatrix::operator++(int)
-{
-	CMatrix C = *this;
-	CMatrix addend(nR, nC, MI_VALUE, 1.0);
-	add(addend);
-	return C;
-}
-
-CMatrix CMatrix::operator--()
-{
-	CMatrix addend(nR, nC, MI_VALUE, -1.0);
-	add(addend);
-	return *this;
-}
-
-CMatrix CMatrix::operator--(int)
-{
-	CMatrix r = *this;
-	CMatrix addend(nR, nC, MI_VALUE, -1.0);
-	add(addend);
-	return r;
-}
-
-CMatrix CMatrix::operator-()
-{
-	CMatrix result = *this;
-	for (int iR = 0; iR < nR; iR++)
-		for (int iC = 0; iC < nC; iC++)
-			result.values[iR][iC] = -values[iR][iC];
-	return result;
-}
-
-CMatrix CMatrix::operator+()
-{
-	return *this;
-}
-
-
-
-//**************************************Branch [abdozizo111]**************************************//
+namespace asu {
 
 void CMatrix::reset()
 {
 	if (values)
-	{
-		for(int i=0;i<nR;i++)
-			delete[] values[i];
 		delete[] values;
-	}
-	nR=nC=0;
-	values=NULL;
+	nRows = nColumns = 0;
+	values = 0;
 }
-string CMatrix::getString()
-{
-	string s;
-	for(int iR=0;iR<nR;iR++)
-	{
-		for(int iC=0;iC<nC;iC++)
-		{
-			//char buffer[50];
-			//sprintf_s(buffer,50,"%g\t",values[iR][iC]);
-			if(values[iR][iC]==0 || fabs(values[iR][iC])<1e-15)cout<<"0"<<" ";
-			else {cout<<values[iR][iC]<<" ";}
-		}
-		//s+="\n";
-		cout<<endl;
-	}
-	return s;
-}
-CMatrix CMatrix::operator =(const CMatrix& m)
+
+CMatrix CMatrix::operator=(const CMatrix& m)
 {
 	CopyMatrix(m);
 	return *this;
 }
+
 CMatrix CMatrix::operator=(double d)
 {
 	CopyMatrix(d);
 	return *this;
 }
 
-CMatrix CMatrix::operator=(const string s)
+CMatrix CMatrix::operator=(const char* s)
 {
 	CopyMatrix(s);
 	return *this;
 }
 
-//************************************** ABDO0000 **************************************//
-void CMatrix::add(CMatrix& m)
-{
-	if(nR!=m.nR||nC!=m.nC)
-		throw("Invalid matrix dimension");
-	for(int iR=0;iR<nR;iR++)
-		for(int iC=0;iC<nC;iC++)
-			values[iR][iC] += m.values[iR][iC];
-}
-void CMatrix::operator+=(CMatrix& m)
-{
-	add(m);
-}
-void CMatrix::operator+=(double d)
-{
-	CMatrix addend(nR, nC, MI_VALUE, d);
-	add(addend);
-}
-CMatrix CMatrix::operator+(CMatrix& m)
-{
-	CMatrix r = *this;
-	r+=m;
-	return r;
-}
-CMatrix CMatrix::operator+(double d)
-{
-	CMatrix r = *this;
-	r+=d;
-	return r;
-}
-
-//**************************************Branch [Abduu13]**************************************//
 CMatrix::CMatrix()
 {
-	nR = nC = 0;
-	values = NULL;
+	nRows = nColumns = 0;
+	values = 0;
 }
 
-CMatrix::~CMatrix()
-{
-	reset();
-}
+CMatrix::~CMatrix() { reset(); }
 
-CMatrix::CMatrix(int nR, int nC, int initialization, double initializationValue)
+CMatrix::CMatrix(size_t nRows, size_t nColumns, int initialization,
+		 double initializationValue)
 {
-	this->nR = nR;
-	this->nC = nC;
-	if((nR*nC)==0){values = NULL; return;}
+	this->nRows = nRows;
+	this->nColumns = nColumns;
+	if ((nRows * nColumns) == 0) {
+		values = 0;
+		return;
+	}
 
-	values = new double*[nR];
-	for(int iR = 0;iR<nR;iR++)
-	{
-		values[iR] = new double[nC];
-		for(int iC = 0;iC<nC;iC++)
-		{
-			switch(initialization)
-			{
-			case MI_ZEROS:values[iR][iC] = 0;break;
-			case MI_ONES :values[iR][iC] = 1;break;
-			case MI_EYE  :values[iR][iC] = (iR==iC)?1:0; break;
-			case MI_RAND :values[iR][iC] = (rand()%1000000)/1000000.0; break;
-			case MI_VALUE: values[iR][iC] = initializationValue; break;
-			}
+	values = new double[nRows * nColumns];
+	for (size_t i = 0; i < nRows * nColumns; ++i) {
+		switch (initialization) {
+		case MI_ZEROS:
+			(*this)(i) = 0;
+			break;
+		case MI_VALUE:
+			(*this)(i) = initializationValue;
+			break;
+		case MI_ONES:
+			(*this)(i) = 1;
+			break;
+		case MI_EYE:
+			(*this)(i) = (i/nColumns == i%nColumns)? 1 : 0;
+			break;
+		case MI_RAND:
+			(*this)(i) = (rand() % 1000000) / 1000000.0;
+			break;
 		}
-
 	}
 }
 
-CMatrix::CMatrix(int nR, int nC, double first, ...)
+CMatrix::CMatrix(size_t nRows, size_t nColumns, double first, ...)
 {
-	this->nR= nR;
-	this->nC= nC;
-	if((nR*nC)==0){values = NULL; return;}
+	this->nRows = nRows;
+	this->nColumns = nColumns;
+	if ((nRows * nColumns) == 0) {
+		values = 0;
+		return;
+	}
 
-	values = new double*[nR];
+	values = new double[nRows * nColumns];
 	va_list va;
 	va_start(va, first);
-	for(int iR=0;iR<nR;iR++)
-	{
-		values[iR] = new double[nC];
-		for(int iC=0;iC<nC;iC++)
-		{
-			values[iR][iC] = (iR==0&&iC==0)?first:va_arg(va, double);
-		}
+	for (size_t i = 0; i < nRows * nColumns; ++i) {
+		(*this)(i) = (i == 0)
+			     ? first
+			     : va_arg(va, double);
 	}
 	va_end(va);
 }
 
-CMatrix::CMatrix(CMatrix& m)
+CMatrix::CMatrix(const CMatrix& m)
 {
-	nR = nC = 0;
-	values = NULL;
+	nRows = nColumns = 0;
+	values = 0;
 	CopyMatrix(m);
 }
 
-//**************************************Branch [AbdallahReda]**************************************//
-void CMatrix::addColumn(CMatrix& m)
+void CMatrix::addColumn(const CMatrix& m)
 {
-	CMatrix n(max(nR, m.nR), nC+m.nC);
+	CMatrix n(std::max(nRows, m.nRows), nColumns + m.nColumns);
 	n.setSubMatrix(0, 0, *this);
-	n.setSubMatrix(0, nC, m);
-	*this = n;
-}
-void CMatrix::addRow(CMatrix& m)
-{
-	CMatrix n(nR+m.nR, max(nC, m.nC));
-	n.setSubMatrix(0, 0, *this);
-	n.setSubMatrix(nR, 0, m);
+	n.setSubMatrix(0, nColumns, m);
 	*this = n;
 }
 
-void CMatrix::getInverse(CMatrix& t)
+void CMatrix::addRow(const CMatrix& m)
 {
-	double det = getDeterminant();
-	if (det == 0 || fabs(det) < 1e-15)
-		throw std::runtime_error("Inverting a noninvertible martix");
-	det = 1.0 / det; 
-	CMatrix r(nR, nR);
-	for (int i = 0; i < nR; ++i)
-		for (int j = 0; j < nR; ++j)
-			r.values[j][i] = getCofactor(i,j).getDeterminant() * (((i+j)%2==0)?1:-1);
-	r *= det;
-	t = r;
+	CMatrix n(nRows + m.nRows, std::max(nColumns, m.nColumns));
+	n.setSubMatrix(0, 0, *this);
+	n.setSubMatrix(nRows, 0, m);
+	*this = n;
 }
 
-CMatrix CMatrix::div(CMatrix& m)
+CMatrix CMatrix::getInverse() const
 {
-    CMatrix d(m);
-    CMatrix This= *this;
-    m.getInverse(d);
-    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
-   // r.CopyMatrix(*this*d);
-    This.mul(d);
-	return This;
-}
-CMatrix CMatrix::operator/(CMatrix& m)
-{
-    CMatrix d(m);
-    CMatrix This= *this;
-    m.getInverse(d);
-    //CMatrix rd.getnR(),d.getnC(),CMatrix::MI_ZEROS);
-   // r.CopyMatrix(*this*d);
-    This.mul(d);
-	return This;
-
-    }
-
-CMatrix CMatrix::operator/(double d)
-{
-	if (d == 0 || fabs(d) < 1e-15)
-	    throw std::runtime_error("Division by zero");
-	CMatrix result = *this;
-	for (int i = 0; i < nR; ++i)
-		for (int j = 0; j < nC; ++j)
-			result.values[i][j] /= d;
-	return result;
+    CMatrix m=(*this);
+	double det = m.lu_det();
+	if (det == 0 || fabs(det) < 1e-5)
+		throw std::invalid_argument
+		    ("Inverting a noninvertible martix in CMatrix::getInverse()");
+	det = 1.0 / det;
+	CMatrix r(nRows, nRows);
+	for (size_t i = 0; i < nRows; ++i)
+		for (size_t j = 0; j < nRows; ++j) {
+			int sign = (((i + j) % 2 == 0) ? 1 : -1);
+			r(j,i) = sign * getCofactor(i,j).lu_det();
+		}
+	return mul(r, det);
 }
 
-//**************************************Branch [diaa]**************************************//
 
-void CMatrix::setSubMatrix(int r, int c, CMatrix& m)
+void CMatrix::setSubMatrix(size_t r, size_t c, const CMatrix& m)
 {
-	if((r+m.nR)>nR || (c+m.nC)>nC)throw("Invalid matrix dimension");
-	for(int iR=0;iR<m.nR;iR++)
-		for(int iC=0;iC<m.nC;iC++)
-			values[r+iR][c+iC] = m.values[iR][iC];
+	if ((r + m.nRows) > nRows || (c + m.nColumns) > nColumns)
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::setSubMatrix()");
+	for (size_t i = 0; i < m.nRows; ++i)
+		for (size_t j = 0; j < m.nColumns; ++j)
+			(*this)(r + i, c + j) = m(i, j);
+
 }
-CMatrix CMatrix::getSubMatrix(int r, int c, int nr, int nc)
+
+CMatrix CMatrix::getSubMatrix(size_t r, size_t c, size_t nr, size_t nc) const
 {
-	if((r+nr)>nR || (c+nc)>nC)throw("Invalid matrix dimension");
+	if ((r + nr) > nRows || (c + nc) > nColumns)
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::getSubMatrix()");
 	CMatrix m(nr, nc);
-	for(int iR=0;iR<m.nR;iR++)
-		for(int iC=0;iC<m.nC;iC++)
-			m.values[iR][iC] = values[r+iR][c+iC];
+	for (size_t i = 0; i < m.nRows; ++i)
+		for (size_t j = 0; j < m.nColumns; ++j)
+			m(i, j) = (*this)(r + i, c + j);
 	return m;
 }
-CMatrix CMatrix::getCofactor(int r, int c)
+
+CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 {
-	if (nR <= 1 && nC <= 1)throw("Invalid matrix dimension");
-	CMatrix m(nR - 1, nC - 1);
-	for (int iR = 0; iR<m.nR; iR++)
-		for (int iC = 0; iC<m.nC; iC++)
-		{
-			int sR = (iR<r) ? iR : iR + 1;
-			int sC = (iC<c) ? iC : iC + 1;
-			m.values[iR][iC] = values[sR][sC];
+	if (nRows <= 1 && nColumns <= 1)  // wat?! shouldn't be `||`?
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::getCofactor()");
+	CMatrix m(nRows - 1, nColumns - 1);
+	for (size_t i = 0; i < m.nRows; ++i)
+		for (size_t j = 0; j < m.nColumns; ++j) {
+			size_t sR = (i < r) ? i : i + 1;
+			size_t sC = (j < c) ? j : j + 1;
+			m(i, j) = (*this)(sR, sC);
 		}
 	return m;
 }
-double CMatrix::getDeterminant()
+
+double CMatrix::getDeterminant() const
 {
-	if (nR != nC)throw("Invalid matrix dimension");
-	if (nR == 1 && nC == 1)return values[0][0];
+	if (nRows != nColumns)
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::getDeterminant()");
+	if (nRows == 1 && nColumns == 1)
+		return (*this)(0, 0);
 	double value = 0.0, m = 1.0;
-	for (int iR = 0; iR<nR; iR++)
-	{
-		value += m * values[0][iR] * getCofactor(0, iR).getDeterminant();
+	for (size_t i = 0; i < nRows; ++i) {
+		double minor = getCofactor(0, i).getDeterminant();
+		value += m * (*this)(0, i) * minor;
 		m *= -1.0;
 	}
 	return value;
 }
 
-void CMatrix::getTranspose(CMatrix& r)
+CMatrix CMatrix::getTranspose() const
 {
-    r = CMatrix(nC, nR);
-	for (int i = 0; i < nR; ++i)
-		for (int j = 0; j < nC; ++j)
-			r.values[j][i] = values[i][j];
+	CMatrix r(nColumns, nRows);
+	for (size_t i = 0; i < nRows; ++i)
+		for (size_t j = 0; j < nColumns; ++j)
+			r(j, i) = (*this)(i, j);
+	return r;
 }
 
-//**************************************Branch [Aladdin95]**************************************//
-
-istream& operator >> (istream &is, CMatrix& m)   //need to be edited
+std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 {
-	string s;
-	getline(is, s, ']');
-	s+="]";
-	CMatrix readMatrix(s);
+	std::string s;
+	std::getline(is, s, ']');
+	s += "]";
+	CMatrix readMatrix(s.c_str());
 	m = readMatrix;
 	return is;
 }
 
 
-ostream& operator << (ostream &os, CMatrix& m)
+std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 {
-	os<<m.getString();
+	for (size_t i = 0; i < m.getnRows(); ++i) {
+		for (size_t j = 0; j < m.getnColumns(); ++j) {
+			os << m(i,j);
+			if (j != m.getnColumns() - 1)
+				os << "\t";
+		}
+		os << "\n";
+	}
 	return os;
 }
 
-int CMatrix::getnC() const
+size_t CMatrix::getnColumns() const { return nColumns; }
+
+size_t CMatrix::getnRows() const { return nRows; }
+
+size_t CMatrix::getn() const { return nColumns * nRows; }
+
+CMatrix::CMatrix(const char* s)   //need to be edited
 {
-	return this->nC;
-}
-
-int CMatrix::getnR() const
-{
-	return this->nR;
-}
-
-int CMatrix::getn() const
-{
-	return (this->nC)*(this->nR);
-}
-
-//**************************************Branch [omarashraf10]**************************************//
-
-
-CMatrix::CMatrix(string s)   //need to be edited
-{
-	nR = nC = 0;
-	values = NULL;
+	nRows = nColumns = 0;
+	values = 0;
 	CopyMatrix(s);
 }
 
 CMatrix::CMatrix(double d)
 {
-	nR = nC = 0;
-	values = NULL;
+	nRows = nColumns = 0;
+	values = 0;
 	CopyMatrix(d);
 }
 
 void CMatrix::CopyMatrix(const CMatrix& m)
 {
 	reset();
-	this->nR = m.nR;
-	this->nC = m.nC;
-	if((nR*nC)==0){values=NULL; return;}
-	values = new double*[nR];
-	for(int iR=0;iR<nR;iR++)
-	{
-		values[iR] = new double[nC];
-		for(int iC=0;iC<nC;iC++)
-		{
-			values[iR][iC] = m.values[iR][iC];
-		}
+	this->nRows = m.nRows;
+	this->nColumns = m.nColumns;
+	if ((nRows * nColumns) == 0) {
+		values = 0;
+		return;
 	}
+	values = new double[nRows * nColumns];
+	for (size_t i = 0; i < nRows * nColumns; ++i)
+		(*this)(i) = m(i);
 }
 
 
-void CMatrix::CopyMatrix(string s)   //need to be edited
+void CMatrix::CopyMatrix(const char* s)   //need to be edited
 {
 	reset();
-
-	char* buffer = new char[s.length()+1];
-	strcpy(buffer, s.c_str());
+	char* buffer = strdup(s);
 	char* lineContext;
 	const char* lineSeparators = ";\r\n";
 	char* line = strtok_r(buffer, lineSeparators, &lineContext);
-	while(line)
-	{
+	while (line) {
 		CMatrix row;
 		char* context;
 		const char* separators = " []";
 		char* token = strtok_r(line, separators, &context);
-		while(token)
-		{
+		while (token) {
 			CMatrix item(atof(token));
 			row.addColumn(item);
-			token = strtok_r(NULL, separators, &context);
+			token = strtok_r(0, separators, &context);
 		}
-		if(row.nC>0 && (row.nC==nC || nR==0))
+		if (row.nColumns > 0
+		    && (row.nColumns == nColumns || nRows == 0))
 			addRow(row);
-		line = strtok_r(NULL, lineSeparators, &lineContext);
+		line = strtok_r(0, lineSeparators, &lineContext);
 	}
 	delete[] buffer;
 }
@@ -408,121 +285,171 @@ void CMatrix::CopyMatrix(string s)   //need to be edited
 void CMatrix::CopyMatrix(double d)
 {
 	reset();
-	this->nR = 1;
-	this->nC = 1;
-	values = new double*[1];
-	values[0] = new double[1];
-	values[0][0] = d;
+	this->nRows = 1;
+	this->nColumns = 1;
+	values = new double[1];
+	(*this)(0) = d;
 }
 
+double& CMatrix::operator[](size_t i)
+{ return values[i]; }
 
-//**************************************Branch [noureddin]**************************************//
+double CMatrix::operator[](size_t i) const
+{ return values[i]; }
 
-void CMatrix::mul(CMatrix& m)
-{
-	if(nC != m.nR)
-		throw("Invalid matrix dimension");
-	CMatrix r(nR, m.nC);
-	for(int iR=0;iR<r.nR;iR++)
-		for(int iC=0;iC<r.nC;iC++)
-		{
-			r.values[iR][iC] = 0.0;
-			for(int k=0;k<nC;k++)
-				r.values[iR][iC] += values[iR][k]*m.values[k][iC];
-		}
-        CopyMatrix(r);
-}
-void CMatrix::operator*=(CMatrix& m)
-{
-	mul(m);
-}
-void CMatrix::operator*=(double d)
-{
-	for(int iR=0;iR<nR;iR++)
-		for(int iC=0;iC<nC;iC++)
-			values[iR][iC] *= d;
-}
-CMatrix CMatrix::operator*(CMatrix& m)
-{
-	CMatrix r = *this;
-	r*=m;
-	return r;
-}
-CMatrix CMatrix::operator*(double d)
-{
-	CMatrix r = *this;
-	r*=d;
-	return r;
-}
-//**************************************Branch [mafouadm]**************************************//
+double CMatrix::operator()(size_t i) const
+{ return values[i]; }
 
+double& CMatrix::operator()(size_t i)
+{ return values[i]; }
 
-void CMatrix::sub(CMatrix& m)
+double CMatrix::operator()(size_t i, size_t j) const
+{ return values[j + i * nColumns]; }
+
+double& CMatrix::operator()(size_t i, size_t j)
+{ return values[j + i * nColumns]; }
+
+bool operator==(const CMatrix& a, const CMatrix& b)
 {
-	if(nR!=m.nR||nC!=m.nC)
-		throw("Invalid matrix dimension");
-	for(int iR=0;iR<nR;iR++)
-		for(int iC=0;iC<nC;iC++)
-			values[iR][iC] -= m.values[iR][iC];
+	if (a.getnRows() != b.getnRows())
+		return false;
+	if (a.getnColumns() != b.getnColumns())
+		return false;
+	for (size_t i = 0; i < a.getnRows() * a.getnColumns(); ++i)
+		if (fabs(a[i] - b[i]) > 1e-5)
+			return false;
+	return true;
 }
-void CMatrix::operator-=(CMatrix& m)
+
+bool operator!=(const CMatrix& a, const CMatrix& b)
+{ return !(a == b); }
+
+// arithmatic functions and operators:
+// first, the unique functions: mul, div
+CMatrix mul(const CMatrix& a, const CMatrix& b)
 {
-	sub(m);
-}
-void CMatrix::operator-=(double d)
-{
-	CMatrix subtrahend(nR, nC, MI_VALUE, d);
-	sub(subtrahend);
-}
-CMatrix CMatrix::operator-(CMatrix& m)
-{
-	CMatrix r = *this;
-	r-=m;
-	return r;
-}
-CMatrix CMatrix::operator-(double d)
-{
-	CMatrix r = *this;
-	r-=d;
+	if (a.getnColumns() != b.getnRows())
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::mul()");
+	CMatrix r(a.getnRows(), b.getnColumns(), CMatrix::MI_ZEROS);
+	for (size_t i = 0; i < r.getnRows(); ++i)
+		for (size_t j = 0; j < r.getnColumns(); ++j)
+			for (size_t k = 0; k < a.getnColumns(); k++)
+				r(i, j) += a(i, k) * b(k, j);
 	return r;
 }
 
-CMatrix operator+(double d, CMatrix& m)
-{
-	CMatrix result(m);
-	result += d;
-	return result;
-}
-CMatrix operator-(double d, CMatrix& m)
-{
-	CMatrix result(m);
-	result *= -1;
-	result += d;
-	return result;
-}
-CMatrix operator*(double d, CMatrix& m)
-{
-	CMatrix result(m);
-	result *= d;
-	return result;
-}
-CMatrix operator/(double d, CMatrix& m)
-{
-	CMatrix result;
-	m.getInverse(result);
-        result *= d;
-	return result;
+CMatrix mul(const CMatrix& a, double b) { return amul(a, b); }
+CMatrix mul(double a, const CMatrix& b) { return amul(a, b); }
+CMatrix mul(double a, double b)         { return amul(a, b); }
+
+CMatrix div(const CMatrix& a, const CMatrix& b)
+{ return mul(a, b.getInverse()); }
+
+CMatrix div(double a, const CMatrix& b)
+{ return mul(a, b.getInverse()); }
+
+CMatrix div(const CMatrix& a, double b) { return adiv(a, b); }
+CMatrix div(double a, double b)         { return adiv(a, b); }
+
+
+
+double CMatrix:: lu_det(){
+if ( this->nRows!= this->nColumns)
+		throw std::invalid_argument
+		    ("Invalid matrix dimensions in CMatrix::lu_determinant()");
+CMatrix l(this->nRows,this->nColumns);
+CMatrix u(this->nRows,this->nColumns);
+
+
+int i = 0, j = 0, k = 0;
+    for (i = 0; i < this->nRows; i++)
+    {
+        for (j = 0; j < this->nRows; j++)
+        {
+            if (j < i)
+                l(j,i) = 0.0;
+            else
+            {
+                l(j,i) = (*this)(j,i);
+                for (k = 0; k < i; k++)
+                {
+                    l(j,i) = l(j,i) - l(j,k) * u(k,i);
+                }
+            }
+        }
+        for (j = 0; j < this->nRows; j++)
+        {
+            if (j < i)
+                u(i,j) = 0.0;
+            else if (j == i)
+                u(i,j) = 1.0;
+            else
+            {
+                u(i,j)= (*this)(i,j) / l(i,i);
+                for (k = 0; k < i; k++)
+                {
+                    u(i,j) = u(i,j) - ((l(i,k) * u(k,j)) / l(i,i));
+                }
+            }
+        }
+    }
+    double det=1.0;
+
+    for(int n=0;n<this->nRows;n++){
+    det*=l(n,n);
+    }
+    return det;
 }
 
-// element-wise disivison, './'
-CMatrix adiv(const CMatrix& a, const CMatrix& b)
-{
-	if (a.getnR() != b.getnR() || a.getnC() != b.getnC())
-	    throw std::runtime_error("Invalid matrix dimensions");
-	CMatrix r(a.getnR(), a.getnC());
-	for (int i = 0; i < a.getnR(); ++i)
-		for (int j = 0; j < a.getnC(); ++j)
-			r(i,j) = a(i,j) / b(i,j);
-	return r;
+
+
+
+
+
+
+
+
+
+#define elementwise_fn(name, op)			\
+CMatrix name(const CMatrix& a, const CMatrix& b)	\
+{							\
+	if (a.getnRows() != b.getnRows()		\
+	    || a.getnColumns() != b.getnColumns())	\
+		throw std::invalid_argument		\
+		    ("Invalid matrix dimensions"	\
+		     " in " #name "()");		\
+	CMatrix r(a.getnRows(), a.getnColumns());	\
+	for (size_t i = 0; i < a.getn(); i++)		\
+		r(i) = a(i) op b(i);			\
+	return r;					\
+}							\
+CMatrix name(const CMatrix& a, double b)		\
+{							\
+	CMatrix r(a.getnRows(), a.getnColumns());	\
+	for (size_t i = 0; i < a.getn(); i++)		\
+		r(i) = a(i) op b;			\
+	return r;					\
+}							\
+CMatrix name(double a, const CMatrix& b)		\
+{							\
+	CMatrix r(b.getnRows(), b.getnColumns());	\
+	for (size_t i = 0; i < b.getn(); i++)		\
+		r(i) = a op b(i);			\
+	return r;					\
+}                                                       \
+CMatrix name(double a, double b)                        \
+{                                                       \
+    CMatrix r(1,1);                                     \
+    r(0) = a op b;                                      \
+    return r;                                           \
 }
 
+elementwise_fn(add,  +);
+elementwise_fn(sub,  -);
+elementwise_fn(amul, *);
+elementwise_fn(adiv, /);
+
+#undef elementwise_fn
+
+}; // namespace asu
