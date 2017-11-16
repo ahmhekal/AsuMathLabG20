@@ -121,8 +121,9 @@ CMatrix CMatrix::getInverse() const
 {
 	double det = getDeterminant();
 	if (det == 0 || fabs(det) < 1e-5)
-		throw std::invalid_argument
-		    ("Inverting a noninvertible martix in CMatrix::getInverse()");
+            return CMatrix(nRows, nColumns, MI_VALUE, NAN);
+		//throw std::invalid_argument
+		    //("Inverting a noninvertible martix in CMatrix::getInverse()");
 	det = 1.0 / det;
 	CMatrix r(nRows, nRows);
 	for (size_t i = 0; i < nRows; ++i)
