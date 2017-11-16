@@ -216,6 +216,8 @@ double CMatrix::getDeterminant() const
 	if (nRows != nColumns)
 		throw std::invalid_argument
 		    ("Invalid matrix dimensions in CMatrix::getDeterminant()");
+        if (*this == CMatrix())
+            return 0;
 	if (nRows == 1 && nColumns == 1)
 		return (*this)(0, 0);
 	bool negdet;
@@ -225,6 +227,8 @@ double CMatrix::getDeterminant() const
 		return 0;
 	for (size_t k = 0; k < nRows; ++k)
 		det *= lu(k, k);
+	if (isnan(det))
+		return 0;
 	if (negdet)
 		det = -det;
 	return det;
