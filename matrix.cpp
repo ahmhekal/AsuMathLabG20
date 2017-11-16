@@ -171,7 +171,7 @@ CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 	return m;
 }
 
-static CMatrix LUFactorize(const CMatrix& m, bool& negdet)
+static CMatrix LUPFactorize(const CMatrix& m, bool& negdet)
 {
 	if (m.getnRows() != m.getnColumns())
 		throw std::invalid_argument
@@ -220,9 +220,9 @@ double CMatrix::getDeterminant() const
 		return (*this)(0, 0);
 	bool negdet;
 	double det = 1;
-	CMatrix lu = LUFactorize(*this, negdet);
-        if (lu == CMatrix())
-            return 0;
+	CMatrix lu = LUPFactorize(*this, negdet);
+	if (lu == CMatrix())
+		return 0;
 	for (size_t k = 0; k < nRows; ++k)
 		det *= lu(k, k);
 	if (negdet)
