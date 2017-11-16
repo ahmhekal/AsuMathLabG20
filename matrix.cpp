@@ -171,6 +171,46 @@ CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 	return m;
 }
 
+static CMatrix LUFactorize(const CMatrix& m, bool& negdet)
+{
+	if (m.getnRows() != m.getnColumns())
+		throw std::invalid_argument
+		    ("Non-square matrix won't be factorized");
+	size_t n = m.getnRows();
+	// pivoting
+	CMatrix pa = m;
+	negdet = false;
+	for (size_t k = 0; k < n; ++k) {
+		double maxvalue = 0;
+		size_t maxindex = 0;
+		// determine the maxvalue in the col, and its row index
+		for (size_t i = k; i < n; ++i)
+			if (fabs(pa(i, k) > maxvalue)) {
+				maxvalue = pa(i, k);
+				maxindex = i;
+			}
+		if (maxvalue == 0) return CMatrix();  // non-invertible
+		if (maxindex != k) {  // if we need swapping rows
+			negdet = !negdet;
+			for (size_t j = 0; j < n; ++j) {
+				// swap pa(k, j) with pa(maxindex, j)
+				double tmp = pa(k, j);
+				pa(k, j) = pa(maxindex, j);
+				pa(maxindex, j) = tmp;
+			}
+		}
+	}
+	// factorizing: decompose pa as lu
+	for (size_t k = 0; k < n - 1; ++k)
+		for (size_t i = k + 1; i < n; ++i) {
+			double m = pa(i, k)/pa(k, k);
+			pa(i, k) = m;
+			for (size_t j = 0; j < n; ++j)
+				pa(i, j) -= m * pa(k, j);
+		}
+	return pa;
+}
+
 double CMatrix::getDeterminant() const
 {
 	if (nRows != nColumns)
@@ -178,13 +218,16 @@ double CMatrix::getDeterminant() const
 		    ("Invalid matrix dimensions in CMatrix::getDeterminant()");
 	if (nRows == 1 && nColumns == 1)
 		return (*this)(0, 0);
-	double value = 0.0, m = 1.0;
-	for (size_t i = 0; i < nRows; ++i) {
-		double minor = getCofactor(0, i).getDeterminant();
-		value += m * (*this)(0, i) * minor;
-		m *= -1.0;
-	}
-	return value;
+	bool negdet;
+	double det = 1;
+	CMatrix lu = LUFactorize(*this, negdet);
+        if (lu == CMatrix())
+            return 0;
+	for (size_t k = 0; k < nRows; ++k)
+		det *= lu(k, k);
+	if (negdet)
+		det = -det;
+	return det;
 }
 
 CMatrix CMatrix::getTranspose() const
