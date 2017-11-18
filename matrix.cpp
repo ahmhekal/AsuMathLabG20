@@ -379,8 +379,8 @@ CMatrix mul(const CMatrix& a, const CMatrix& b)
 		    ("Invalid matrix dimensions in CMatrix::mul()");
 	CMatrix r(a.getnRows(), b.getnColumns(), CMatrix::MI_ZEROS);
 	for (size_t i = 0; i < r.getnRows(); ++i)
-		for (size_t j = 0; j < r.getnColumns(); ++j)
-			for (size_t k = 0; k < a.getnColumns(); k++)
+		for (size_t k = 0; k < a.getnColumns(); k++)
+			for (size_t j = 0; j < r.getnColumns(); ++j)
 				r(i, j) += a(i, k) * b(k, j);
 	return r;
 }
