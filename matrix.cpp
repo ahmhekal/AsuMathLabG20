@@ -119,6 +119,8 @@ void CMatrix::addRow(const CMatrix& m)
 
 CMatrix CMatrix::getInverse() const
 {
+	if (nRows == 1 && nColumns ==1)
+		return 1/(*this)(0); // 1 over the 1st element
 	double det = getDeterminant();
 	if (det == 0 || fabs(det) < 1e-5)
             return CMatrix(nRows, nColumns, MI_VALUE, NAN);
