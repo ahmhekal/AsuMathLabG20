@@ -10,9 +10,9 @@ using namespace asu;
 /*
  * get() returns a ref a var matrix
  *
- * currently, we can have up to 26 variables
+ * currently, we can have up to 52 variables
  *   to be used in the command prompt/files.
- * they are A..Z case-insensitive.
+ * they are A..Z and a..z case-sensitive.
  **/
 static CMatrix& get(char name)
 {
@@ -24,6 +24,11 @@ static CMatrix& get(char name)
 	return vars[ord];
 }
 
+/*
+ * readoperand() reads the first thing from the stream, whether it's
+ * a number (double) or a char (matrix), and puts it in the suitable var.
+ * If the thing is a char (matrix), it puts NaN in the number.
+ **/
 static void readoperand(std::istream& is, double& operand_double,
 		                          char& operand_char)
 {
@@ -36,9 +41,13 @@ static void readoperand(std::istream& is, double& operand_double,
 }
 
 /*
-* readexpr() reads an expression from an istream and evaluates it,
-*   and returns the result as a CMatrix.
-**/
+ * This macro is used by readexp().
+ * Because we can have a number or a matrix at any side of a binary operator,
+ * we, need to check whether the first operand is a number or a matrix, and
+ * similary for the second operand.
+ * The test is simple: if the “number” is Not-a-Number (NaN), then the operand
+ * is a matrix.
+ **/
 #define RESULT_OF(fn) do {                                                    \
     if (isnan(firstoperand_double))                                           \
         if (isnan(secondoperand_double))                                      \
@@ -52,6 +61,10 @@ static void readoperand(std::istream& is, double& operand_double,
             result = fn(firstoperand_double, secondoperand_double);           \
     } while(0)
 
+/*
+ * readexpr() reads an expression (the part after `=`) from an istream
+ * and evaluates it, and returns the result as a CMatrix.
+ **/
 static CMatrix readexpr(std::istream& is,
 			double firstoperand_double = NAN,
 			char firstoperand_matrix = '0')
@@ -67,10 +80,10 @@ static CMatrix readexpr(std::istream& is,
 		readoperand(is, secondoperand_double, secondoperand_matrix);
 		// if op is './', the element-wise division
 		if (secondoperand_matrix == '/')
-			readoperand(is, secondoperand_double, secondoperand_matrix);
+			readoperand(is, secondoperand_double,
+			                secondoperand_matrix);
 			// for real this time
-		if (!isnan(firstoperand_double)
-		    && !isnan(secondoperand_double))
+		if (!isnan(firstoperand_double) && !isnan(secondoperand_double))
 			result = CMatrix(1, 1);	// we are working with scalers
 		switch (operation) {
 		case '+': RESULT_OF(add);  break;
@@ -85,18 +98,17 @@ static CMatrix readexpr(std::istream& is,
 #undef RESULT_OF
 
 /* 
-* readCmd() reads a cmd from a given istream and executes it.
-*
-* - istream can be cin or an ifstream.
-* - currently the supported cmd formats are:
-*   1. A = [...;...]
-*   2. A = B * C
-*   3. A = B'
-*   the first form is a MATLAB-style matrix definition.
-*   the second form is a matrix binary operation.
-*   the third form is a matrix unary opertion using a postfix
-*     operator.
-**/
+ * readCmd() reads a cmd from a given istream and executes it.
+ *
+ * - istream can be cin or an ifstream.
+ * - currently the supported cmd formats are:
+ *   1. A = [...;...]
+ *   2. A = B * C
+ *   3. A = B'
+ *   the first form is a MATLAB-style matrix definition.
+ *   the second form is a matrix binary operation.
+ *   the third form is a matrix unary opertion using a postfix operator.
+ **/
 void readCmd(std::istream& is, std::ostream& os)
 {
 	char leftvar;
@@ -116,8 +128,7 @@ void readCmd(std::istream& is, std::ostream& os)
 		if (whatnext_c == '[') {  // the first form, matrix def
 			is >> get(leftvar);
 		} else {
-			get(leftvar) =
-			    readexpr(is, NAN, whatnext_c);
+			get(leftvar) = readexpr(is, NAN, whatnext_c);
 		}
 	}
         // if a line ends in ';', don't print the result

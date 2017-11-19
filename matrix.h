@@ -6,7 +6,7 @@ namespace asu {
 class CMatrix {
 private:
 	size_t nRows, nColumns;
-	double* values;
+	double* values; // 1d are faster and simpler than 2d
 public:
 	CMatrix();
 	~CMatrix();

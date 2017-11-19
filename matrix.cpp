@@ -8,6 +8,8 @@
 
 namespace asu {
 
+#define EPSILON 1e-5  // the precision of the floating numbers comparison
+
 void CMatrix::reset()
 {
 	if (values)
@@ -65,6 +67,8 @@ CMatrix::CMatrix(size_t nRows, size_t nColumns, int initialization,
 			(*this)(i) = 1;
 			break;
 		case MI_EYE:
+			// TODO: maybe you should loop directly
+			// instead of using if inside for.
 			(*this)(i) = (i/nColumns == i%nColumns)? 1 : 0;
 			break;
 		case MI_RAND:
@@ -122,8 +126,9 @@ CMatrix CMatrix::getInverse() const
 	if (nRows == 1 && nColumns ==1)
 		return 1/(*this)(0); // 1 over the 1st element
 	double det = getDeterminant();
-	if (det == 0 || fabs(det) < 1e-5)
+	if (det == 0 || fabs(det) < EPSILON)
             return CMatrix(nRows, nColumns, MI_VALUE, NAN);
+	// MATLAB doesn't throw; it returns NaNs with a warning
 		//throw std::invalid_argument
 		    //("Inverting a noninvertible martix in CMatrix::getInverse()");
 	det = 1.0 / det;
@@ -176,6 +181,10 @@ CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 
 static CMatrix LUPFactorize(const CMatrix& m, bool& negdet)
 {
+	// LUP factorization is LU factorization with (partial) pivoting.
+	// The determinant is the product of the main diagonal of U (or LU,
+	// the returned matrix).  As pivoting may swap rows, we need to
+	// consider that to negate the determinant if needed.
 	if (m.getnRows() != m.getnColumns())
 		throw std::invalid_argument
 		    ("Non-square matrix won't be factorized");
@@ -364,7 +373,7 @@ bool operator==(const CMatrix& a, const CMatrix& b)
 	if (a.getnColumns() != b.getnColumns())
 		return false;
 	for (size_t i = 0; i < a.getnRows() * a.getnColumns(); ++i)
-		if (fabs(a[i] - b[i]) > 1e-5)
+		if (fabs(a[i] - b[i]) > EPSILON)
 			return false;
 	return true;
 }
@@ -372,7 +381,7 @@ bool operator==(const CMatrix& a, const CMatrix& b)
 bool operator!=(const CMatrix& a, const CMatrix& b)
 { return !(a == b); }
 
-// arithmatic functions and operators:
+// arithmetic functions and operators:
 // first, the unique functions: mul, div
 CMatrix mul(const CMatrix& a, const CMatrix& b)
 {
@@ -380,6 +389,7 @@ CMatrix mul(const CMatrix& a, const CMatrix& b)
 		throw std::invalid_argument
 		    ("Invalid matrix dimensions in CMatrix::mul()");
 	CMatrix r(a.getnRows(), b.getnColumns(), CMatrix::MI_ZEROS);
+	// looping over j inside k makes fewer cache misses
 	for (size_t i = 0; i < r.getnRows(); ++i)
 		for (size_t k = 0; k < a.getnColumns(); k++)
 			for (size_t j = 0; j < r.getnColumns(); ++j)
@@ -400,6 +410,12 @@ CMatrix div(double a, const CMatrix& b)
 CMatrix div(const CMatrix& a, double b) { return adiv(a, b); }
 CMatrix div(double a, double b)         { return adiv(a, b); }
 
+// We need to construct 4 overloaded versions of 4 element-wise functions:
+// add, sub, amul (element-wise multiplication), adiv (element-wise division).
+// Copy&pasting is never a good coding strategy. Instead, we will write a
+// template, and generate them all from it. I won't go for C++ templates.
+// This C macro takes the name (add, sub, etc) and the operator (+, -, etc)
+// and generates all the 4 overloaded functions for us.
 #define elementwise_fn(name, op)			\
 CMatrix name(const CMatrix& a, const CMatrix& b)	\
 {							\
@@ -440,5 +456,7 @@ elementwise_fn(amul, *);
 elementwise_fn(adiv, /);
 
 #undef elementwise_fn
+
+// Thanks for reading this far! I really appreciate it. ^_^
 
 }; // namespace asu
