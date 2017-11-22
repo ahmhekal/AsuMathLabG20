@@ -1,92 +1,65 @@
 #pragma once
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdarg>
-#include <string.h>
-#include <istream>
-#include <ostream>
-#include <math.h>
-using namespace std;
+#include <iostream>	// istream, ostream
 
-#pragma once
+namespace asu {
 
-class CMatrix
-{
-
-int nR, nC;
-double** values;
+class CMatrix {
+private:
+	size_t nRows, nColumns;
+	double* values; // 1d are faster and simpler than 2d
 public:
-CMatrix();
-~CMatrix();
-enum MI{MI_ZEROS, MI_ONES, MI_EYE, MI_RAND, MI_VALUE};
-CMatrix(int nR, int nC, int initialization = MI_ZEROS, double
-initializationValue = 0.0);
-CMatrix(int nR, int nC, double first, ...);
-CMatrix(CMatrix& m);
-CMatrix(double d);
-CMatrix(string s);
-void CopyMatrix(const CMatrix& m);
-void CopyMatrix(double d);
-void CopyMatrix(const string s);
-void reset();
-string getString();
-CMatrix operator=(const CMatrix& m);
-CMatrix operator=(double d);
-CMatrix operator=(string s);
-void add(CMatrix& m);
-void operator+=(CMatrix& m);
-void operator+=(double d);
-CMatrix operator+(CMatrix& m);
-CMatrix operator+(double d);
-void sub(CMatrix& m);
-void operator-=(CMatrix& m);
-void operator-=(double d);
-CMatrix operator-(CMatrix& m);
-CMatrix operator-(double d);
-void mul(CMatrix& m);
-void operator*=(CMatrix& m);
-void operator*=(double d);
-CMatrix operator*(CMatrix& m);
-CMatrix operator*(double d);
-CMatrix div(CMatrix& m);
-void operator/=(CMatrix& m);
-void operator/=(double d);
-CMatrix operator/(CMatrix& m);
-CMatrix operator/(double d);
-CMatrix operator++(); //Pre Increment
-CMatrix operator++(int); //Post Increment, int is not used
-CMatrix operator--(); //Pre Increment
-CMatrix operator--(int); //Post Increment, int is not used
-CMatrix operator-();
-CMatrix operator+();
-friend istream& operator >> (istream &is, CMatrix& C); //Stream
-friend ostream& operator << (ostream &os, CMatrix& C); //Stream
-void setSubMatrix(int iR, int iC, CMatrix& m);
-CMatrix getSubMatrix(int r, int c, int nr, int nc);
-CMatrix getCofactor(int r, int c);
-void addColumn(CMatrix& m);
-void addRow(CMatrix& m);
-double& operator[](int i){return values[i/nC][i%nC];}
-double& operator()(int i){return values[i/nC][i%nC];}
-double operator()(int r, int c) const {return values[r][c];}
-double& operator()(int r, int c){return values[r][c];}
-int getn() const;
-int getnR() const;
-int getnC() const;
-double getDeterminant();
-void getTranspose(CMatrix& r);
-void getInverse(CMatrix& t);
+	CMatrix();
+	~CMatrix();
+	enum MI { MI_ZEROS, MI_ONES, MI_EYE, MI_RAND, MI_VALUE };
+	CMatrix(size_t nRows, size_t nColumns,
+	        int initialization = MI_ZEROS,
+	        double initializationValue = 0.0);
+	CMatrix(size_t nRows, size_t nColumns, double first, ...);
+	CMatrix(const CMatrix& m);
+	CMatrix(double d);
+	CMatrix(const char* s);
+	void CopyMatrix(const CMatrix& m);
+	void CopyMatrix(double d);
+	void CopyMatrix(const char* s);
+	void reset();
+	CMatrix operator=(const CMatrix& m);
+	CMatrix operator=(double d);
+	CMatrix operator=(const char* s);
+	void setSubMatrix(size_t iR, size_t iC, const CMatrix& m);
+	CMatrix getSubMatrix(size_t r, size_t c, size_t nr, size_t nc) const;
+	CMatrix getCofactor(size_t r, size_t c) const;
+	void addColumn(const CMatrix& m);
+	void addRow(const CMatrix& m);
+	double& operator[](size_t i);
+	double operator[](size_t i) const;
+	double operator()(size_t i) const;
+	double& operator()(size_t i);
+	double operator()(size_t r, size_t c) const;
+	double& operator()(size_t r, size_t c);
+	size_t getn() const;
+	size_t getnRows() const;
+	size_t getnColumns() const;
+	double getDeterminant() const;
+	CMatrix getTranspose() const;
+	CMatrix getInverse() const;
 };
 
-CMatrix operator+(double d, CMatrix& m);
-CMatrix operator-(double d, CMatrix& m);
-CMatrix operator*(double d, CMatrix& m);
-CMatrix operator/(double d, CMatrix& m);
+#define fn(name) \
+CMatrix name(const CMatrix& a, const CMatrix& b); \
+CMatrix name(const CMatrix& a, double b);         \
+CMatrix name(double a,         const CMatrix& b); \
+CMatrix name(double a,         double b);
+fn(add);
+fn(sub);
+fn(mul);
+fn(div);
+fn(amul);
+fn(adiv);
+#undef fn
 
-// element-wise disivison, './'
-CMatrix adiv(const CMatrix& a, const CMatrix& b);
-// the following functions are identical to operator/()
-//CMatrix adiv(const CMatrix& a, double d); 
-//CMatrix adiv(double d, const CMatrix& b);
-//CMatrix adiv(double d, double e);
+bool operator==(const CMatrix& a, const CMatrix& b);
+bool operator!=(const CMatrix& a, const CMatrix& b);
+std::istream& operator>>(std::istream& is, CMatrix& C);
+std::ostream& operator<<(std::ostream& os, const CMatrix& C);
+
+}; // namespace asu

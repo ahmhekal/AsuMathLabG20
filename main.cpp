@@ -1,5 +1,5 @@
-#include "matrix.h"
 #include "readcmd.h"
+#include <fstream>
 
 int main(int argc, char** argv)
 {
@@ -7,7 +7,8 @@ int main(int argc, char** argv)
 		for (int i = 1; i < argc; ++i) {
 			std::ifstream mfile(argv[i]);
 			if (!mfile.is_open()) {
-				std::cerr << "Couldn't open " << argv[i] << std::endl;
+				std::cerr << "Couldn't open "
+				          << argv[i] << std::endl;
 				continue;
 			}
 			while (!mfile.eof())
@@ -15,8 +16,8 @@ int main(int argc, char** argv)
 			mfile.close();
 		}
 	} else { // interactive prompt
-		while (!cin.eof())
-			ReadCmd::readCmd(cin);
+		while (!std::cin.eof())
+			ReadCmd::readCmd(std::cin);
 	}
 }
 
