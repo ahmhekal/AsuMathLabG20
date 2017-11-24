@@ -42,6 +42,9 @@ public:
 	double getDeterminant() const;
 	CMatrix getTranspose() const;
 	CMatrix getInverse() const;
+    	void sweep(size_t a,size_t b);
+    	void swap1(size_t a,size_t b);
+    	void fix(size_t &a,size_t &b,double &flag);
 };
 
 #define fn(name) \
@@ -63,3 +66,4 @@ std::istream& operator>>(std::istream& is, CMatrix& C);
 std::ostream& operator<<(std::ostream& os, const CMatrix& C);
 
 }; // namespace asu
+
