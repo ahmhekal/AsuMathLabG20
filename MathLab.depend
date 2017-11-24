@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1511491633 source:/home/abdallah/Downloads/ASU-Math-Lab-g20/main.cpp
+	<fstream>
+	<iostream>
+	"matrix.h"
+	<fstream>
+
+1511487654 /home/abdallah/Downloads/ASU-Math-Lab-g20/matrix.h
+	<iostream>
+
+1511491861 source:/home/abdallah/Downloads/ASU-Math-Lab-g20/matrix.cpp
+	"matrix.h"
+	<cstdlib>
+	<string>
+	<stdexcept>
+	<cstdarg>
+	<string.h>
+	<math.h>
+

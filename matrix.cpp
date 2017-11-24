@@ -138,6 +138,7 @@ CMatrix CMatrix::getInverse() const
 			int sign = (((i + j) % 2 == 0) ? 1 : -1);
 			r(j,i) = sign * getCofactor(i,j).getDeterminant();
 		}
+
 	return mul(r, det);
 }
 
@@ -174,54 +175,12 @@ CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 		for (size_t j = 0; j < m.nColumns; ++j) {
 			size_t sR = (i < r) ? i : i + 1;
 			size_t sC = (j < c) ? j : j + 1;
+
 			m(i, j) = get(sR, sC);
 		}
 	return m;
 }
 
-static CMatrix LUPFactorize(const CMatrix& m, bool& negdet)
-{
-	// LUP factorization is LU factorization with (partial) pivoting.
-	// The determinant is the product of the main diagonal of U (or LU,
-	// the returned matrix).  As pivoting may swap rows, we need to
-	// consider that to negate the determinant if needed.
-	if (m.getnRows() != m.getnColumns())
-		throw std::invalid_argument
-		    ("Non-square matrix won't be factorized");
-	size_t n = m.getnRows();
-	// pivoting
-	CMatrix pa = m;
-	negdet = false;
-	for (size_t k = 0; k < n; ++k) {
-		double maxvalue = 0;
-		size_t maxindex = 0;
-		// determine the maxvalue in the col, and its row index
-		for (size_t i = k; i < n; ++i)
-			if (fabs(pa(i, k) > maxvalue)) {
-				maxvalue = pa(i, k);
-				maxindex = i;
-			}
-		if (maxvalue == 0) return CMatrix();  // non-invertible
-		if (maxindex != k) {  // if we need swapping rows
-			negdet = !negdet;
-			for (size_t j = 0; j < n; ++j) {
-				// swap pa(k, j) with pa(maxindex, j)
-				double tmp = pa(k, j);
-				pa(k, j) = pa(maxindex, j);
-				pa(maxindex, j) = tmp;
-			}
-		}
-	}
-	// factorizing: decompose pa as lu
-	for (size_t k = 0; k < n - 1; ++k)
-		for (size_t i = k + 1; i < n; ++i) {
-			double m = pa(i, k)/pa(k, k);
-			pa(i, k) = m;
-			for (size_t j = 0; j < n; ++j)
-				pa(i, j) -= m * pa(k, j);
-		}
-	return pa;
-}
 
 double CMatrix::getDeterminant() const
 {
@@ -231,20 +190,83 @@ double CMatrix::getDeterminant() const
         if (*this == CMatrix())
             return 0;
 	if (nRows == 1 && nColumns == 1)
-		return get(0, 0);
-	bool negdet;
-	double det = 1;
-	CMatrix lu = LUPFactorize(*this, negdet);
-	if (lu == CMatrix())
-		return 0;
-	for (size_t k = 0; k < nRows; ++k)
-		det *= lu(k, k);
-	if (isnan(det))
-		return 0;
-	if (negdet)
-		det = -det;
-	return det;
+
+		return (*this)(0, 0);
+
+    size_t a=0; size_t b=0; double flag=1.0;
+    size_t m=getnRows();
+    size_t n=getnColumns();
+    CMatrix r(m,n);
+    r=*this;
+	while(a<m && b<n)
+	{
+		r.fix(a,b,flag);//basicall puts blank rows on the bottom
+		r.sweep(a,b);//sweeps the column b taking a as pivot
+		//advancing after sweeping
+		a++;
+		b++;
+	}
+	double det=1.0;
+    for(size_t k=0;k<m;k++)
+    {
+    det*=r(k,k);
+    }
+	return det*flag;
 }
+
+void CMatrix::sweep(size_t a,size_t b)
+{
+
+	if ((*this)(a,b) == 0)	//Checking whether the element is a valid pivot
+		return;
+
+	double factor=0.0;//number to multiply pivot with and subtract from corresponding rows
+	for(size_t i=a+1;i<getnRows();i++)
+	{
+		if(i!=a)
+		{
+			factor=(*this)(i,b)/(*this)(a,b);//number to multiply pivot with and subtract from corresponding rows to sweep
+
+			for(size_t j=0;j<getnRows();j++)
+			{
+
+				(*this)(i,j)-=factor*(*this)(a,j);//actual subtraction of each element of row i
+                		if(fabs((*this)(i,j))<EPSILON)(*this)(i,j)=0.0;
+			}
+		}
+	}
+
+}
+
+void CMatrix::swap1(size_t a,size_t b)
+{
+	/*swaps row a and row b*/
+	double temp=0;
+	for(size_t j=0;j<getnRows();j++)
+	{
+
+		temp=(*this)(a,j);
+		(*this)(a,j)=(*this)(b,j);
+		(*this)(b,j)=temp;
+	}
+}
+
+void CMatrix::fix(size_t &a,size_t &b,double &flag)
+{
+	/*Simply swaps the first non zero row it finds incase element we are trying to use as pivot is 0 */
+	while((*this)(a,b)==0 && a<getnRows() && b<getnRows())
+	{
+		for(size_t i=a;i<getnRows();i++)
+		{
+			if((*this)(i,b)!=0)
+			{
+				swap1(a,i);
+				flag*=-1.0;
+				return;
+			}
+		}
+		b++;
+	}
 
 CMatrix CMatrix::getTranspose() const
 {
@@ -273,8 +295,10 @@ std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 			os << m(i,j);
 			if (j != m.getnColumns() - 1)
 				os << "\t";
+
 		}
-		os << "\n";
+
+		os <<"\n";
 	}
 	return os;
 }
@@ -472,3 +496,4 @@ elementwise_fn(adiv, /);
 // Thanks for reading this far! I really appreciate it. ^_^
 
 }; // namespace asu
+
