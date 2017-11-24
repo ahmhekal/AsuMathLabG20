@@ -198,19 +198,17 @@ double CMatrix::getDeterminant() const
     size_t n=getnColumns();
     CMatrix r(m,n);
     r=*this;
+    double det=1.0;
 	while(a<m && b<n)
 	{
 		r.fix(a,b,flag);//basicall puts blank rows on the bottom
 		r.sweep(a,b);//sweeps the column b taking a as pivot
 		//advancing after sweeping
+		det*=r(a,b);
 		a++;
 		b++;
 	}
-	double det=1.0;
-    for(size_t k=0;k<m;k++)
-    {
-    det*=r(k,k);
-    }
+	
 	return det*flag;
 }
 
