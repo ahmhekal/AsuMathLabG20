@@ -30,6 +30,10 @@ public:
 	CMatrix getCofactor(size_t r, size_t c) const;
 	void addColumn(const CMatrix& m);
 	void addRow(const CMatrix& m);
+	double get(size_t i) const;
+	double& get(size_t i);
+	double get(size_t i, size_t j) const;
+	double& get(size_t i, size_t j);
 	double& operator[](size_t i);
 	double operator[](size_t i) const;
 	double operator()(size_t i) const;

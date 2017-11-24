@@ -58,21 +58,21 @@ CMatrix::CMatrix(size_t nRows, size_t nColumns, int initialization,
 	for (size_t i = 0; i < nRows * nColumns; ++i) {
 		switch (initialization) {
 		case MI_ZEROS:
-			(*this)(i) = 0;
+			get(i) = 0;
 			break;
 		case MI_VALUE:
-			(*this)(i) = initializationValue;
+			get(i) = initializationValue;
 			break;
 		case MI_ONES:
-			(*this)(i) = 1;
+			get(i) = 1;
 			break;
 		case MI_EYE:
 			// TODO: maybe you should loop directly
 			// instead of using if inside for.
-			(*this)(i) = (i/nColumns == i%nColumns)? 1 : 0;
+			get(i) = (i/nColumns == i%nColumns)? 1 : 0;
 			break;
 		case MI_RAND:
-			(*this)(i) = (rand() % 1000000) / 1000000.0;
+			get(i) = (rand() % 1000000) / 1000000.0;
 			break;
 		}
 	}
@@ -91,7 +91,7 @@ CMatrix::CMatrix(size_t nRows, size_t nColumns, double first, ...)
 	va_list va;
 	va_start(va, first);
 	for (size_t i = 0; i < nRows * nColumns; ++i) {
-		(*this)(i) = (i == 0)
+		get(i) = (i == 0)
 			     ? first
 			     : va_arg(va, double);
 	}
@@ -124,7 +124,7 @@ void CMatrix::addRow(const CMatrix& m)
 CMatrix CMatrix::getInverse() const
 {
 	if (nRows == 1 && nColumns ==1)
-		return 1/(*this)(0); // 1 over the 1st element
+		return 1/get(0); // 1 over the 1st element
 	double det = getDeterminant();
 	if (det == 0 || fabs(det) < EPSILON)
             return CMatrix(nRows, nColumns, MI_VALUE, NAN);
@@ -148,7 +148,7 @@ void CMatrix::setSubMatrix(size_t r, size_t c, const CMatrix& m)
 		    ("Invalid matrix dimensions in CMatrix::setSubMatrix()");
 	for (size_t i = 0; i < m.nRows; ++i)
 		for (size_t j = 0; j < m.nColumns; ++j)
-			(*this)(r + i, c + j) = m(i, j);
+			get(r + i, c + j) = m(i, j);
 
 }
 
@@ -160,7 +160,7 @@ CMatrix CMatrix::getSubMatrix(size_t r, size_t c, size_t nr, size_t nc) const
 	CMatrix m(nr, nc);
 	for (size_t i = 0; i < m.nRows; ++i)
 		for (size_t j = 0; j < m.nColumns; ++j)
-			m(i, j) = (*this)(r + i, c + j);
+			m(i, j) = get(r + i, c + j);
 	return m;
 }
 
@@ -174,7 +174,7 @@ CMatrix CMatrix::getCofactor(size_t r, size_t c) const
 		for (size_t j = 0; j < m.nColumns; ++j) {
 			size_t sR = (i < r) ? i : i + 1;
 			size_t sC = (j < c) ? j : j + 1;
-			m(i, j) = (*this)(sR, sC);
+			m(i, j) = get(sR, sC);
 		}
 	return m;
 }
@@ -231,7 +231,7 @@ double CMatrix::getDeterminant() const
         if (*this == CMatrix())
             return 0;
 	if (nRows == 1 && nColumns == 1)
-		return (*this)(0, 0);
+		return get(0, 0);
 	bool negdet;
 	double det = 1;
 	CMatrix lu = LUPFactorize(*this, negdet);
@@ -251,7 +251,7 @@ CMatrix CMatrix::getTranspose() const
 	CMatrix r(nColumns, nRows);
 	for (size_t i = 0; i < nRows; ++i)
 		for (size_t j = 0; j < nColumns; ++j)
-			r(j, i) = (*this)(i, j);
+			r(j, i) = get(i, j);
 	return r;
 }
 
@@ -310,7 +310,7 @@ void CMatrix::CopyMatrix(const CMatrix& m)
 	}
 	values = new double[nRows * nColumns];
 	for (size_t i = 0; i < nRows * nColumns; ++i)
-		(*this)(i) = m(i);
+		get(i) = m(i);
 }
 
 
@@ -345,8 +345,20 @@ void CMatrix::CopyMatrix(double d)
 	this->nRows = 1;
 	this->nColumns = 1;
 	values = new double[1];
-	(*this)(0) = d;
+	get(0) = d;
 }
+
+double CMatrix::get(size_t i) const
+{ return values[i]; }
+        
+double& CMatrix::get(size_t i)
+{ return values[i]; }
+
+double CMatrix::get(size_t i, size_t j) const
+{ return values[j + i * nColumns]; }
+        
+double& CMatrix::get(size_t i, size_t j)
+{ return values[j + i * nColumns]; }
 
 double& CMatrix::operator[](size_t i)
 { return values[i]; }
