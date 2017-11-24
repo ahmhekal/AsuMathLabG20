@@ -267,7 +267,7 @@ void CMatrix::fix(size_t &a,size_t &b,double &flag)
 		}
 		b++;
 	}
-
+}
 CMatrix CMatrix::getTranspose() const
 {
 	CMatrix r(nColumns, nRows);
