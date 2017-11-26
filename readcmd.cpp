@@ -14,7 +14,7 @@ using namespace asu;
  *   to be used in the command prompt/files.
  * they are A..Z and a..z case-sensitive.
  **/
-static CMatrix& get(char name)
+CMatrix& get(char name)
 {
 	static CMatrix vars[52];
 	if (name < 'A' || name > 'z' || (name < 'a' && name > 'Z'))
