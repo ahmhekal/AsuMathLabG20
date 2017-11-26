@@ -71,5 +71,3 @@ Example For Phase2 format:
 > L = (1.2 + 3.4 - 5.6)/(2.1*3.2 + 4.6) - 12.1*3.1 + (1.2 + 5.2)^(4/(3.2+5.6)) //Support Support mathematical functions
 > X = ((C*D .+ 4)./2.1 + sqrt(D))./C.^2
 > Y = (C^3 * sin(1./D))^(0.1)
-
-Example for Phase3 format:
