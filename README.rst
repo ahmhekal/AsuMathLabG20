@@ -42,11 +42,11 @@ Phases 3: Advanced system operations
 Input Format
 ------------
 
-- User can write directly in the CommandLine or typing in afile
+- User can write directly in the CommandLine or type in a file
 
 - The inputs should be similar to the following formats(MATLAB Format)
 
-- Example For Phase1 format:
+- Example For supported formats in Phase1 :
 ::
                               
 > A = [1.4 2.2 3.2; 4.4 5.4 6.4; 3.3 4.2 2.2]; //Defining the first matrix A
@@ -57,13 +57,12 @@ Input Format
 > F = A / B //Div two matrices and put result in a matrix F
 > G = A’    //Trasnpose matrix A and put result in a matrix H
 
-- Example For Phase2 format:
+- Example For supported formats in Phase2 :
 ::  
                          
 > A = 5.5 + 12 * sin(0.4) + 2.2^4; //Support Trigonometric functions like sin,cos,...
 > B = [1.2 2.3 A;[1.3 2.4;4.6 1.3],[3.2;7.8]]; //Accept matrix in matrix ,expressions and variables
-> C = [[B [3.4; 2.1; 3.5+9.1]]
-> 1.2^3 3+1.2 15/(2.1+10*sin(0.12)) 1.2]
+> C = [[B [3.4; 2.1; 3.5+9.1]]1.2^3 3+1.2 15/(2.1+10*sin(0.12)) 1.2]
 > D = rand(4,4) //Create random matrix with size 4x4
 > E = eye(4, 4) //Create eye matrix with size 4x4
 > F = zeros(2, 3) //Create zero matrix with size 2x3
