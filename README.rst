@@ -21,11 +21,11 @@ ASU Math Lab Software will go through the following Phases:
 Phases 1: Core Operations
 -------------------------
 
-- Implement C++ class for matrix
-- Support dynamic creation and destruction of matrices of any size
-- Support addition, subtraction, multiplication, transpose and division
-- Process input user commands and show results directly
-- Process input file, show each step result then exit)
+- Implement C++ class for matrix.
+- Support dynamic creation and destruction of matrices of any size.
+- Support addition, subtraction, multiplication, transpose and division.
+- Process input user commands and show results directly.
+- Process input file, show each step result then exit.
 
 Phases 2: Advanced Operations and Tuning 
 ----------------------------------------
@@ -44,9 +44,9 @@ Input Format
 
 - User can write directly in the CommandLine or typing in afile
 
-- The inputs should be similar to the following format(MATLAB Format): 
+- The inputs should be similar to the following formats(MATLAB Format)
 
-Example For Phase1 format:
+- Example For Phase1 format:
 ::
                               
 > A = [1.4 2.2 3.2; 4.4 5.4 6.4; 3.3 4.2 2.2]; //Defining the first matrix A
@@ -57,7 +57,7 @@ Example For Phase1 format:
 > F = A / B //Div two matrices and put result in a matrix F
 > G = A’    //Trasnpose matrix A and put result in a matrix H
 
-Example For Phase2 format:
+- Example For Phase2 format:
 ::  
                          
 > A = 5.5 + 12 * sin(0.4) + 2.2^4; //Support Trigonometric functions like sin,cos,...
