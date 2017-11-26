@@ -8,7 +8,7 @@ This project is made by a group of 3rd year Computer and systems depatrtment
 students at Faculty of Engineering Ain Shams University.
 
 This is a complete rewrite in C++. The aim of the software is to
-simulating a program dealing with matrices and it's operations similar
+simulate a program dealing with matrices and it's operations similar
 to Matlab, Octave and similar tools.
 
 ASU Math Lab Software will go through the following Phases:
