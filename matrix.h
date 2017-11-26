@@ -46,9 +46,9 @@ public:
 	double getDeterminant() const;
 	CMatrix getTranspose() const;
 	CMatrix getInverse() const;
-    	void sweep(size_t a,size_t b);
-    	void swap1(size_t a,size_t b);
-    	void fix(size_t &a,size_t &b,double &flag);
+    void sweep(size_t a,size_t b);
+    void swaprow(size_t a,size_t b);
+    void fix(size_t a,size_t b,double &flag);
 };
 
 #define fn(name) \

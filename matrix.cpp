@@ -208,7 +208,7 @@ double CMatrix::getDeterminant() const
 		a++;
 		b++;
 	}
-	
+	//for(int k=0;k<m;k++) det*=r(k,k);
 	return det*flag;
 }
 
@@ -236,7 +236,7 @@ void CMatrix::sweep(size_t a,size_t b)
 
 }
 
-void CMatrix::swap1(size_t a,size_t b)
+void CMatrix::swaprow(size_t a,size_t b)
 {
 	/*swaps row a and row b*/
 	double temp=0;
@@ -249,16 +249,16 @@ void CMatrix::swap1(size_t a,size_t b)
 	}
 }
 
-void CMatrix::fix(size_t &a,size_t &b,double &flag)
+void CMatrix::fix(size_t a,size_t b,double &flag)
 {
-	/*Simply swaps the first non zero row it finds incase element we are trying to use as pivot is 0 */
+	//Simply swaps the first non zero row it finds incase element we are trying to use as pivot is 0
 	while((*this)(a,b)==0 && a<getnRows() && b<getnRows())
 	{
 		for(size_t i=a;i<getnRows();i++)
 		{
 			if((*this)(i,b)!=0)
 			{
-				swap1(a,i);
+				swaprow(a,i);
 				flag*=-1.0;
 				return;
 			}
@@ -289,10 +289,11 @@ std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 {
 	for (size_t i = 0; i < m.getnRows(); ++i) {
-		for (size_t j = 0; j < m.getnColumns(); ++j) {
-			os << m(i,j);
+		for (size_t j = 0; j < m.getnColumns(); ++j)
+		 {
+			os<<m(i,j); //<<std::fixed<<std::setprecision(4)
 			if (j != m.getnColumns() - 1)
-				os << "\t";
+			os <<"\t";
 
 		}
 
