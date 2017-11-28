@@ -82,3 +82,14 @@ double deg2rad(double d) { return d * M_PI / 180; }
 ELEMENTWISE_FN(rad2deg)
 ELEMENTWISE_FN(deg2rad)
 
+// exp, log, etc
+ELEMENTWISE_FN(exp)
+ELEMENTWISE_FN(log)
+ELEMENTWISE_FN(log10)
+ELEMENTWISE_FN(log2)
+ELEMENTWISE_FN(log1p)
+ELEMENTWISE_FN(sqrt)
+ELEMENTWISE_FN2(pow)
+double power(double n, double m) { return pow(n, m); }
+asu::CMatrix power(const asu::CMatrix& n, const asu::CMatrix& m)
+{ return pow(n, m); }

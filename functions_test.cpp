@@ -30,7 +30,7 @@ int read_file(const char *filename)
 	TEST(a##f2(M('e')) == M('E'));				\
 	TEST(a##f3(M('f')) == M('F'));				\
 	std::cout << std::endl;					\
-} while(0)
+} while (0)
 int main()
 {
 	TEST_TRIG_FILE(sin,  cos,  tan);
@@ -44,16 +44,27 @@ int main()
 		TEST(atan2(M('a'), M('b')) == M('C'));
 		TEST(atan2d(M('d'), M('e')) == M('F'));
 		std::cout << std::endl;
-	} while(0);
+	} while (0);
 	do {  // hypot
 		if (!read_file(FILENAME(hypot))) break;
 		TEST(hypot(M('a'), M('b')) == M('C'));
 		std::cout << std::endl;
-	} while(0);
+	} while (0);
 	do {  // rad, deg
 		if (!read_file(FILENAME(rad-deg))) break;
 		TEST(rad2deg(M('a')) == M('A'));
 		TEST(deg2rad(M('b')) == M('B'));
 		std::cout << std::endl;
-	} while(0);
+	} while (0);
+	do {  // exp, log, etc
+		if (!read_file(FILENAME(exp-log))) break;
+		TEST(exp(M('a')) == M('A'));
+		TEST(log(M('b')) == M('B'));
+		TEST(log10(M('c')) == M('C'));
+		TEST(log2(M('d')) == M('D'));
+		TEST(log1p(M('e')) == M('E'));
+		TEST(sqrt(M('f')) == M('F'));
+		TEST(power(M('g'), M('h')) == M('H'));
+		std::cout << std::endl;
+	} while (0);
 }

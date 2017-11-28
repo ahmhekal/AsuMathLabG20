@@ -63,3 +63,14 @@ a = normrnd(6.28, 3.14, 50, 50);
 				A = rad2deg(a);
 b = normrnd(180, 90, 50, 50);   B = deg2rad(b);
 save rad-deg-functions-test.m a b A B
+
+a = rand(50, 50);		A = exp(a);
+b = rand(50, 50);		B = log(b);
+c = rand(50, 50);		C = log10(c);
+d = rand(50, 50);		D = log2(d);
+e = rand(50, 50);		E = log1p(e);
+f = rand(50, 50);		F = sqrt(f);
+g = rand(50, 50);
+h = rand(50, 50);		H = power(g, h);
+save exp-log-functions-test.m a b c d e f g h A B C D E F H
+
