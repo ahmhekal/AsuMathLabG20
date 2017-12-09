@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>	// istream, ostream
+#include "string"
 
 namespace asu {
 
@@ -18,6 +19,7 @@ public:
 	CMatrix(const CMatrix& m);
 	CMatrix(double d);
 	CMatrix(const char* s);
+	void CopyMatrix(std::string s);
 	void CopyMatrix(const CMatrix& m);
 	void CopyMatrix(double d);
 	void CopyMatrix(const char* s);

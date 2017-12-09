@@ -362,6 +362,34 @@ void CMatrix::CopyMatrix(const char* s)   //need to be edited
 	delete[] buffer;
 }
 
+
+void CMatrix::CopyMatrix(std::string s)
+{
+reset();
+char* buffer = new char[s.length()+1];
+strcpy(buffer, s.c_str());
+char* lineContext;
+char* lineSeparators = ";\r\n";
+char* line = strtok_r(buffer, lineSeparators, &lineContext);
+while(line)
+{
+CMatrix row;
+char* context;
+char* separators = " []";
+char* token = strtok_r(line, separators, &context);
+while(token)
+{
+CMatrix item = atof(token);
+row.addColumn(item);
+token = strtok_r(NULL, separators, &context);
+}
+if(row.nColumns>0 && (row.nColumns==nColumns || nRows==0))
+addRow(row);
+line = strtok_r(NULL, lineSeparators, &lineContext);
+}
+delete[] buffer;
+}
+
 void CMatrix::CopyMatrix(double d)
 {
 	reset();
