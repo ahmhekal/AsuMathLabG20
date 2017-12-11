@@ -26,23 +26,23 @@ a = normrnd(1, 1, 50, 50);              A =  sinh(a);
 b = normrnd(1, 1, 50, 50);              B =  cosh(b);
 c = normrnd(1, 1, 50, 50);              C =  tanh(c);
 d = rand(50, 50);                       D = asinh(d);
-e = rand(50, 50);                       E = acosh(e);
+e = rand(50, 50) + 1;                   E = acosh(e);   % must be >= 1 for real results
 f = rand(50, 50);                       F = atanh(f);
 save sinh-cosh-tanh-test.mat a b c d e f A B C D E F x
 
 a = normrnd(1, 1, 50, 50);              A =  csc(a);
 b = normrnd(1, 1, 50, 50);              B =  sec(b);
 c = normrnd(1, 1, 50, 50);              C =  cot(c);
-d = rand(50, 50);                       D = acsc(d);
-e = rand(50, 50);                       E = asec(e);
+d = rand(50, 50) + 1;                   D = acsc(d);   % must be >= 1 for real results
+e = rand(50, 50) + 1;                   E = asec(e);   % must be >= 1 for real results
 f = rand(50, 50);                       F = acot(f);
 save csc-sec-cot-test.mat a b c d e f A B C D E F x
 
 a = normrnd(90, 90, 50, 50);            A =  cscd(a);
 b = normrnd(90, 90, 50, 50);            B =  secd(b);
 c = normrnd(90, 90, 50, 50);            C =  cotd(c);
-d = rand(50, 50);                       D = acscd(d);
-e = rand(50, 50);                       E = asecd(e);
+d = rand(50, 50) + 1;                   D = acscd(d);   % must be >= 1 for real results
+e = rand(50, 50) + 1;                   E = asecd(e);   % must be >= 1 for real results
 f = rand(50, 50);                       F = acotd(f);
 save cscd-secd-cotd-test.mat a b c d e f A B C D E F x
 
@@ -51,7 +51,7 @@ b = normrnd(1, 1, 50, 50);              B =  sech(b);
 c = normrnd(1, 1, 50, 50);              C =  coth(c);
 d = rand(50, 50);                       D = acsch(d);
 e = rand(50, 50);                       E = asech(e);
-f = rand(50, 50);                       F = acoth(f);
+f = rand(50, 50) + 1;                   F = acoth(f);   % must be >= 1 for real results
 save csch-sech-coth-test.mat a b c d e f A B C D E F x
 
 % second: two argument functions

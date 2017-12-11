@@ -72,11 +72,11 @@ int readmatfile(const char *filename)
                 // ignore `# fieldname:` then read the var
                 // and ignore the rest of the line, usually the \n only.
 
-                char name; READ_METADATA(name);
+                char name;      READ_METADATA(name)
                 getline(matfile, ignored); // ignore `# type: matrix'
 
-                size_t rows; READ_METADATA(rows);
-                size_t columns; READ_METADATA(columns);
+                size_t rows;    READ_METADATA(rows)
+                size_t columns; READ_METADATA(columns)
                 #undef READ_METADATA
 
                 // reading the matrix
@@ -96,12 +96,11 @@ int readmatfile(const char *filename)
 int main()
 {
         TEST_TRIG_FUNCTIONS(sin,  cos,  tan);
-        // FIXME: there is a problem in the following tests; they go infinite!
-        //TEST_TRIG_FUNCTIONS(sind, cosd, tand);
-        //TEST_TRIG_FUNCTIONS(sinh, cosh, tanh);
-        //TEST_TRIG_FUNCTIONS(csc,  sec,  cot);
-        //TEST_TRIG_FUNCTIONS(cscd, secd, cotd);
-        //TEST_TRIG_FUNCTIONS(csch, sech, coth);
+        TEST_TRIG_FUNCTIONS(sind, cosd, tand);
+        TEST_TRIG_FUNCTIONS(sinh, cosh, tanh);
+        TEST_TRIG_FUNCTIONS(csc,  sec,  cot);
+        TEST_TRIG_FUNCTIONS(cscd, secd, cotd);
+        TEST_TRIG_FUNCTIONS(csch, sech, coth);
 
         TEST_TWO_ARG_FN(atan2);
         TEST_TWO_ARG_FN(atan2d);
