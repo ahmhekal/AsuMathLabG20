@@ -81,7 +81,22 @@ delete [] buffer;
 }
 
 }
+
 //////////////////////////////////////////////////////////////////
+double to_double(string operand){
+char * buffer=new char[operand.length()+1];
+strcpy(buffer,operand.c_str());
+double result=atof(buffer);
+delete [] buffer;
+return result;
+
+}
+string to_string(double operand){
+char buffer_test[50];
+sprintf(buffer_test,"%g",operand);
+return(string)buffer_test;
+}
+
 int main(){
 //testing first issue in parser2 that replace sin,cos,sqrt... with thier result
 string test="sin(0.4)*5.5/2+12*tan(0.4)+sqrt(25)+5^3-1";
