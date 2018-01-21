@@ -96,6 +96,46 @@ char buffer_test[50];
 sprintf(buffer_test,"%g",operand);
 return(string)buffer_test;
 }
+void math_piority_calc(string& test){
+while(test.find('^')!=string::npos){
+//int a=test.find('*');
+int a;
+for(int i=0;i<test.length();i++){
+if(test[i]=='^'){
+a=i;
+break;
+}
+}
+
+int x=0;
+int y=test.length()-1;
+for(int i=a-1;i>=0;i--){
+if(!(((test[i]>='.'&&test[i]<='9')&&test[i]!='/')/*||test[0]=='-'*/)){
+x=i+1;
+break;
+
+}
+}
+for(int j=a+1;j<test.length();j++){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')){
+
+
+y=j-1;
+break;
+
+}
+
+}
+double z=to_double(test.substr(x,a-x));
+double k=to_double(test.substr(a+1,y-a));
+
+
+double result=pow(z,k);
+
+string replacement=to_string(result);
+test.replace(x,y-x+1,replacement);
+cout<<test<<endl;
+}}
 
 int main(){
 //testing first issue in parser2 that replace sin,cos,sqrt... with thier result
