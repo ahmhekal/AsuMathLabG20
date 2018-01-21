@@ -4,8 +4,9 @@
 #include <stdlib.h>  
 using namespace asu;
 
-static std::string vars[10]; //variables names in string
-static CMatrix mvars[10]; //matrices values of variables
+std::string* vars; //variables names in string ====  std::string vars[10];
+CMatrix* mvars; //matrices values of variables =========  CMatrix mvars[10];
+
 
 std::string removeSpaces(std::string input)                   //remove spaces from the string before '[' or the whole line
 {
@@ -38,6 +39,9 @@ int main(int argc, char** argv)
 {
 int stop=0;	std::string sMatrix;
 int k=0;
+
+vars=new std::string [100]; //variables names in string ====  std::string vars[10];
+mvars=new CMatrix[100]; //matrices values of variables =========  CMatrix mvars[10];
 	
 
 	if (argc > 1) { // a filename is given
@@ -288,6 +292,9 @@ k++;
 	}}
 
 
+delete[]mvars;
+delete[]vars;
 
 return 0;
 }
+
