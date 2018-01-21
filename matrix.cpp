@@ -369,13 +369,22 @@ reset();
 char* buffer = new char[s.length()+1];
 strcpy(buffer, s.c_str());
 char* lineContext;
-char* lineSeparators = ";\r\n";
+char lineSeparators[3];
+lineSeparators[0] = ';';
+lineSeparators[1] = '\r';
+lineSeparators[2] = '\n';
+
+
 char* line = strtok_r(buffer, lineSeparators, &lineContext);
 while(line)
 {
 CMatrix row;
 char* context;
-char* separators = " []";
+char separators[3];
+separators[0] = ' ';
+separators[1] = '[';
+separators[2] = ']';
+
 char* token = strtok_r(line, separators, &context);
 while(token)
 {
