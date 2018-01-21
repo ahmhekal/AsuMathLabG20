@@ -6,6 +6,7 @@
 #include<cstdio>
 #include<fstream>
 #include"matrix.h"
+//first issue:replacing mathimatical operations eith thier result
 void mathematical_calc(string& a){
 if(a.find("sin")!=string::npos){
 
@@ -78,5 +79,14 @@ delete [] buffer;
 
 
 }
+
+}
+//////////////////////////////////////////////////////////////////
+int main(){
+//testing first issue in parser2 that replace sin,cos,sqrt... with thier result
+string test="sin(0.4)*5.5/2+12*tan(0.4)+sqrt(25)+5^3-1";
+mathematical_calc(test1);
+cout<<test1<<endl;
+/////////////////////////////////////
 
 }
