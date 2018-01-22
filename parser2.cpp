@@ -5,7 +5,7 @@
 #include<cstring>
 #include<cstdio>
 #include<fstream>
-#include"matrix.h"
+using namespace std;
 //first issue:replacing mathimatical operations eith thier result
 void mathematical_calc(string& a){
 if(a.find("sin")!=string::npos){
@@ -265,5 +265,5 @@ math_piority_calc(test2);
 cout<<test2<<endl;
 
 
-
 }
+
