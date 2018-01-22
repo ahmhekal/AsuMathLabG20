@@ -211,6 +211,18 @@ else // interactive prompt
 			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 		}
+
+		else if(sMatrix[endname+1]=='(')
+		{
+			string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+			parthen_analysis(stringvalue);
+			math_piority_calc(stringvalue);
+			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
+		}
+
+
+
 		else
 		{
 
