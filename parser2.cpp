@@ -217,6 +217,33 @@ test.replace(x,y-x+1,replacement);
 cout<<test<<endl;
 }
 }
+void parthen_analysis(string& test2){
+while(test2.find('(')!=string::npos)
+{
+int x=0;
+int y=test2.length()-1;
+for(int i=0;i<test2.length();i++){
+if(test2[i]=='(')
+x=i;
+
+}
+for(int i=0;i<test2.length();i++){
+if(test2[i]==')'&&i>x){
+y=i;
+break;
+}
+}
+
+string expression=test2.substr(x+1,y-x-1);
+
+math_piority_calc(expression);
+test2.replace(x,y-x+1,expression);
+cout<<test2<<endl;
+
+}
+
+
+}
 
 int main(){
 //testing first issue in parser2 that replace sin,cos,sqrt... with thier result
