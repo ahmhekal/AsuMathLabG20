@@ -1,9 +1,12 @@
 all: matrix
 
 matrix: FORCE
-	g++ main.cpp matrix.cpp -o matrix -Wall -Wextra -O3
-functions_test_compile_run: FORCE
-	g++ functions_test.cpp matrix.cpp -o functions_test -Wall -Wextra -O3 && ./functions_test
+	g++ main.cpp matrix.cpp parser2.cpp parser2.h -o matrix -Wall -Wextra -O3
+matrix_test: FORCE
+	g++ matrix_test.cpp matrix.cpp -o matrix_test -Wall -Wextra -O3 && ./matrix_test
 clean:
 	rm -f matrix matrix_test
 
+.PHONY: all test FORCE clean
+test: matrix_test
+FORCE:

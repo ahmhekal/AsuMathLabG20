@@ -2,6 +2,7 @@
 #include "string"
 #include "matrix.h"
 #include <stdlib.h>  
+#include "parser2.h"
 using namespace asu;
 
 std::string* vars; //matrices names in string ====  std::string vars[100];
@@ -78,6 +79,8 @@ if (argc > 1) 	//if a filename is given
 				mvars[k].CopyMatrix(wantedvalue);
 				if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 			}
+
+
 
 			else
 			{
@@ -192,6 +195,14 @@ else // interactive prompt
 			if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 		}
 
+		else if(sMatrix[endname+1]>='0' && sMatrix[endname+1]<('9'+1))
+		{
+			string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+			mathematical_calc(stringvalue);
+
+			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+			std::cout<<mvars[k]<<std::endl;
+		}
 		else
 		{
 
