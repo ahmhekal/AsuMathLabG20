@@ -14,6 +14,7 @@ void mathematical_calc (string& a);
 double to_double(string operand);
 string to_string(double operand);
 void math_piority_calc(string& test);
+void parthen_analysis(string& test2);
 /*
 int main(){
 //testing first issue in parser2 that replace sin,cos,sqrt... with thier result

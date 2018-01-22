@@ -80,7 +80,15 @@ if (argc > 1) 	//if a filename is given
 				if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 			}
 
-
+			else if(sMatrix[endname+1]>='0' && sMatrix[endname+1]<('9'+1))
+			{
+				string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+				mathematical_calc(stringvalue);
+				math_piority_calc(stringvalue);
+				mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+				std::cout<<"da5al hna";
+				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
+			}
 
 			else
 			{
@@ -199,9 +207,9 @@ else // interactive prompt
 		{
 			string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 			mathematical_calc(stringvalue);
-
+			math_piority_calc(stringvalue);
 			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
-			std::cout<<mvars[k]<<std::endl;
+			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 		}
 		else
 		{
