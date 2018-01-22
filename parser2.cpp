@@ -217,6 +217,7 @@ test.replace(x,y-x+1,replacement);
 cout<<test<<endl;
 }
 }
+////////////////////////////////////////////////
 void parthen_analysis(string& test2){
 while(test2.find('(')!=string::npos)
 {
@@ -257,5 +258,12 @@ math_piority_calc(test1);
 
 cout<<test1<<endl;
 /////////////////////////////////////
+string test2="(1.2+3.4-5.6)/(2.1*3.2+4.6)-12.1*3.1+(1.2+5.2)^(4/(3.2+5.6))";
+parthen_analysis(test2);
+cout<<test2<<endl;
+math_piority_calc(test2);
+cout<<test2<<endl;
+
+
 
 }
