@@ -221,7 +221,11 @@ cout<<test<<endl;
 int main(){
 //testing first issue in parser2 that replace sin,cos,sqrt... with thier result
 string test="sin(0.4)*5.5/2+12*tan(0.4)+sqrt(25)+5^3-1";
-mathematical_calc(test1);
+mathematical_calc(test);
+math_piority_calc(test);
+
+cout<<test<<endl;
+string test1="-1/11.32-12.1*3.1+6.4^0.454545";
 math_piority_calc(test1);
 
 cout<<test1<<endl;
