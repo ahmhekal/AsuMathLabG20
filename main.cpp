@@ -307,6 +307,12 @@ else // interactive prompt
 				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
+			if(sMatrix.find("=")==std::string::npos)
+			{
+
+				std::cout<<stringtomatrix(sMatrix,k)<<std::endl;
+			}
+
 		}
 
 
