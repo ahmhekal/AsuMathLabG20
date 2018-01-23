@@ -229,19 +229,23 @@ else // interactive prompt
 				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
 				mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix));
-				std::cout<<mvars[k]<<std::endl;
+				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
 
 			 if (sMatrix.find('+')!=std::string::npos)
 			{
+				std::string secondvalue;
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('+')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-1));
+				if ( sMatrix.find(';')==std::string::npos)
+				secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-1));
+				else 
+				secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-2));
 				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
 				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
 				mvars[k].CopyMatrix(add(secondmatrix,firstmatrix));
-				std::cout<<mvars[k]<<std::endl;
+				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
 			if (sMatrix.find('*')!=std::string::npos)
@@ -252,7 +256,7 @@ else // interactive prompt
 				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
 				mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix));
-				std::cout<<mvars[k]<<std::endl;
+				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
 			if (sMatrix.find('/')!=std::string::npos)
@@ -265,7 +269,7 @@ else // interactive prompt
 					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
 					mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix));
-					std::cout<<mvars[k]<<std::endl;
+					if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 				}
 
 				else //normal division
@@ -276,7 +280,7 @@ else // interactive prompt
 					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
 					mvars[k].CopyMatrix(div(firstmatrix,secondmatrix));
-					std::cout<<mvars[k]<<std::endl;
+					if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 				}
 			}
 
@@ -285,7 +289,7 @@ else // interactive prompt
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
 				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
 				mvars[k]=firstmatrix.getTranspose();
-				std::cout<<mvars[k]<<std::endl;
+				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
 		}
