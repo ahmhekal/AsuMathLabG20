@@ -191,7 +191,14 @@ else // interactive prompt
 		std::string matrixname="",wantedvalue="";	
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
-			
+
+		string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+		mathematical_calc(stringvalue);
+		parthen_analysis(stringvalue);
+		math_piority_calc(stringvalue);
+
+
+
 		if (sMatrix.find('[')!=std::string::npos)
 		{
 			int startcalc= sMatrix.find('[');
@@ -203,24 +210,12 @@ else // interactive prompt
 			if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 		}
 
-		else if(sMatrix[endname+1]>='0' && sMatrix[endname+1]<('9'+1))
+		else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
 		{
-			string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-			mathematical_calc(stringvalue);
-			math_piority_calc(stringvalue);
+		
 			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 		}
-
-		else if(sMatrix[endname+1]=='(')
-		{
-			string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-			parthen_analysis(stringvalue);
-			math_piority_calc(stringvalue);
-			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
-			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-		}
-
 
 
 		else
