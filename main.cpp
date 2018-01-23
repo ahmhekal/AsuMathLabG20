@@ -223,8 +223,12 @@ else // interactive prompt
 
 			if (sMatrix.find('-')!=std::string::npos)
 			{
+				std::string secondvalue;
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('-')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-1));
+				if ( sMatrix.find(';')==std::string::npos)
+				secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-1));
+				else 
+				secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-2));
 				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
 				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
@@ -249,9 +253,12 @@ else // interactive prompt
 			}
 
 			if (sMatrix.find('*')!=std::string::npos)
-			{
+			{std::string secondvalue;
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('*')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-1));
+				if ( sMatrix.find(';')==std::string::npos)
+				secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-1));
+				else 
+				secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-2));
 				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
 				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
@@ -263,8 +270,12 @@ else // interactive prompt
 			{
 				if(sMatrix[sMatrix.find('/')-1]=='.') //element wise
 				{
-					std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('.')-endname-1); //to get the string name of the first variable
-					std::string secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
+					std::string secondvalue;
+				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
+				if ( sMatrix.find(';')==std::string::npos)
+				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
+				else 
+				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-2));
 					double firstmatrix=atof(firstvalue.c_str());
 					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
@@ -274,8 +285,12 @@ else // interactive prompt
 
 				else //normal division
 				{
-					std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
-					std::string secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
+					std::string secondvalue;
+				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
+				if ( sMatrix.find(';')==std::string::npos)
+				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
+				else 
+				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-2));
 					CMatrix firstmatrix=stringtomatrix(firstvalue,k);
 					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
 
