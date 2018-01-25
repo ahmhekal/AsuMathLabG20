@@ -215,10 +215,10 @@ else // interactive prompt
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
 				vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
+ 			        CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
 			   
-                                 mvars[k]=cc;
-				 std::cout<<mvars[k]<<std::endl;
+                                mvars[k]=cc;
+
 			
 			}
 
@@ -231,10 +231,10 @@ else // interactive prompt
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
 				vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
+ 			        CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
 			       
                                 mvars[k]=cc;
-				 std::cout<<mvars[k]<<std::endl;
+
 			
 			}
 
@@ -248,10 +248,10 @@ else // interactive prompt
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
 				vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
+ 			        CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
 			       
                                  mvars[k]=cc;
-				 std::cout<<mvars[k]<<std::endl;
+
 			
 			}
 
@@ -263,11 +263,11 @@ else // interactive prompt
 				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 	                   	 		
-				//vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
+				vars[k]=matrixname;
+ 			        CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
 			        std::cout<<cc<<std::endl;
-                                // mvars[k]=cc;
-				// std::cout<<mvars[k]<<std::endl;
+                                mvars[k]=cc;
+
 			
 			}
 
