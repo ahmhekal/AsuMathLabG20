@@ -462,49 +462,149 @@ cout<<test2<<endl;
 
 
 }
-void func(string& test){
-int a;
-for(int i=0;i<test.length();i++){
-if((test[i]=='+'||test[i]=='-')&&i!=0){
-a=i;
-break;
+void mathematical_calc(string& a){
+if(a.find("sin")!=string::npos){
+
+int first_pos=a.find("sin");
+int end_pos=a.find(')',first_pos);
+string expression=a.substr(first_pos,end_pos-first_pos+1);
+string operand_str=expression.substr(4,a.length()-4-1);
+if(operand_str.find(')')!=string::npos){
+operand_str.erase(operand_str.find(')'),1);
 }
-}
-int x=0;
-int y=test.length()-1;
-for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')||test[0]=='-')){
-x=i+1;
-break;
+math_piority_calc(operand_str);
+if(!isdigit(operand_str[0])){
+asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
+k++;
+mvars[k]=sin(firstmatrix);
+string s="result";
+vars[k]=s+to_string(k);
+a.replace(first_pos,end_pos-first_pos+1,vars[k]);
+
+
 
 }
-}
-for(int j=a+1;j<test.length();j++){
-if(!(test[j]>='.'&&test[j]<='9')){
-
-
-y=j-1;
-break;
-
-}
-
-}
-double z=to_double(test.substr(x,a-x));
-double k=to_double(test.substr(a+1,y-a));
+else{
+char * buffer=new char[operand_str.length()+1];
+strcpy(buffer,operand_str.c_str());
+double operand=atof(buffer);
 double result;
-switch(test[a]){
-case '+': result=z+k; break;
-case '-': result=z-k; break;
+result=sin(operand);
+char buffer_test[50];
+sprintf(buffer_test,"%g",result);
+a.replace(first_pos,end_pos-first_pos+1,(string)buffer_test);
+
+delete [] buffer;
 
 }
-string replacement=to_string(result);
-test.replace(x,y-x+1,replacement);
-cout<<test<<endl;
+}
+ if(a.find("cos")!=string::npos){
+int first_pos=a.find("cos");
+int end_pos=a.find(')',first_pos);
+string expression=a.substr(first_pos,end_pos-first_pos+1);
+string operand_str=expression.substr(4,a.length()-4-1);
+if(operand_str.find(')')!=string::npos){
+operand_str.erase(operand_str.find(')'),1);
+}
+math_piority_calc(operand_str);
+if(!isdigit(operand_str[0])){
+asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
+k++;
+mvars[k]=cos(firstmatrix);
+string s="result";
+vars[k]=s+to_string(k);
+a.replace(first_pos,end_pos-first_pos+1,vars[k]);
+
+
+
+}
+else{
+char * buffer=new char[operand_str.length()+1];
+strcpy(buffer,operand_str.c_str());
+double operand=atof(buffer);
+double result=cos(operand);
+char buffer_test[50];
+sprintf(buffer_test,"%g",result);
+a.replace(first_pos,end_pos-first_pos+1,(string)buffer_test);
+
+delete [] buffer;
+}
+
+
+
+}
+ if(a.find("tan")!=string::npos){
+int first_pos=a.find("tan");
+int end_pos=a.find(')',first_pos);
+string expression=a.substr(first_pos,end_pos-first_pos+1);
+string operand_str=expression.substr(4,a.length()-4-1);
+if(operand_str.find(')')!=string::npos){
+operand_str.erase(operand_str.find(')'),1);
+}
+math_piority_calc(operand_str);
+if(!isdigit(operand_str[0])){
+asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
+k++;
+mvars[k]=tan(firstmatrix);
+string s="result";
+vars[k]=s+to_string(k);
+a.replace(first_pos,end_pos-first_pos+1,vars[k]);
+}
+
+else{
+char * buffer=new char[operand_str.length()+1];
+strcpy(buffer,operand_str.c_str());
+double operand=atof(buffer);
+double result=tan(operand);
+char buffer_test[50];
+sprintf(buffer_test,"%g",result);
+a.replace(first_pos,end_pos-first_pos+1,(string)buffer_test);
+
+delete [] buffer;
+}
+
+}
+if(a.find("sqrt")!=string::npos){
+int first_pos=a.find("sqrt");
+int end_pos=a.find(')',first_pos);
+string expression=a.substr(first_pos,end_pos-first_pos+1);
+string operand_str=expression.substr(5,a.length()-5-1);
+if(operand_str.find(')')!=string::npos){
+operand_str.erase(operand_str.find(')'),1);
+}
+math_piority_calc(operand_str);
+cout<<operand_str<<endl;
+if(!isdigit(operand_str[0])){
+asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
+k++;
+mvars[k]=sqrt(firstmatrix);
+string s="result";
+vars[k]=s+to_string(k);
+a.replace(first_pos,end_pos-first_pos+1,vars[k]);
+
+
+
+}
+else{
+char * buffer=new char[operand_str.length()+1];
+strcpy(buffer,operand_str.c_str());
+double operand=atof(buffer);
+double result=sqrt(operand);
+char buffer_test[50];
+sprintf(buffer_test,"%g",result);
+a.replace(first_pos,end_pos-first_pos+1,(string)buffer_test);
+
+delete [] buffer;
+}
+
 
 
 }
 
 
+
+}
+ 
 
 
 
