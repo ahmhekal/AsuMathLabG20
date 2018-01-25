@@ -204,12 +204,12 @@ else // interactive prompt
 void allocate_sub_matrix(string &in,CMatrix *temp);
 		
 		std::string svalue="";
-	svalue=sMatrix.substr(2,3);
+	svalue=sMatrix.substr( endname+1,3);
 
 			if (svalue=="zer")
 			{
 
-				int index= sMatrix.find('s');
+				int index= sMatrix.rfind('s');
 
 				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
@@ -225,7 +225,7 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 			else if (svalue=="one")
 			{
 
-				int index= sMatrix.find('s');
+				int index= sMatrix.rfind('s');
 
 				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
@@ -241,7 +241,7 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 			else if (svalue=="eye")
 			{
 
-				int index= sMatrix.find('e');
+				int index= sMatrix.rfind('e');
 				index+=2;
 
 				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
@@ -258,7 +258,7 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 			else if (svalue=="ran")
 			{
 
-				int index= sMatrix.find('d');
+				int index= sMatrix.rfind('d');
 
 				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
