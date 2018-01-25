@@ -219,7 +219,7 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 			   
                                  mvars[k]=cc;
 
-			
+			     std::cout<<mvars[k]<<std::endl;
 			}
 
 			else if (svalue=="one")
@@ -232,8 +232,8 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 
 				vars[k]=matrixname;
  			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
-			       
-                                mvars[k]=cc;
+			       mvars[k]=cc;
+                            std::cout<<mvars[k]<<std::endl;
 
 			
 			}
@@ -249,8 +249,8 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 
 				vars[k]=matrixname;
  			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
-			       
-                                 mvars[k]=cc;
+			       mvars[k]=cc;
+                            std::cout<<mvars[k]<<std::endl;
 
 			
 			}
@@ -265,8 +265,8 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 	                   	 		
 				vars[k]=matrixname;
  			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
-			        std::cout<<cc<<std::endl;
-                                 mvars[k]=cc;
+				mvars[k]=cc;
+                            std::cout<<mvars[k]<<std::endl;
 			
 			}
 
