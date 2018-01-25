@@ -1,7 +1,7 @@
 all: matrix
 
 matrix: FORCE
-	g++ main.cpp matrix.cpp parser2.cpp parser2.h -o matrix -Wall -Wextra -O3
+	g++ main.cpp matrix.cpp -o matrix -Wall -Wextra -O3
 matrix_test: FORCE
 	g++ matrix_test.cpp matrix.cpp -o matrix_test -Wall -Wextra -O3 && ./matrix_test
 clean:
