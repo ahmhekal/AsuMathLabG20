@@ -314,6 +314,8 @@ static void print_page(
 		else
 			os << " Columns " << start_col + 1
 			   << " through " << end_col << ":\n\n";
+	} else {
+		end_col = start_col + m_ncols;
 	}
 	for (size_t i = 0; i < m_nrows; ++i, os << '\n')
 		for (size_t j = start_col; j < end_col; ++j)
