@@ -222,6 +222,55 @@ else // interactive prompt
 			
 			}
 
+			else if (svalue=="one")
+			{
+
+				int index= sMatrix.find('s');
+
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+
+				vars[k]=matrixname;
+ 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
+			       
+                                mvars[k]=cc;
+				 std::cout<<mvars[k]<<std::endl;
+			
+			}
+
+			else if (svalue=="eye")
+			{
+
+				int index= sMatrix.find('e');
+				index+=2;
+
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+
+				vars[k]=matrixname;
+ 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
+			       
+                                 mvars[k]=cc;
+				 std::cout<<mvars[k]<<std::endl;
+			
+			}
+
+			else if (svalue=="ran")
+			{
+
+				int index= sMatrix.find('d');
+
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+	                   	 		
+				//vars[k]=matrixname;
+ 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
+			        std::cout<<cc<<std::endl;
+                                // mvars[k]=cc;
+				// std::cout<<mvars[k]<<std::endl;
+			
+			}
+
 
 		if (sMatrix.find('[')!=std::string::npos)
 		{
