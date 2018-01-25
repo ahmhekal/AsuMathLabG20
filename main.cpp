@@ -66,7 +66,7 @@ break;
 int x=0;
 int y=test.length()-1;
 for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z')))
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
  {
 x=i+1;
 break;
@@ -74,7 +74,7 @@ break;
 }
 }
 for(int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
 
 
 y=j-1;
@@ -112,7 +112,7 @@ mvars[k]=r;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 
 
 }
@@ -125,7 +125,7 @@ double result=pow(z,k);
 
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 
 }
  }
@@ -143,7 +143,7 @@ int x=0;
 int y=test.length()-1;
 //&&test[0]!='-'
 for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&test[0]!='-')
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z'))&&test[0]!='-')
  {
 x=i+1;
 break;
@@ -151,7 +151,7 @@ break;
 }
 }
 for(int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
 
 
 y=j-1;
@@ -174,9 +174,9 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
-std::cout<<operand1<<std::endl;
+//std::cout<<operand1<<std::endl;
 
-std::cout<<operand2<<std::endl;
+//std::cout<<operand2<<std::endl;
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -258,7 +258,7 @@ case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 
 
 
@@ -274,7 +274,7 @@ case '/': result=z/k; break;
 }
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 }
 }
 while((test.find('+')!=std::string::npos||test.find('-',1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
@@ -288,7 +288,7 @@ break;
 int x=0;
 int y=test.length()-1;
 for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&test[0]!='-')
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z'))&&test[0]!='-')
  {
 x=i+1;
 break;
@@ -296,7 +296,7 @@ break;
 }
 }
 for(int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
 
 
 y=j-1;
@@ -319,9 +319,9 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
-std::cout<<operand1<<std::endl;
+//std::cout<<operand1<<std::endl;
 
-std::cout<<operand2<<std::endl;
+//std::cout<<operand2<<std::endl;
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -393,7 +393,7 @@ case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 
 
 
@@ -409,7 +409,7 @@ case '-': result=z-k; break;
 }
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-std::cout<<test<<std::endl;
+//std::cout<<test<<std::endl;
 }
 
 }
@@ -436,7 +436,7 @@ std::string expression=test2.substr(x+1,y-x-1);
 
 math_piority_calc(expression);
 test2.replace(x,y-x+1,expression);
-std::cout<<test2<<std::endl;
+//std::cout<<test2<<std::endl;
 
 }
 
