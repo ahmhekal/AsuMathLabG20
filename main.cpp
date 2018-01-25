@@ -8,7 +8,7 @@ using namespace asu;
 std::string* vars; //matrices names in string ====  std::string vars[100];
 CMatrix* mvars;   //matrices values  ====  CMatrix mvars[100];
 
-void allocate_sub_matrix(string &in,CMatrix *temp);
+
 std::string removeSpaces(std::string input)   //remove spaces from the beginning to '[' or the end of the line
 {
   //int length = input.length();
@@ -201,7 +201,7 @@ else // interactive prompt
 		mathematical_calc(stringvalue);
 		math_piority_calc(stringvalue);
 		//std::cout<<stringvalue;
-void allocate_sub_matrix(string &in,CMatrix *temp);
+
 		
 		std::string svalue="";
 	svalue=sMatrix.substr(2,3);
@@ -221,56 +221,6 @@ void allocate_sub_matrix(string &in,CMatrix *temp);
 				 std::cout<<mvars[k]<<std::endl;
 			
 			}
-
-else if (svalue=="one")
-			{
-
-				int index= sMatrix.find('s');
-
-				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
-
-				vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
-			       
-                                mvars[k]=cc;
-				 std::cout<<mvars[k]<<std::endl;
-			
-			}
-
-else if (svalue=="eye")
-			{
-
-				int index= sMatrix.find('e');
-index+=2;
-
-				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
-
-				vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
-			       
-                                 mvars[k]=cc;
-				 std::cout<<mvars[k]<<std::endl;
-			
-			}
-
-else if (svalue=="ran")
-			{
-
-				int index= sMatrix.find('d');
-
-				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
-	                   	 		
-				//vars[k]=matrixname;
- 			       CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
-			        std::cout<<cc<<std::endl;
-                                // mvars[k]=cc;
-				// std::cout<<mvars[k]<<std::endl;
-			
-			}
-
 
 
 		if (sMatrix.find('[')!=std::string::npos)
@@ -401,60 +351,5 @@ else if (svalue=="ran")
 
 	return 0;
 }
-
-void allocate_sub_matrix(string &in,CMatrix *temp)
-{
-	string t =in;
-	int x1 =in.find('[');
-	int x2 =in.find('[',x1+1);
-	if( x1!=std::string::npos && x2!=std::string::npos )
-	{	
-		int x22 =in.find('[',x2+1);
-		int x3  =in.find(']',x2);
-		int count=1;
-		int offsetPos=0;
-		int inlength=in.length();
-		for(int i=x2+1;i<inlength;i++)
-		{
-			if(in[i]=='[')
- 			count++;
-		}
-		temp =new CMatrix[count];
-		for (int i=0;i<count; i++)
-		{
-			if( x3!=std::string::npos )
-			{	
-				if( x3<x22 )
-				{
-					string s=in.substr(x2,x3-x2+1);
-					char text[10];
-					sprintf(text,"temp%d",i);
-					string ss=string(text);
-					t=t.replace(x2-offsetPos,x3-x2+1,ss);
-					temp[i].CopyMatrix(s);
-					std::cout<<s<<"  "<<ss<<"  "<<std::endl;
-					std::cout<<x2<<"  "<<x3<<"  "<<x22<<"  "<<offsetPos<<"  "<<std::endl;
-					x2 =x22;
-					x22 =in.find('[',x22+1);
-					if(x22==std::string::npos)x22=inlength;
-					x3 =in.find(']',x2);
-					offsetPos+=s.length()-ss.length();
-				}
-				else 
-				{
-
-					
-				}
-			}
-			else
-			{
-				throw std::invalid_argument("expected ']'");
-			}
-		}
-		in=t;	
-	}
-	std::cout<< in<<std::endl;
-}
-//a=[[1;0] [[5;3;4] [7;8;9]]]
 
 
