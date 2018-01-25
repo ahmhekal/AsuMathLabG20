@@ -21,15 +21,120 @@ std::string removeSpaces(std::string input)   //remove spaces from the beginning
 }
 
 
-CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
+asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
 {
-	int i; k++;
+	int i; //k++;
 	for (i =k ; i>=0; i--)
 	{
 		if(vars[i]==s) return mvars[i];
 	}
 	if(i>99) throw std::invalid_argument("Impossible variable name");
-	CMatrix nomatrix; return nomatrix ;
+	asu::CMatrix nomatrix; return nomatrix ;
+}
+string to_string(double operand){
+char buffer_test[50];
+sprintf(buffer_test,"%g",operand);
+return(string)buffer_test;
+}
+double to_double(string operand){
+char * buffer=new char[operand.length()+1];
+strcpy(buffer,operand.c_str());
+double result=atof(buffer);
+delete [] buffer;
+return result;
+
+}
+void math_piority_calc(string& test){
+int count=0;
+
+while(test.find('^')!=string::npos){
+//int a=test.find('*');
+int a;
+for(int i=0;i<test.length();i++){
+if(test[i]=='^'){
+a=i;
+break;
+}
+}
+
+int x=0;
+int y=test.length()-1;
+for(int i=a-1;i>=0;i--){
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z')))
+ {
+x=i+1;
+break;
+
+}
+}
+for(int j=a+1;j<test.length();j++){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&test[a+1]!='-'){
+
+
+y=j-1;
+//
+//cout<<y;
+break;
+
+}
+
+}
+//cout<<test.substr(x,a-x)<<endl;
+//cout<<test.substr(a+1,y-a+1);
+//cout<<stringtomatrix(test.substr(x,a-x),k);
+string operand1;
+string operand2;
+if(test[a-1]=='.'){
+ operand1=test.substr(x,a-x-1);
+}
+else{ operand1=test.substr(x,a-x);}
+
+
+ operand2=test.substr(a+1,y-a);
+if(!isdigit(operand1[0])||!isdigit(operand2[0])){
+double m=to_double(operand2);
+asu::CMatrix r ;
+if(test[a-1]=='.'){
+  r =power_modified_elementwise(stringtomatrix(operand1,k),m);
+}
+else{ r =power_modified(stringtomatrix(operand1,k),m);}
+
+//cout<<r;
+count++;
+k++;
+mvars[k]=r;
+string s="result";
+vars[k]=s+to_string(k);
+test.replace(x,y-x+1,vars[k]);
+cout<<test<<endl;
+
+
+}
+else{
+double z=to_double(test.substr(x,a-x));
+double k=to_double(test.substr(a+1,y-a));
+
+
+double result=pow(z,k);
+
+string replacement=to_string(result);
+test.replace(x,y-x+1,replacement);
+cout<<test<<endl;
+
+}
+ }
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

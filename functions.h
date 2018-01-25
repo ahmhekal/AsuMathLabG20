@@ -227,6 +227,27 @@ double power(double n, double m) { return pow(n, m); }
 asu::CMatrix power(const asu::CMatrix& n, const asu::CMatrix& m)
 { return pow(n, m); }
 
+asu::CMatrix power_modified_elementwise(const asu::CMatrix& n,double m){
+ asu::CMatrix r(n.getnRows(), n.getnColumns());
+ for(int i=0;i<n.getnRows();i++)
+ {
+ for(int j=0;j<n.getnColumns();j++){
+ r(i,j)=pow(n(i,j),m);
+ }
+ }
+ return r;
+
+
+}
+asu::CMatrix power_modified(const asu::CMatrix& n,double m)
+{
+asu::CMatrix r=n;
+for(int i=0;i<m-1;i++){
+r.CopyMatrix(mul(r,n));
+}
+return r;
+}
+
 /*
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
