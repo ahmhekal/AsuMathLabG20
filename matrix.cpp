@@ -1,10 +1,15 @@
 #include "matrix.h"
 #include <cstdlib>	// atof, rand
 #include <string>	// string
+#include <vector>	// vector
+#include <algorithm>	// max_element
+#include <iomanip>	// setw
+#include <cstdio>	// snprintf
 #include <stdexcept>	// invalid_argument and other exceptions
 #include <cstdarg>	// va_list, etc
 #include <string.h>	// strcpy, strtok_r
 #include <math.h>	// NAN, isnan
+#include <sys/ioctl.h>	// for ioctl to get the terminal width
 
 namespace asu {
 
@@ -285,19 +290,111 @@ std::istream& operator>>(std::istream& is, CMatrix& m)   //need to be edited
 	return is;
 }
 
+static unsigned short get_window_width()
+{
+	struct winsize w;
+	ioctl(0, TIOCGWINSZ, &w);
+	return w.ws_col;
+}
+
+static void print_page(
+		std::ostream& os,
+		size_t full_column_width,
+		const std::vector<std::string>& matrix_string,
+		size_t m_nrows,
+		size_t m_ncols,
+		size_t start_col,
+		size_t ncols_in_page
+	)
+{
+	size_t end_col = start_col + ncols_in_page;
+	if (ncols_in_page != 0) { // a multipage matrix; print a header
+		if (ncols_in_page == 1)
+			os << " Column " << start_col + 1 << ":\n\n";
+		else
+			os << " Columns " << start_col + 1
+			   << " through " << end_col << ":\n\n";
+	} else {
+		end_col = start_col + m_ncols;
+	}
+	for (size_t i = 0; i < m_nrows; ++i, os << '\n')
+		for (size_t j = start_col; j < end_col; ++j)
+			os << std::setw(full_column_width)
+			   << matrix_string[i*m_ncols + j];
+}
+
+static void create_string_representation(
+		const CMatrix& m,
+		std::vector<std::string>& matrix_string,
+		size_t& column_width
+	)
+{
+	std::vector<size_t> elements_length;
+	size_t n = m.getn();
+	matrix_string.resize(n);
+	elements_length.resize(n);
+	for (size_t i = 0; i < n; ++i) {
+		enum { max_chars_per_elem = 16 };
+		char element[max_chars_per_elem];
+		std::snprintf(element, max_chars_per_elem, "%.5g", m(i));
+		matrix_string[i] = element;
+		elements_length[i] = matrix_string[i].length();
+	}
+	column_width =
+		*std::max_element(elements_length.begin(), elements_length.end());
+}
 
 std::ostream& operator<<(std::ostream& os, const CMatrix& m)
 {
-	for (size_t i = 0; i < m.getnRows(); ++i) {
-		for (size_t j = 0; j < m.getnColumns(); ++j)
-		 {
-			os<<m(i,j); //<<std::fixed<<std::setprecision(4)
-			if (j != m.getnColumns() - 1)
-			os <<"\t";
-
+	// we want to print the matrix in columns whose width is constant, and
+	// wrap the rows around the entire matrix if they are too long.
+	// every non-complex number is printed using the format "%.5g".
+	// columns are left-padded with spaces when necessary.
+	//
+	// the number of columns in the window
+	unsigned short window_width = get_window_width();
+	// the number of spaces before or between columns
+	const size_t space_width = 3;
+	// the matrix' elements formatted for printing
+	std::vector<std::string> matrix_string;
+	// the max num of chars per column
+	size_t column_width;
+	// determine column_width and matrix_string
+	create_string_representation(m, matrix_string, column_width);
+	const size_t full_column_width = space_width + column_width;
+	// if the matrix' rows are not too long for a single screen/page
+	if (m.getnColumns() * full_column_width <= window_width) {
+		os << '\n';
+		print_page(
+			os,
+			full_column_width,
+			matrix_string,
+			m.getnRows(),
+			m.getnColumns(),
+			0,
+			0
+		);
+	// if we need to print the matrix on multiple screens/pages
+	} else {
+		// determine the number of cols to print in a row per "page"
+		const size_t ncols = window_width / full_column_width;
+		// determine how many "pages" we need to print
+		const size_t npages = ceil(m.getnColumns() * 1.0 / ncols);
+		for (size_t page = 0; page < npages; ++page) {
+			size_t start_col = page * ncols;
+			size_t ncols_in_page =
+				std::min(ncols, m.getnColumns() - start_col);
+			os << '\n';
+			print_page(
+				os,
+				full_column_width,
+				matrix_string,
+				m.getnRows(),
+				m.getnColumns(),
+				start_col,
+				ncols_in_page
+			);
 		}
-
-		os <<"\n";
 	}
 	return os;
 }
@@ -360,6 +457,43 @@ void CMatrix::CopyMatrix(const char* s)   //need to be edited
 		line = strtok_r(0, lineSeparators, &lineContext);
 	}
 	delete[] buffer;
+}
+
+
+void CMatrix::CopyMatrix(std::string s)
+{
+reset();
+char* buffer = new char[s.length()+1];
+strcpy(buffer, s.c_str());
+char* lineContext;
+char lineSeparators[3];
+lineSeparators[0] = ';';
+lineSeparators[1] = '\r';
+lineSeparators[2] = '\n';
+
+
+char* line = strtok_r(buffer, lineSeparators, &lineContext);
+while(line)
+{
+CMatrix row;
+char* context;
+char separators[3];
+separators[0] = ' ';
+separators[1] = '[';
+separators[2] = ']';
+
+char* token = strtok_r(line, separators, &context);
+while(token)
+{
+CMatrix item = atof(token);
+row.addColumn(item);
+token = strtok_r(NULL, separators, &context);
+}
+if(row.nColumns>0 && (row.nColumns==nColumns || nRows==0))
+addRow(row);
+line = strtok_r(NULL, lineSeparators, &lineContext);
+}
+delete[] buffer;
 }
 
 void CMatrix::CopyMatrix(double d)
