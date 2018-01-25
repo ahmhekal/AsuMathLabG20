@@ -29,12 +29,12 @@ std::string removeSpaces(std::string input)   //remove spaces from the beginning
 
 asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
 {
-	int i; //k++;
-	for (i =k ; i>=0; i--)
+	int i;
+	for (i =k+1 ; i>=0; i--)
 	{
 		if(vars[i]==s) return mvars[i];
 	}
-	if(i>99) throw std::invalid_argument("Impossible variable name");
+	if(i<=0) throw std::invalid_argument("Impossible variable name");
 	asu::CMatrix nomatrix; return nomatrix ;
 }
 std::string to_string(double operand){
@@ -770,9 +770,11 @@ else // interactive prompt
 
 
 		else
-		{
-
-			if (sMatrix.find('-')!=std::string::npos)
+		{	
+			mvars[k]=stringtomatrix(stringvalue,k);
+			
+			std::cout<<mvars[k]<<std::endl;
+			/*if (sMatrix.find('-')!=std::string::npos)
 			{
 				std::string secondvalue;
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('-')-endname-1); //to get the string name of the first variable
@@ -862,7 +864,7 @@ else // interactive prompt
 			{
 
 				std::cout<<stringtomatrix(sMatrix,k)<<std::endl;
-			}
+			}*/
 
 		}
 
