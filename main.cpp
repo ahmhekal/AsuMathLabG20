@@ -271,16 +271,235 @@ test.replace(x,y-x+1,replacement);
 cout<<test<<endl;
 }
 }
+while((test.find('+')!=string::npos||test.find('-',1)!=string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
+int a;
+for(int i=0;i<test.length();i++){
+if((test[i]=='+'||test[i]=='-')&&i!=0){
+a=i;
+break;
+}
+}
+int x=0;
+int y=test.length()-1;
+for(int i=a-1;i>=0;i--){
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&test[0]!='-')
+ {
+x=i+1;
+break;
+
+}
+}
+for(int j=a+1;j<test.length();j++){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))){
+
+
+y=j-1;
+//
+//cout<<y;
+break;
+
+}
+
+}
+string operand1;
+string operand2;
+if(test[a-1]=='.'){
+ operand1=test.substr(x,a-x-1);
+}
+else{ operand1=test.substr(x,a-x);}
+if(test[y]=='.'){
+y-=1;
+}
+
+
+ operand2=test.substr(a+1,y-a);
+cout<<operand1<<endl;
+
+cout<<operand2<<endl;
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
+asu::CMatrix firstmatrix;
+asu::CMatrix secondmatrix;
+double operand_double;
+if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
+firstmatrix=stringtomatrix(operand1,k);
+secondmatrix=stringtomatrix(operand2,k);
+k++;
+//cout<<secondmatrix<<endl;
+switch(test[a]){
+case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+
+}
+}
+if(!isdigit(operand1[0])&&isdigit(operand2[0])){
+firstmatrix=stringtomatrix(operand1,k);
+operand_double=to_double(operand2);
+if(test[a-1]=='.'){
+k++;
+switch(test[a]){
+case '+': mvars[k].CopyMatrix(add(firstmatrix,operand_double)); break;
+case '-': mvars[k].CopyMatrix(sub(firstmatrix,operand_double)); break;
+
+}
+
+}
+else{
+secondmatrix=operand_double;
+k++;
+switch(test[a]){
+case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+
+
+}
+}
+
+
+}
+
+///
+if(isdigit(operand1[0])&&!isdigit(operand2[0])){
+operand_double=to_double(operand1);
+secondmatrix=stringtomatrix(operand2,k);
+
+if(test[a-1]=='.'){
+k++;
+switch(test[a]){
+case '+': mvars[k].CopyMatrix(add(operand_double,secondmatrix)); break;
+case '-': mvars[k].CopyMatrix(sub(operand_double,secondmatrix)); break;
+
+}
+
+}
+else{
+firstmatrix=operand_double;
+k++;
+switch(test[a]){
+case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+
+
+}
+}
+
+
+}
+string s="result";
+vars[k]=s+to_string(k);
+test.replace(x,y-x+1,vars[k]);
+cout<<test<<endl;
 
 
 
+}
+else{
+double z=to_double(test.substr(x,a-x));
+double k=to_double(test.substr(a+1,y-a));
+double result;
+switch(test[a]){
+case '+': result=z+k; break;
+case '-': result=z-k; break;
+
+}
+string replacement=to_string(result);
+test.replace(x,y-x+1,replacement);
+cout<<test<<endl;
+}
+
+}
+}
+
+void parthen_analysis(string& test2){
+while(test2.find('(')!=string::npos)
+{
+int x=0;
+int y=test2.length()-1;
+for(int i=0;i<test2.length();i++){
+if(test2[i]=='(')
+x=i;
+
+}
+for(int i=0;i<test2.length();i++){
+if(test2[i]==')'&&i>x){
+y=i;
+break;
+}
+}
+
+string expression=test2.substr(x+1,y-x-1);
+
+math_piority_calc(expression);
+test2.replace(x,y-x+1,expression);
+cout<<test2<<endl;
+
+}
+
+}
+void parthen_analysis(string& test2){
+while(test2.find('(')!=string::npos)
+{
+int x=0;
+int y=test2.length()-1;
+for(int i=0;i<test2.length();i++){
+if(test2[i]=='(')
+x=i;
+
+}
+for(int i=0;i<test2.length();i++){
+if(test2[i]==')'&&i>x){
+y=i;
+break;
+}
+}
+
+string expression=test2.substr(x+1,y-x-1);
+
+math_piority_calc(expression);
+test2.replace(x,y-x+1,expression);
+cout<<test2<<endl;
+
+}
 
 
+}
+void func(string& test){
+int a;
+for(int i=0;i<test.length();i++){
+if((test[i]=='+'||test[i]=='-')&&i!=0){
+a=i;
+break;
+}
+}
+int x=0;
+int y=test.length()-1;
+for(int i=a-1;i>=0;i--){
+if(!((test[i]>='.'&&test[i]<='9')||test[0]=='-')){
+x=i+1;
+break;
+
+}
+}
+for(int j=a+1;j<test.length();j++){
+if(!(test[j]>='.'&&test[j]<='9')){
 
 
+y=j-1;
+break;
 
+}
 
+}
+double z=to_double(test.substr(x,a-x));
+double k=to_double(test.substr(a+1,y-a));
+double result;
+switch(test[a]){
+case '+': result=z+k; break;
+case '-': result=z-k; break;
 
+}
+string replacement=to_string(result);
+test.replace(x,y-x+1,replacement);
+cout<<test<<endl;
 
 
 }
