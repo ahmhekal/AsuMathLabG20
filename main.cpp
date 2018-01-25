@@ -123,6 +123,154 @@ cout<<test<<endl;
 
 }
  }
+ while(test.find('*')!=string::npos||test.find('/')!=string::npos){
+//int a=test.find('*');
+int a;
+for(int i=0;i<test.length();i++){
+if(test[i]=='*'||test[i]=='/'){
+a=i;
+break;
+}
+}
+
+int x=0;
+int y=test.length()-1;
+//&&test[0]!='-'
+for(int i=a-1;i>=0;i--){
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&test[0]!='-')
+ {
+x=i+1;
+break;
+
+}
+}
+for(int j=a+1;j<test.length();j++){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))){
+
+
+y=j-1;
+//
+//cout<<y;
+break;
+
+}
+
+}
+string operand1;
+string operand2;
+if(test[a-1]=='.'){
+ operand1=test.substr(x,a-x-1);
+}
+else{ operand1=test.substr(x,a-x);}
+if(test[y]=='.'){
+y-=1;
+}
+
+
+ operand2=test.substr(a+1,y-a);
+cout<<operand1<<endl;
+
+cout<<operand2<<endl;
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
+asu::CMatrix firstmatrix;
+asu::CMatrix secondmatrix;
+double operand_double;
+if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
+firstmatrix=stringtomatrix(operand1,k);
+secondmatrix=stringtomatrix(operand2,k);
+if(test[a-1]=='.'){
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(amul(firstmatrix,secondmatrix)); break;
+case '/': mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix)); break;
+
+}
+}
+else{
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+
+
+}
+}
+}
+if(!isdigit(operand1[0])&&isdigit(operand2[0])){
+firstmatrix=stringtomatrix(operand1,k);
+operand_double=to_double(operand2);
+if(test[a-1]=='.'){
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(amul(firstmatrix,operand_double)); break;
+case '/': mvars[k].CopyMatrix(adiv(firstmatrix,operand_double)); break;
+
+}
+
+}
+else{
+secondmatrix=operand_double;
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+
+
+}
+}
+
+
+}
+
+///
+if(isdigit(operand1[0])&&!isdigit(operand2[0])){
+operand_double=to_double(operand1);
+secondmatrix=stringtomatrix(operand2,k);
+
+if(test[a-1]=='.'){
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(amul(operand_double,secondmatrix)); break;
+case '/': mvars[k].CopyMatrix(adiv(operand_double,secondmatrix)); break;
+
+}
+
+}
+else{
+firstmatrix=operand_double;
+k++;
+switch(test[a]){
+case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+
+
+}
+}
+
+
+}
+string s="result";
+vars[k]=s+to_string(k);
+test.replace(x,y-x+1,vars[k]);
+cout<<test<<endl;
+
+
+
+}
+else{
+double z=to_double(test.substr(x,a-x));
+double k=to_double(test.substr(a+1,y-a));
+double result;
+switch(test[a]){
+case '*': result=z*k; break;
+case '/': result=z/k; break;
+
+}
+string replacement=to_string(result);
+test.replace(x,y-x+1,replacement);
+cout<<test<<endl;
+}
+}
 
 
 
