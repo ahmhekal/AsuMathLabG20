@@ -13,6 +13,8 @@ using namespace asu;
 std::string* vars; //matrices names in string ====  std::string vars[100];
 CMatrix* mvars;   //matrices values  ====  CMatrix mvars[100];
 int k=0; //matrix index (global variable)
+void concat_analysis(std::string& test2);
+CMatrix concat(std::string s );
 
 std::string removeSpaces(std::string input)   //remove spaces from the beginning to '[' or the end of the line
 {
@@ -738,6 +740,9 @@ else // interactive prompt
 
 		std::string svalue="";
 		svalue=sMatrix.substr( endname+1,3);
+		bool print;
+		if (sMatrix[sMatrix.size()-1]==';'){ print=0; sMatrix = sMatrix.substr(0, sMatrix.size()-1); }
+		else print =1;
 
 		if (svalue=="zer")
 		{
@@ -799,12 +804,22 @@ else // interactive prompt
 
 		else 
 		{
-				if (sMatrix.find('[')!=std::string::npos)
-				{
-					int startcalc= sMatrix.find('[');
-					for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-					vars[k]=matrixname; 
-					mvars[k].CopyMatrix(wantedvalue);
+				if (sMatrix.find('[')!=std::string::npos) //if '[' found
+				{	
+					if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
+					{	//if found another '[' (concatination is found)
+						concat_analysis(stringvalue);
+						mvars[k]=concat(stringvalue);
+					}
+
+					else
+					{
+						int startcalc= sMatrix.find('[');
+						for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+						vars[k]=matrixname; 
+						mvars[k].CopyMatrix(wantedvalue);
+				
+					}
 				}
 
 				else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
@@ -820,7 +835,7 @@ else // interactive prompt
 
 		}
 		
-		if (sMatrix[sMatrix.length()-1]!=';') std::cout<<mvars[k]<<std::endl;	
+		if (print==1) std::cout<<mvars[k]<<std::endl;	
 		vars[k]=matrixname; 
 		k++;
 	}
@@ -831,4 +846,83 @@ else // interactive prompt
 	delete[]vars;
 
 	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+CMatrix concat(std::string s ){
+CMatrix r;
+char* buffer = new char[s.length()+1];
+strcpy(buffer, s.c_str());
+char* lineContext;
+char lineSeparators[3];
+lineSeparators[0] = ';';
+lineSeparators[1] = '\r';
+lineSeparators[2] = '\n';
+
+
+char* line = strtok_r(buffer, lineSeparators, &lineContext);
+while(line)
+{
+CMatrix row;
+char* context;
+char separators[4];
+separators[0] = ' ';
+separators[1] = '[';
+separators[2] = ']';
+separators[3] = ',';
+char* token = strtok_r(line, separators, &context);
+while(token)
+{
+if(!isdigit(token[0])&&token[0]!='-'){
+row.addColumn(stringtomatrix(token,k));
+}
+else{
+CMatrix item = atof(token);
+row.addColumn(item);}
+token = strtok_r(NULL, separators, &context);
+}
+
+r.addRow(row);
+line = strtok_r(NULL, lineSeparators, &lineContext);
+}
+delete[] buffer;
+return r;
+
+}
+void concat_analysis(std::string& test2){
+while(test2.find('[',1)!=std::string::npos)
+{
+int x=0;
+int y=test2.length()-1;
+for(int i=0;i<test2.length();i++){
+if(test2[i]=='[')
+x=i;
+
+}
+for(int i=0;i<test2.length()-1;i++){
+if(test2[i]==']'&&i>x){
+y=i;
+break;
+}
+}
+
+std::string expression=test2.substr(x+1,y-x-1);
+std::cout<<expression<<std::endl;
+k++;
+mvars[k]=concat(expression);
+std::string s="result";
+vars[k]=s+to_string(k);
+test2.replace(x,y-x+1,vars[k]);
+std::cout<<test2<<std::endl;
+
+}
 }
