@@ -145,12 +145,16 @@ int x=0;
 int y=test.length()-1;
 //&&test[0]!='-'
 for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z'))&&test[0]!='-')
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
  {
 x=i+1;
 break;
 
 }
+}
+if(x==1&&test[0]=='-')
+{
+x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
 if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
@@ -290,12 +294,16 @@ break;
 int x=0;
 int y=test.length()-1;
 for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z'))&&test[0]!='-')
+if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
  {
 x=i+1;
 break;
 
 }
+}
+if(x==1&&test[0]=='-')
+{
+x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
 if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
