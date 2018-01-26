@@ -916,13 +916,13 @@ break;
 }
 
 std::string expression=test2.substr(x+1,y-x-1);
-std::cout<<expression<<std::endl;
+//std::cout<<expression<<std::endl;
 k++;
 mvars[k]=concat(expression);
 std::string s="result";
 vars[k]=s+to_string(k);
 test2.replace(x,y-x+1,vars[k]);
-std::cout<<test2<<std::endl;
+//std::cout<<test2<<std::endl;
 
 }
 }
