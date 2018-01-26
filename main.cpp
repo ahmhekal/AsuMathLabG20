@@ -2,18 +2,17 @@
 #include "string"
 #include "matrix.h"
 #include <stdlib.h>  
-//#include "parser2.h"
 #include "functions.h"
-using namespace asu;
 #include "math.h"
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+using namespace asu;
 
 
 std::string* vars; //matrices names in string ====  std::string vars[100];
 CMatrix* mvars;   //matrices values  ====  CMatrix mvars[100];
-int k=0; //matrix index
+int k=0; //matrix index (global variable)
 
 std::string removeSpaces(std::string input)   //remove spaces from the beginning to '[' or the end of the line
 {
@@ -50,13 +49,14 @@ delete [] buffer;
 return result;
 
 }
+
 void math_piority_calc(std::string& test){
 int count=0;
 
 while(test.find('^')!=std::string::npos){
 //int a=test.find('*');
-int a;
-for(int i=0;i<test.length();i++){
+int a=0;
+for(unsigned int i=0;i<test.length();i++){
 if(test[i]=='^'){
 a=i;
 break;
@@ -73,7 +73,7 @@ break;
 
 }
 }
-for(int j=a+1;j<test.length();j++){
+for(unsigned int j=a+1;j<test.length();j++){
 if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
 
 
@@ -131,8 +131,8 @@ test.replace(x,y-x+1,replacement);
  }
  while(test.find('*')!=std::string::npos||test.find('/')!=std::string::npos){
 //int a=test.find('*');
-int a;
-for(int i=0;i<test.length();i++){
+int a=0;
+for(unsigned int i=0;i<test.length();i++){
 if(test[i]=='*'||test[i]=='/'){
 a=i;
 break;
@@ -150,7 +150,7 @@ break;
 
 }
 }
-for(int j=a+1;j<test.length();j++){
+for(unsigned int j=a+1;j<test.length();j++){
 if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
 
 
@@ -278,8 +278,8 @@ test.replace(x,y-x+1,replacement);
 }
 }
 while((test.find('+')!=std::string::npos||test.find('-',1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
-int a;
-for(int i=0;i<test.length();i++){
+int a=0;
+for(unsigned int i=0;i<test.length();i++){
 if((test[i]=='+'||test[i]=='-')&&i!=0){
 a=i;
 break;
@@ -295,7 +295,7 @@ break;
 
 }
 }
-for(int j=a+1;j<test.length();j++){
+for(unsigned int j=a+1;j<test.length();j++){
 if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
 
 
@@ -418,14 +418,14 @@ test.replace(x,y-x+1,replacement);
 void parthen_analysis(std::string& test2){
 while(test2.find('(')!=std::string::npos)
 {
-int x=0;
+unsigned int x=0;
 int y=test2.length()-1;
-for(int i=0;i<test2.length();i++){
+for(unsigned int i=0;i<test2.length();i++){
 if(test2[i]=='(')
 x=i;
 
 }
-for(int i=0;i<test2.length();i++){
+for(unsigned int i=0;i<test2.length();i++){
 if(test2[i]==')'&&i>x){
 y=i;
 break;
@@ -592,10 +592,8 @@ delete [] buffer;
 
 int main(int argc, char** argv)
 {
-int stop=0; 
+
 std::string sMatrix; //input line as string
-
-
 vars=new std::string [100]; //matrices names in string ====  std::string vars[100];
 mvars=new CMatrix[100]; //matrices values  ====  CMatrix mvars[100];
 	
@@ -614,114 +612,50 @@ if (argc > 1) 	//if a filename is given
 			
 		{
 
+			std::getline (std::cin,sMatrix);		
 			sMatrix=removeSpaces(sMatrix);
-			std::string matrixname="",wantedvalue="";
-	
+			std::string matrixname="",wantedvalue="";	
 			int endname = sMatrix.find('=');
 			matrixname=sMatrix.substr(0,endname);
-	
+
+			std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+			mathematical_calc(stringvalue);
+			parthen_analysis(stringvalue);
+			math_piority_calc(stringvalue);
+
+
+
 			if (sMatrix.find('[')!=std::string::npos)
 			{
 				int startcalc= sMatrix.find('[');
 
-				for(int i=startcalc; sMatrix[i]!='\0';i++)		
-				wantedvalue+=sMatrix[i];	
-		
+				for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+						
 				vars[k]=matrixname; 
 				mvars[k].CopyMatrix(wantedvalue);
 				if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 			}
 
-			else if(sMatrix[endname+1]>='0' && sMatrix[endname+1]<('9'+1))
+			else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
 			{
-				std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-				mathematical_calc(stringvalue);
-				math_piority_calc(stringvalue);
+			
 				mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
 			}
 
+
 			else
-			{
-
-				if (sMatrix.find('-')!=std::string::npos)
-				{
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('-')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-1));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix));
-				std::cout<<mvars[k]<<std::endl;
-				}
-
-
-			else if (sMatrix.find('+')!=std::string::npos)
-			{
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('+')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-1));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(add(secondmatrix,firstmatrix));
-				std::cout<<mvars[k]<<std::endl;
-			}
-
-			else if (sMatrix.find('*')!=std::string::npos)
-			{
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('*')-endname-1); //to get the string name of the first variable
-				std::string secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-1));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix));
-				std::cout<<mvars[k]<<std::endl;
-			}
-
-			else if (sMatrix.find('/')!=std::string::npos)
-			{
-				if(sMatrix[sMatrix.find('/')-1]=='.') //element wise
-				{
-					std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('.')-endname-1); //to get the string name of the first variable
-					std::string secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
-					double firstmatrix=atof(firstvalue.c_str());
-					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-					mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix));
-					std::cout<<mvars[k]<<std::endl;
-				}
-
-
-				else //normal division
-				{
-					std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
-					std::string secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
-					CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-					mvars[k].CopyMatrix(div(firstmatrix,secondmatrix));
-					std::cout<<mvars[k]<<std::endl;
-				}
-
-			}
-
-
-			else if (sMatrix.find("'")!=std::string::npos)
-			{
-
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
-
+			{	
+				mvars[k]=stringtomatrix(stringvalue,k);
+				
 				std::cout<<mvars[k]<<std::endl;
 
 			}
 
-		}
 
-
-	vars[k]=matrixname; 
-	k++;
+				
+			vars[k]=matrixname; 
+			k++;
 
 
 		}
@@ -734,145 +668,52 @@ if (argc > 1) 	//if a filename is given
 else // interactive prompt
 { 
 
-	while(stop==0)
 
+	std::getline (std::cin,sMatrix);		
+	sMatrix=removeSpaces(sMatrix);
+	std::string matrixname="",wantedvalue="";	
+	int endname = sMatrix.find('=');
+	matrixname=sMatrix.substr(0,endname);
+
+	std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+	mathematical_calc(stringvalue);
+	parthen_analysis(stringvalue);
+	math_piority_calc(stringvalue);
+
+
+
+	if (sMatrix.find('[')!=std::string::npos)
 	{
-		std::getline (std::cin,sMatrix);		
-		sMatrix=removeSpaces(sMatrix);
-		std::string matrixname="",wantedvalue="";	
-		int endname = sMatrix.find('=');
-		matrixname=sMatrix.substr(0,endname);
+		int startcalc= sMatrix.find('[');
 
-		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-		mathematical_calc(stringvalue);
-		parthen_analysis(stringvalue);
-		math_piority_calc(stringvalue);
-
-
-
-		if (sMatrix.find('[')!=std::string::npos)
-		{
-			int startcalc= sMatrix.find('[');
-
-			for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-					
-			vars[k]=matrixname; 
-			mvars[k].CopyMatrix(wantedvalue);
-			if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
-		}
-
-		else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
-		{
-		
-			mvars[k]=CMatrix( 1,1, to_double(stringvalue));
-			if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-		}
-
-
-		else
-		{	
-			mvars[k]=stringtomatrix(stringvalue,k);
-			
-			std::cout<<mvars[k]<<std::endl;
-			/*if (sMatrix.find('-')!=std::string::npos)
-			{
-				std::string secondvalue;
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('-')-endname-1); //to get the string name of the first variable
-				if ( sMatrix.find(';')==std::string::npos)
-				secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-1));
-				else 
-				secondvalue=sMatrix.substr(sMatrix.find('-')+1,(sMatrix.length()-sMatrix.find('-')-2));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix));
-				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-			}
-
-
-			 if (sMatrix.find('+')!=std::string::npos)
-			{
-				std::string secondvalue;
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('+')-endname-1); //to get the string name of the first variable
-				if ( sMatrix.find(';')==std::string::npos)
-				secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-1));
-				else 
-				secondvalue=sMatrix.substr(sMatrix.find('+')+1,(sMatrix.length()-sMatrix.find('+')-2));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(add(secondmatrix,firstmatrix));
-				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-			}
-
-			if (sMatrix.find('*')!=std::string::npos)
-			{std::string secondvalue;
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('*')-endname-1); //to get the string name of the first variable
-				if ( sMatrix.find(';')==std::string::npos)
-				secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-1));
-				else 
-				secondvalue=sMatrix.substr(sMatrix.find('*')+1,(sMatrix.length()-sMatrix.find('*')-2));
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-				mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix));
-				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-			}
-
-			if (sMatrix.find('/')!=std::string::npos)
-			{
-				if(sMatrix[sMatrix.find('/')-1]=='.') //element wise
-				{
-					std::string secondvalue;
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
-				if ( sMatrix.find(';')==std::string::npos)
-				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
-				else 
-				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-2));
-					double firstmatrix=atof(firstvalue.c_str());
-					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-					mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix));
-					if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-				}
-
-				else //normal division
-				{
-					std::string secondvalue;
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find('/')-endname-1); //to get the string name of the first variable
-				if ( sMatrix.find(';')==std::string::npos)
-				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-1));
-				else 
-				secondvalue=sMatrix.substr(sMatrix.find('/')+1,(sMatrix.length()-sMatrix.find('/')-2));
-					CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-					CMatrix secondmatrix=stringtomatrix(secondvalue,k);
-
-					mvars[k].CopyMatrix(div(firstmatrix,secondmatrix));
-					if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-				}
-			}
-
-			if (sMatrix.find("'")!=std::string::npos)
-			{
-				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
-				if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
-			}
-
-			if(sMatrix.find("=")==std::string::npos)
-			{
-
-				std::cout<<stringtomatrix(sMatrix,k)<<std::endl;
-			}*/
-
-		}
-
-
+		for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
 				
 		vars[k]=matrixname; 
-		k++;
+		mvars[k].CopyMatrix(wantedvalue);
+		if ( sMatrix [sMatrix.find(']')+1]  !=';') std::cout<<mvars[k]<<std::endl;
 	}
+
+	else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
+	{
+	
+		mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+		if ( sMatrix.find(';')==std::string::npos) std::cout<<mvars[k]<<std::endl;
+	}
+
+
+	else
+	{	
+		mvars[k]=stringtomatrix(stringvalue,k);
+		
+		std::cout<<mvars[k]<<std::endl;
+
+	}
+
+
+			
+	vars[k]=matrixname; 
+	k++;
+	
 }
 
 

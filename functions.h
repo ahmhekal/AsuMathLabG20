@@ -229,9 +229,9 @@ asu::CMatrix power(const asu::CMatrix& n, const asu::CMatrix& m)
 
 asu::CMatrix power_modified_elementwise(const asu::CMatrix& n,double m){
  asu::CMatrix r(n.getnRows(), n.getnColumns());
- for(int i=0;i<n.getnRows();i++)
+ for(unsigned int i=0;i<n.getnRows();i++)
  {
- for(int j=0;j<n.getnColumns();j++){
+ for(unsigned int j=0;j<n.getnColumns();j++){
  r(i,j)=pow(n(i,j),m);
  }
  }
