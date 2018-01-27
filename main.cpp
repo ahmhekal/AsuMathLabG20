@@ -27,6 +27,15 @@ std::string removeSpaces(std::string input)   //remove spaces from the beginning
   return input;
 }
 
+void removetabs(std::string& input)   //remove spaces from the beginning to '[' or the end of the line
+{
+  //int length = input.length();
+	if(input.find("     ")!=std::string::npos)
+	{ //input.erase(input.find("     "), 5);
+	input[input.find(' ')]=';';
+	std::cout<<"yess";}
+}
+
 
 asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
 {
@@ -621,105 +630,119 @@ if (argc > 1) 	//if a filename is given
 		while (std::getline(mfile, sMatrix))
 			
 		{
-				
-		sMatrix=removeSpaces(sMatrix);
-		std::string matrixname="",wantedvalue="";	
-		int endname = sMatrix.find('=');
-		matrixname=sMatrix.substr(0,endname);
+		removetabs(sMatrix);
+			sMatrix=removeSpaces(sMatrix);
+			
+			sMatrix = sMatrix.substr(0, sMatrix.size()-1);
+			std::string matrixname="",wantedvalue="";	
+			int endname = sMatrix.find('=');
+			matrixname=sMatrix.substr(0,endname);
 
-		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-		mathematical_calc(stringvalue);
-		parthen_analysis(stringvalue);
-		math_piority_calc(stringvalue);
+			std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+			mathematical_calc(stringvalue);
+			parthen_analysis(stringvalue);
+			math_piority_calc(stringvalue);
 
-		std::string svalue="";
-		svalue=sMatrix.substr( endname+1,3);
+			std::string svalue="";
+			svalue=sMatrix.substr( endname+1,3);
+			bool print;
+			if (sMatrix[sMatrix.size()-1]==';'){ print=0; sMatrix = sMatrix.substr(0, sMatrix.size()-1); }
+			else print =1;
 
-		if (svalue=="zer")
-		{
+			if (svalue=="zer")
+			{
 
-			int index= sMatrix.rfind('s');
+				int index= sMatrix.rfind('s');
 
-			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
-			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
-            mvars[k]=cc;
-	
-		}
-
-		else if (svalue=="one")
-		{
-
-			int index= sMatrix.rfind('s');
-
-			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
-
-			vars[k]=matrixname;
-			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
-		    mvars[k]=cc;
-         
+				vars[k]=matrixname;
+				CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
+	            mvars[k]=cc;
 		
-		}
+			}
 
-		else if (svalue=="eye")
-		{
+			else if (svalue=="one")
+			{
 
-			int index= sMatrix.rfind('e');
-			index+=2;
+				int index= sMatrix.rfind('s');
 
-			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
-			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
-		    mvars[k]=cc;
-		
-		}
+				vars[k]=matrixname;
+				CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
+			    mvars[k]=cc;
+	         
+			
+			}
 
-		else if (svalue=="ran")
-		{
+			else if (svalue=="eye")
+			{
 
-			int index= sMatrix.rfind('d');
+				int index= sMatrix.rfind('e');
+				index+=2;
 
-			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
-			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
-                   	 		
-			vars[k]=matrixname;
-			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
-			mvars[k]=cc;
-                 
-		}
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-		else 
-		{
-				if (sMatrix.find('[')!=std::string::npos)
-				{
-					int startcalc= sMatrix.find('[');
-					for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-					vars[k]=matrixname; 
-					mvars[k].CopyMatrix(wantedvalue);
-				}
+				vars[k]=matrixname;
+				CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
+			    mvars[k]=cc;
+			
+			}
 
-				else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
-				{
-					mvars[k]=CMatrix( 1,1, to_double(stringvalue));
-				}
+			else if (svalue=="ran")
+			{
+
+				int index= sMatrix.rfind('d');
+
+				std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
+				std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
+	                   	 		
+				vars[k]=matrixname;
+				CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
+				mvars[k]=cc;
+	                 
+			}
+
+			else 
+			{
+					if (sMatrix.find('[')!=std::string::npos) //if '[' found
+					{	
+						if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
+						{	//if found another '[' (concatination is found)
+							concat_analysis(stringvalue);
+							mvars[k]=concat(stringvalue);
+						}
+
+						else
+						{
+							int startcalc= sMatrix.find('[');
+							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+							vars[k]=matrixname; 
+							mvars[k].CopyMatrix(wantedvalue);
+					
+						}
+					}
+
+					else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
+					{
+						mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+					}
 
 
-				else
-				{	
-					mvars[k]=stringtomatrix(stringvalue,k);
-				}
+					else
+					{	
+						mvars[k]=stringtomatrix(stringvalue,k);
+					}
 
-		}
-		
-		if (sMatrix[sMatrix.length()-1]!=';') std::cout<<mvars[k]<<std::endl;	
-
-		vars[k]=matrixname; 
-		k++;
+			}
+			
+			if (print==1) std::cout<<mvars[k]<<std::endl;	
+			vars[k]=matrixname; 
+			k++;
 
 
 		}
@@ -737,6 +760,7 @@ else // interactive prompt
 	{
 		std::getline (std::cin,sMatrix);		
 		sMatrix=removeSpaces(sMatrix);
+
 		std::string matrixname="",wantedvalue="";	
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
@@ -830,7 +854,7 @@ else // interactive prompt
 					}
 				}
 
-				else if(stringvalue[0]>='0' && stringvalue[0]<('9'+1))
+				else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
 				{
 					mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 				}
