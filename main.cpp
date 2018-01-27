@@ -741,7 +741,6 @@ int donothing=0;
 						{
 							int startcalc= sMatrix.find('[');
 							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-							vars[k]=matrixname; 
 							mvars[k].CopyMatrix(wantedvalue);
 					
 						}
@@ -786,9 +785,15 @@ else // interactive prompt
 		std::getline (std::cin,sMatrix);		
 		sMatrix=removeSpaces(sMatrix);
 
+		bool print;
+		if (sMatrix[sMatrix.size()-1]==';'){ 
+			print=0; sMatrix = sMatrix.substr(0, sMatrix.size()-1); }
+			else print =1;
+
 		std::string matrixname="",wantedvalue="";	
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
+		
 
 		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 		mathematical_calc(stringvalue);
@@ -797,9 +802,8 @@ else // interactive prompt
 
 		std::string svalue="";
 		svalue=sMatrix.substr( endname+1,3);
-		bool print;
-		if (sMatrix[sMatrix.size()-1]==';'){ print=0; sMatrix = sMatrix.substr(0, sMatrix.size()-1); }
-		else print =1;
+
+		
 
 		if (svalue=="zer")
 		{
@@ -871,10 +875,10 @@ else // interactive prompt
 
 					else
 					{
-						int startcalc= sMatrix.find('[');
-						for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-						vars[k]=matrixname; 
-						mvars[k].CopyMatrix(wantedvalue);
+							int startcalc= sMatrix.find('[');
+							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+								std::cout<<wantedvalue<<std::endl;
+							mvars[k].CopyMatrix(wantedvalue);
 				
 					}
 				}
@@ -958,14 +962,14 @@ return r;
 void concat_analysis(std::string& test2){
 while(test2.find('[',1)!=std::string::npos)
 {
-int x=0;
+unsigned int x=0;
 int y=test2.length()-1;
-for(int i=0;i<test2.length();i++){
+for(unsigned int i=0;i<test2.length();i++){
 if(test2[i]=='[')
 x=i;
 
 }
-for(int i=0;i<test2.length()-1;i++){
+for(unsigned int i=0;i<test2.length()-1;i++){
 if(test2[i]==']'&&i>x){
 y=i;
 break;
