@@ -612,7 +612,7 @@ bool getlinefile(std::string& stream, std::string& str)
 
 int main(int argc, char** argv)
 {
-int stop=0; 
+int stop=0; int donothing=0;
 std::string sMatrix; //input line as string
 
 
@@ -631,7 +631,7 @@ if (argc > 1) 	//if a filename is given
 			continue;
 		}
 
-int donothing=0;
+
 		
 		std::string filestring((std::istreambuf_iterator<char>(mfile)),
 		std::istreambuf_iterator<char>());
@@ -782,7 +782,8 @@ else // interactive prompt
 	while(stop==0)
 
 	{
-		std::getline (std::cin,sMatrix);		
+		std::getline (std::cin,sMatrix);
+		donothing=0;		
 		sMatrix=removeSpaces(sMatrix);
 
 		bool print;
@@ -889,16 +890,23 @@ else // interactive prompt
 				}
 
 
-				else
+				else if (sMatrix=="") { donothing=1;}
+
+				else if ((stringvalue.find('\n'))==std::string::npos)
 				{	
 					mvars[k]=stringtomatrix(stringvalue,k);
 				}
+				else { donothing=1;} 
 
 		}
 		
-		if (print==1) std::cout<<mvars[k]<<std::endl;	
-		vars[k]=matrixname; 
-		k++;
+		if (donothing==0)
+		{
+			if (print==1) std::cout<<mvars[k]<<std::endl;	
+			vars[k]=matrixname; 
+			k++;
+		}
+		
 	}
 }
 
