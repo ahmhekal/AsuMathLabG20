@@ -568,3 +568,12 @@ asu::CMatrix atan2_modified(const asu::CMatrix& a, double m)
 		r(i) = atan2(a(i), m);
 	return r;
 }
+//atan2d modified using double
+asu::CMatrix atan2d_modified(const asu::CMatrix& a, double m )
+{
+	
+	asu::CMatrix r(a.getnRows(), a.getnColumns());
+	for (size_t i = 0; i < a.getn(); i++)
+		r(i) = atan2d(a(i), m);
+	return r;
+}
