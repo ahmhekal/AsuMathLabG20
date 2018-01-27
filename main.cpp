@@ -7,7 +7,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#include <streambuf>
 using namespace asu;
+
 
 
 std::string* vars; //matrices names in string ====  std::string vars[100];
@@ -27,14 +29,6 @@ std::string removeSpaces(std::string input)   //remove spaces from the beginning
   return input;
 }
 
-void removetabs(std::string& input)   //remove spaces from the beginning to '[' or the end of the line
-{
-  //int length = input.length();
-	if(input.find("     ")!=std::string::npos)
-	{ //input.erase(input.find("     "), 5);
-	input[input.find(' ')]=';';
-	std::cout<<"yess";}
-}
 
 
 asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
@@ -572,7 +566,7 @@ if(operand_str.find(')')!=std::string::npos){
 operand_str.erase(operand_str.find(')'),1);
 }
 math_piority_calc(operand_str);
-std::cout<<operand_str<<std::endl;
+//std::cout<<operand_str<<std::endl;
 if(!isdigit(operand_str[0])){
 asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
 k++;
@@ -606,6 +600,23 @@ delete [] buffer;
  
 
 
+bool getlinefile(std::string& stream, std::string& str)
+{
+	int i=0;stream=""; if(str[0]) ; else return 0; 
+  while((str[i]=='\n' && str[i+1]==' ' && str[i+2]==' ' && str[i+3]==' ' && str[i+4]==' ')
+  		|| (str[i]!='\n'))
+  		{
+  			stream+=str[i];
+  			i++;
+  		}
+  		std::cout<<"yaa"<<std::endl;
+  		str=str.substr(i+1,str.size()-i-1);
+  std::cout<<str<<std::endl;
+   std::cout<<stream<<std::endl;
+  return 1;
+}
+
+
 
 int main(int argc, char** argv)
 {
@@ -627,11 +638,20 @@ if (argc > 1) 	//if a filename is given
 			std::cerr << "Couldn't open " << argv[i] << std::endl;
 			continue;
 		}
-		while (std::getline(mfile, sMatrix))
+
+int donothing=0;
+		
+		std::string filestring((std::istreambuf_iterator<char>(mfile)),
+		std::istreambuf_iterator<char>());
+
+		while (getlinefile(sMatrix,filestring))
 			
 		{
-		removetabs(sMatrix);
+			donothing=0;
+			//std::cout<<filestring<<std::endl;
+			//std::cout<<sMatrix<<std::endl;
 			sMatrix=removeSpaces(sMatrix);
+				//std::cout<<sMatrix<<std::endl;
 			
 			sMatrix = sMatrix.substr(0, sMatrix.size()-1);
 			std::string matrixname="",wantedvalue="";	
@@ -732,17 +752,22 @@ if (argc > 1) 	//if a filename is given
 						mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 					}
 
+					//else if (sMatrix=="\n") ;
 
-					else
+					else if ((stringvalue.find('\n'))==std::string::npos)
 					{	
 						mvars[k]=stringtomatrix(stringvalue,k);
 					}
+					else { donothing=1;} 
 
 			}
 			
-			if (print==1) std::cout<<mvars[k]<<std::endl;	
-			vars[k]=matrixname; 
-			k++;
+			if (donothing==0)
+			{
+				if (print==1) std::cout<<mvars[k]<<std::endl;	
+				vars[k]=matrixname; 
+				k++;
+			}
 
 
 		}
