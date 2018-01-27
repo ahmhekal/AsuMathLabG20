@@ -21,6 +21,7 @@ CMatrix concat(std::string s );
 std::string removeSpaces(std::string input)   //remove spaces from the beginning to '[' or the end of the line
 {
   //int length = input.length();
+	if (input == "\n" || input == "" ) return "";
   for (int i = 0; !( (input[i]=='[') || (input[i]=='\0') ); i++) 
   {
      if(input[i] == ' ' )
@@ -84,15 +85,13 @@ if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z')
 
 y=j-1;
 //
-//cout<<y;
+
 break;
 
 }
 
 }
-//cout<<test.substr(x,a-x)<<endl;
-//cout<<test.substr(a+1,y-a+1);
-//cout<<stringtomatrix(test.substr(x,a-x),k);
+
 std::string operand1;
 std::string operand2;
 if(test[a-1]=='.'){
@@ -110,14 +109,13 @@ if(test[a-1]=='.'){
 }
 else{ r =power_modified(stringtomatrix(operand1,k),m);}
 
-//cout<<r;
+
 count++;
 k++;
 mvars[k]=r;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-//std::cout<<test<<std::endl;
 
 
 }
@@ -130,7 +128,7 @@ double result=pow(z,k);
 
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-//std::cout<<test<<std::endl;
+
 
 }
  }
@@ -165,7 +163,7 @@ if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z')
 
 y=j-1;
 //
-//cout<<y;
+
 break;
 
 }
@@ -183,9 +181,7 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
-//std::cout<<operand1<<std::endl;
 
-//std::cout<<operand2<<std::endl;
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -267,7 +263,7 @@ case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-//std::cout<<test<<std::endl;
+
 
 
 
@@ -283,7 +279,7 @@ case '/': result=z/k; break;
 }
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-//std::cout<<test<<std::endl;
+
 }
 }
 while((test.find('+')!=std::string::npos||test.find('-',1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
@@ -314,7 +310,7 @@ if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z')
 
 y=j-1;
 //
-//cout<<y;
+
 break;
 
 }
@@ -332,9 +328,7 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
-//std::cout<<operand1<<std::endl;
 
-//std::cout<<operand2<<std::endl;
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -343,7 +337,7 @@ if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
 firstmatrix=stringtomatrix(operand1,k);
 secondmatrix=stringtomatrix(operand2,k);
 k++;
-//cout<<secondmatrix<<endl;
+
 switch(test[a]){
 case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
 case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
@@ -406,7 +400,6 @@ case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 std::string s="result";
 vars[k]=s+to_string(k);
 test.replace(x,y-x+1,vars[k]);
-//std::cout<<test<<std::endl;
 
 
 
@@ -422,7 +415,7 @@ case '-': result=z-k; break;
 }
 std::string replacement=to_string(result);
 test.replace(x,y-x+1,replacement);
-//std::cout<<test<<std::endl;
+
 }
 
 }
@@ -449,7 +442,7 @@ std::string expression=test2.substr(x+1,y-x-1);
 
 math_piority_calc(expression);
 test2.replace(x,y-x+1,expression);
-//std::cout<<test2<<std::endl;
+
 
 }
 
@@ -566,7 +559,7 @@ if(operand_str.find(')')!=std::string::npos){
 operand_str.erase(operand_str.find(')'),1);
 }
 math_piority_calc(operand_str);
-//std::cout<<operand_str<<std::endl;
+
 if(!isdigit(operand_str[0])){
 asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
 k++;
@@ -609,10 +602,9 @@ bool getlinefile(std::string& stream, std::string& str)
   			stream+=str[i];
   			i++;
   		}
-  		std::cout<<"yaa"<<std::endl;
+ 
   		str=str.substr(i+1,str.size()-i-1);
-  std::cout<<str<<std::endl;
-   std::cout<<stream<<std::endl;
+
   return 1;
 }
 
@@ -752,7 +744,7 @@ int donothing=0;
 						mvars[k]=CMatrix( 1,1, to_double(stringvalue));
 					}
 
-					//else if (sMatrix=="\n") ;
+					else if (sMatrix=="") { donothing=1;}
 
 					else if ((stringvalue.find('\n'))==std::string::npos)
 					{	
