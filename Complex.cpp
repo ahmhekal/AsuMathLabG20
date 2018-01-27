@@ -56,14 +56,29 @@ Complex Complex:: operator / ( Complex& x ) {return DivideComplex(x);}
 
 void Complex:: operator +=(Complex& x ) { Add(x);}
 void Complex:: operator -=(Complex& x ) { Subtract(x);}
-void Complex:: operator /=(Complex& x ) { Divide(x);}
 void Complex:: operator *=(Complex& x ) { Multiply(x);}
+void Complex:: operator /=(Complex& x ) { Divide(x);}
 
 
+Complex Complex:: operator +(double& x){return AddComplex(*this, Complex(x, 0));}
+Complex Complex:: operator -(double& x){return SubtractComplex(*this, Complex(x, 0));}
+Complex Complex:: operator *(double& x){return Complex(R*x,I*x);}
+Complex Complex:: operator /(double& x){return Complex(R/x,I/x);}
 
-Complex Complex:: operator^(int n){
-	return Power(*this,n);
-}
+void Complex:: operator +=(double& x){R+=x;}
+void Complex:: operator -=(double& x){R-=x;}
+
+void Complex:: operator *=(double& x){R*=x; I*=x;}		//operation on Both Real & Imaj
+void Complex:: operator /=(double& x){R/=x; I/=x;}		//operation on Both Real & Imaj
+
+Complex Complex::operator++(){R++; return *this;}
+Complex Complex::operator++(int){Complex C = *this; R+=1; return C;}
+Complex Complex::operator--(){R--; return *this;}
+Complex Complex::operator--(int){Complex C = *this; R-=1; return C;}
+
+Complex Complex::operator-(){return Complex(-R, -I);}
+
+Complex Complex:: operator^(int n){return Power(*this,n);}
 
 
 
