@@ -303,8 +303,8 @@ test.replace(x,y-x+1,replacement);
 
 }
 }
-int flag=0
-while((test.find('+')!=std::string::npos||test.find('-',flag)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
+int flag=0;
+while((test.find('+')!=std::string::npos||test.find('-',flag+1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
 int a=0;
 for(unsigned int i=flag;i<test.length();i++){
 if((test[i]=='+'||test[i]=='-')&&i!=0){
@@ -674,11 +674,11 @@ if (argc > 1) 	//if a filename is given
 	        sMatrix=nextline;
 	        }
 
+
 			donothing=0;
-			//std::cout<<filestring<<std::endl;
 		
 			sMatrix=removeSpaces(sMatrix);
-				
+				 
 			
 
 			bool print;
@@ -692,14 +692,17 @@ if (argc > 1) 	//if a filename is given
 	        
 
 	        std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
+	     
+
 	        mathematical_calc(stringvalue);
 	        parthen_analysis(stringvalue);
 	        math_piority_calc(stringvalue);
 
+
 	        std::string svalue="";
 	        svalue=sMatrix.substr( endname+1,3);
 
-	        
+	       
 
 	        if (svalue=="zer")
 	        {
