@@ -10,6 +10,27 @@
 #include <streambuf>
 using namespace asu;
 
+/**parns_are_incomplete function it takes string and return true if open brackets is more than closed brackets
+and returns false otherwise */
+bool parens_are_incomplete(std::string matrix_string)
+{
+  int open_counter = 0 , close_counter=0 ; 
+   
+  for (int i=0 ; i<matrix_string.length() ; i++)
+     {
+       if(matrix_string[i] == '[') 
+          open_counter++;
+       if(matrix_string[i] == ']')
+          close_counter++;
+     }
+  
+  if (open_counter > close_counter )
+      return true ;
+  else return false ;
+
+}
+
+ 
 
 
 std::string* vars; //matrices names in string ====  std::string vars[100];
