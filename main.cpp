@@ -643,7 +643,7 @@ int donothing=0;
 			//std::cout<<filestring<<std::endl;
 			//std::cout<<sMatrix<<std::endl;
 			sMatrix=removeSpaces(sMatrix);
-				//std::cout<<sMatrix<<std::endl;
+				
 			
 			sMatrix = sMatrix.substr(0, sMatrix.size()-1);
 			std::string matrixname="",wantedvalue="";	
@@ -725,8 +725,16 @@ int donothing=0;
 					{	
 						if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
 						{	//if found another '[' (concatination is found)
+
+							if(stringvalue.find("     ")!=std::string::npos )
+							{
+								stringvalue.erase(stringvalue.find("     "),5);
+							}
+
+							std::cout<<std::endl;
 							concat_analysis(stringvalue);
 							mvars[k]=concat(stringvalue);
+				
 						}
 
 						else
