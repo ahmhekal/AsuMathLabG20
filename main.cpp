@@ -303,9 +303,10 @@ test.replace(x,y-x+1,replacement);
 
 }
 }
-while((test.find('+')!=std::string::npos||test.find('-',1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
+int flag=0
+while((test.find('+')!=std::string::npos||test.find('-',flag)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
 int a=0;
-for(unsigned int i=0;i<test.length();i++){
+for(unsigned int i=flag;i<test.length();i++){
 if((test[i]=='+'||test[i]=='-')&&i!=0){
 a=i;
 break;
@@ -345,6 +346,10 @@ if(test[a-1]=='.'){
 else{ operand1=test.substr(x,a-x);}
 if(test[y]=='.'){
 y-=1;
+}
+if(test[a-1]==' '||test[a-1]==';'){
+flag=a+1;
+continue;
 }
 
 
