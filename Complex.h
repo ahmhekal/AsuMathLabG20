@@ -39,12 +39,28 @@ public:
 	Complex operator *(Complex& x);
 	Complex operator /(Complex& x);
 
-
 	void operator +=(Complex& x);
 	void operator -=(Complex& x);
 	void operator *=(Complex& x);
 	void operator /=(Complex& x);
 
+	Complex operator +(double& x);
+	Complex operator -(double& x);
+	Complex operator *(double& x);
+	Complex operator /(double& x);
+
+	void operator +=(double& x);
+	void operator -=(double& x);
+	void operator *=(double& x);
+	void operator /=(double& x);
+
+	Complex operator++();
+	Complex operator++(int);
+	Complex operator--();
+	Complex operator--(int);
+
+
+	Complex operator-();
 	Complex operator^(int n);
 
 	friend ostream&  operator << ( ostream& o ,Complex& c);
