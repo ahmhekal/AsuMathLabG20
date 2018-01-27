@@ -559,3 +559,12 @@ asu::CMatrix power_modified(const asu::CMatrix& n, double m)
 	}
 	return r;
 }
+//atan2 modified using double
+asu::CMatrix atan2_modified(const asu::CMatrix& a, double m)
+{
+	
+	asu::CMatrix r(a.getnRows(), a.getnColumns());
+	for (size_t i = 0; i < a.getn(); i++)
+		r(i) = atan2(a(i), m);
+	return r;
+}
