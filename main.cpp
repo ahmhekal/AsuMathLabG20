@@ -89,6 +89,11 @@ a=i;
 break;
 }
 }
+if(a==test.length()-1){
+throw std::invalid_argument
+		    ("syntax error");
+
+}
 
 int x=0;
 int y=test.length()-1;
@@ -161,6 +166,11 @@ if(test[i]=='*'||test[i]=='/'){
 a=i;
 break;
 }
+}
+if(a==test.length()-1){
+throw std::invalid_argument
+		    ("syntax error");
+
 }
 
 int x=0;
@@ -312,6 +322,13 @@ a=i;
 break;
 }
 }
+
+if(a==test.length()-1){
+throw std::invalid_argument
+		    ("syntax error");
+
+}
+
 int x=0;
 int y=test.length()-1;
 for(int i=a-1;i>=0;i--){
@@ -663,9 +680,11 @@ if (argc > 1) 	//if a filename is given
 		while (std::getline(mfile,sMatrix))
 			
 		{
-		
+
+		try{
 			sMatrix = sMatrix.substr(0, sMatrix.size()-1);
 			while (parens_are_incomplete(sMatrix)) {
+
 	        std::string nextline=sMatrix;
 	        std::getline(mfile,sMatrix);
 	        sMatrix = sMatrix.substr(0, sMatrix.size()-1);
@@ -805,6 +824,12 @@ if (argc > 1) 	//if a filename is given
 	            vars[k]=matrixname; 
 	            k++;
 	        }
+
+	}
+
+
+catch(const std::invalid_argument& ia){
+                std::cout<<"Error found:"<<std::endl<<ia.what()<<std::endl;}
 
 
 		}
@@ -955,8 +980,9 @@ else // interactive prompt
 			k++;
 		}
 		}
+
 		catch(const std::invalid_argument& ia){
-                std::cout<<"diaa is done"<<std::endl<<ia.what()<<std::endl;
+                std::cout<<"Error found:"<<std::endl<<ia.what()<<std::endl;
 
 }
 		
