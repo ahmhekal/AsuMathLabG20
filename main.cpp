@@ -729,11 +729,6 @@ if (argc > 1) 	//if a filename is given
 	        std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	     
 
-	        mathematical_calc(stringvalue);
-	        parthen_analysis(stringvalue);
-	        math_piority_calc(stringvalue);
-
-
 	        std::string svalue="";
 	        svalue=sMatrix.substr( endname+1,3);
 
@@ -796,9 +791,22 @@ if (argc > 1) 	//if a filename is given
 	            mvars[k]=cc;
 	                 
 	        }
+	        else if (sMatrix.find("'")!=std::string::npos)
+			{
+
+				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
+				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
+				mvars[k]=firstmatrix.getTranspose();
+
+			}	
 
 	        else 
 	        {
+	        	
+	        mathematical_calc(stringvalue);
+	        parthen_analysis(stringvalue);
+	        math_piority_calc(stringvalue);
+
 	                if (sMatrix.find('[')!=std::string::npos) //if '[' found
 	                {   
 	                    if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
@@ -830,13 +838,15 @@ if (argc > 1) 	//if a filename is given
 	                {   
 	                    mvars[k]=stringtomatrix(stringvalue,k);
 	                }
+	              
+
 	                else { donothing=1;} 
 
 	        }
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;   
 	            vars[k]=matrixname; 
 	            k++;
 	        }
@@ -885,10 +895,7 @@ else // interactive prompt
 		
 
 		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
-		mathematical_calc(stringvalue);
-		parthen_analysis(stringvalue);
-		math_piority_calc(stringvalue);
-
+	
 		std::string svalue="";
 		svalue=sMatrix.substr( endname+1,3);
 
@@ -954,6 +961,39 @@ else // interactive prompt
 
 		else 
 		{
+
+				//normal operations phase 1
+
+			    if (sMatrix.find("'")!=std::string::npos)
+				{
+
+				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
+				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
+				mvars[k]=firstmatrix.getTranspose();
+
+				}
+
+
+				else if ( (sMatrix.find('[')!=std::string::npos)  
+							&& ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) ==std::string::npos) )
+					//if '[' found but no concatination
+				{	
+				
+						int startcalc= sMatrix.find('[');
+							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+								//std::cout<<wantedvalue<<std::endl;
+							mvars[k].CopyMatrix(wantedvalue);
+					
+				}
+
+				else
+				{
+				mathematical_calc(stringvalue);
+				parthen_analysis(stringvalue);
+				math_piority_calc(stringvalue);
+
+
+
 				if (sMatrix.find('[')!=std::string::npos) //if '[' found
 				{	
 					if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
@@ -961,15 +1001,6 @@ else // interactive prompt
 						std::cout<<std::endl;
 						concat_analysis(stringvalue);
 						mvars[k]=concat(stringvalue);
-					}
-
-					else
-					{
-							int startcalc= sMatrix.find('[');
-							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
-								//std::cout<<wantedvalue<<std::endl;
-							mvars[k].CopyMatrix(wantedvalue);
-				
 					}
 				}
 
@@ -985,13 +1016,17 @@ else // interactive prompt
 				{	
 					mvars[k]=stringtomatrix(stringvalue,k);
 				}
+
+
+			
+
 				else { donothing=1;} 
 
-		}
+		}}
 		
 		if (donothing==0)
 		{
-			if (print==1) std::cout<<mvars[k]<<std::endl;	
+			if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;
 			vars[k]=matrixname; 
 			k++;
 		}
