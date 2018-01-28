@@ -91,7 +91,7 @@ break;
 }
 if(a==test.length()-1){
 throw std::invalid_argument
-		    ("syntax error");
+		    ("Syntax Error");
 
 }
 
@@ -169,7 +169,7 @@ break;
 }
 if(a==test.length()-1){
 throw std::invalid_argument
-		    ("syntax error");
+		    ("Syntax Error");
 
 }
 
@@ -214,7 +214,7 @@ y-=1;
  operand2=test.substr(a+1,y-a);
  if(operand2=="0"&&test[a]=='/')
     throw std::invalid_argument
-		    ("division by zero");
+		    ("Division by Zero");
 
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
@@ -328,7 +328,7 @@ break;
 
 if(a==test.length()-1){
 throw std::invalid_argument
-		    ("syntax error");
+		    ("Syntax Error");
 
 }
 
@@ -482,7 +482,7 @@ while(test2.find('(')!=std::string::npos)
 
   if (open_counter > close_counter )
   throw std::invalid_argument
-		    ("syntax error");
+		    ("Syntax Error");
 unsigned int x=0;
 int y=test2.length()-1;
 for(unsigned int i=0;i<test2.length();i++){
@@ -855,7 +855,7 @@ if (argc > 1) 	//if a filename is given
 
 
 catch(const std::invalid_argument& ia){
-                std::cout<<"Error found:"<<std::endl<<ia.what()<<std::endl;}
+                std::cout<<"Error found:"<<ia.what()<<std::endl;}
 
 
 		}
@@ -1033,7 +1033,7 @@ else // interactive prompt
 		}
 
 		catch(const std::invalid_argument& ia){
-                std::cout<<"Error found:"<<std::endl<<ia.what()<<std::endl;
+                std::cout<<"Error found:"<<ia.what()<<std::endl;
 
 }
 		
