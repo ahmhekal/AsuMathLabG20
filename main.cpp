@@ -212,6 +212,9 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
+ if(operand2=="0"&&test[a]=='/')
+    throw std::invalid_argument
+		    ("division by zero");
 
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
 asu::CMatrix firstmatrix;
@@ -467,6 +470,19 @@ test.replace(x,y-x+1,replacement);
 void parthen_analysis(std::string& test2){
 while(test2.find('(')!=std::string::npos)
 {
+	unsigned int open_counter = 0 , close_counter=0 ;
+
+  for (unsigned int i=0 ; i<test2.length() ; i++)
+     {
+       if(test2[i] == '(')
+          open_counter++;
+       if(test2[i] == ')')
+          close_counter++;
+     }
+
+  if (open_counter > close_counter )
+  throw std::invalid_argument
+		    ("syntax error");
 unsigned int x=0;
 int y=test2.length()-1;
 for(unsigned int i=0;i<test2.length();i++){
