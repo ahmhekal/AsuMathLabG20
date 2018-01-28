@@ -347,7 +347,7 @@ if(x==1&&test[0]=='-')
 x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
 
 
 y=j-1;
@@ -375,7 +375,7 @@ continue;
 
  operand2=test.substr(a+1,y-a);
 
-if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'){
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
 double operand_double;
