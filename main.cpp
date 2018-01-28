@@ -801,7 +801,8 @@ if (argc > 1) 	//if a filename is given
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;   
+	             
 	            vars[k]=matrixname; 
 	            k++;
 	        }
@@ -949,7 +950,8 @@ else // interactive prompt
 		
 		if (donothing==0)
 		{
-			if (print==1) std::cout<<mvars[k]<<std::endl;	
+			if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;   
+	        	
 			vars[k]=matrixname; 
 			k++;
 		}
