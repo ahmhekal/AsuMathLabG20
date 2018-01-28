@@ -820,6 +820,7 @@ else // interactive prompt
 	while(stop==0)
 
 	{
+	try{
 
 		std::getline(std::cin, sMatrix);
 		while (parens_are_incomplete(sMatrix)) {
@@ -953,10 +954,14 @@ else // interactive prompt
 			vars[k]=matrixname; 
 			k++;
 		}
+		}
+		catch(const std::invalid_argument& ia){
+                std::cout<<"diaa is done"<<std::endl<<ia.what()<<std::endl;
+
+}
 		
 	}
 }
-
 
 	delete[]mvars;
 	delete[]vars;
@@ -974,8 +979,9 @@ else // interactive prompt
 
 
 
-CMatrix concat(std::string s ){
-CMatrix r;
+
+asu::CMatrix concat(std::string s ){
+asu::CMatrix r;
 char* buffer = new char[s.length()+1];
 strcpy(buffer, s.c_str());
 char* lineContext;
@@ -985,10 +991,11 @@ lineSeparators[1] = '\r';
 lineSeparators[2] = '\n';
 
 
+
 char* line = strtok_r(buffer, lineSeparators, &lineContext);
 while(line)
 {
-CMatrix row;
+asu::CMatrix row;
 char* context;
 char separators[4];
 separators[0] = ' ';
@@ -1002,12 +1009,23 @@ if(!isdigit(token[0])&&token[0]!='-'){
 row.addColumn(stringtomatrix(token,k));
 }
 else{
-CMatrix item = atof(token);
+asu::CMatrix item = atof(token);
 row.addColumn(item);}
 token = strtok_r(NULL, separators, &context);
 }
 
+if (row.getnColumns() > 0 && (row.getnColumns() == r.getnColumns() || r.getnRows() == 0)){
 r.addRow(row);
+
+}
+else{
+throw std::invalid_argument
+		    ("Invalid matrix dimensions");
+}
+
+
+
+
 line = strtok_r(NULL, lineSeparators, &lineContext);
 }
 delete[] buffer;
