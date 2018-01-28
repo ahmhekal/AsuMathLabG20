@@ -82,7 +82,7 @@ int count=0;
 
 while(test.find('^')!=std::string::npos){
 //int a=test.find('*');
-int a=0;
+unsigned int a=0;
 for(unsigned int i=0;i<test.length();i++){
 if(test[i]=='^'){
 a=i;
@@ -160,7 +160,7 @@ test.replace(x,y-x+1,replacement);
  }
  while(test.find('*')!=std::string::npos||test.find('/')!=std::string::npos){
 //int a=test.find('*');
-int a=0;
+unsigned int a=0;
 for(unsigned int i=0;i<test.length();i++){
 if(test[i]=='*'||test[i]=='/'){
 a=i;
@@ -318,7 +318,7 @@ test.replace(x,y-x+1,replacement);
 }
 int flag=0;
 while((test.find('+')!=std::string::npos||test.find('-',flag+1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
-int a=0;
+unsigned int a=0;
 for(unsigned int i=flag;i<test.length();i++){
 if((test[i]=='+'||test[i]=='-')&&i!=0){
 a=i;
@@ -978,7 +978,6 @@ else // interactive prompt
 							&& ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) ==std::string::npos) )
 					//if '[' found but no concatination
 				{	
-				
 						int startcalc= sMatrix.find('[');
 							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
 								//std::cout<<wantedvalue<<std::endl;
@@ -988,19 +987,24 @@ else // interactive prompt
 
 				else
 				{
+
 				mathematical_calc(stringvalue);
 				parthen_analysis(stringvalue);
 				math_piority_calc(stringvalue);
 
-
+				std::cout<<std::endl;
 
 				if (sMatrix.find('[')!=std::string::npos) //if '[' found
 				{	
 					if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
 					{	//if found another '[' (concatination is found)
-						std::cout<<std::endl;
+						
+						
 						concat_analysis(stringvalue);
+					
 						mvars[k]=concat(stringvalue);
+
+						
 					}
 				}
 
