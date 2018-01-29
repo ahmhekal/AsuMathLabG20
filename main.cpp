@@ -65,7 +65,7 @@ asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a s
 }
 std::string to_string(double operand){
 char buffer_test[50];
-sprintf(buffer_test,"%g",operand);
+sprintf(buffer_test,"%lf",operand);
 return(std::string)buffer_test;
 }
 double to_double(std::string operand){
