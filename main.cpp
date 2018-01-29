@@ -562,7 +562,7 @@ test2.replace(x,y-x+1,expression);
 }
 
 void mathematical_calc(std::string& a){
-	if(a=="sin"||a=="cos"||a=="tan"||a="sqrt")
+	if(a=="sin"||a=="cos"||a=="tan"||a=="sqrt")
 throw std::invalid_argument("error using " + a + "\n not enough input arguments");
 	
 
@@ -783,6 +783,8 @@ if (argc > 1) 	//if a filename is given
 	        int endname = sMatrix.find('=');
 	        matrixname=sMatrix.substr(0,endname);
 	        
+	        std::string printedmatrixname=matrixname;
+	    if (endname == std::string::npos) printedmatrixname = "ans";
 
 	        std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	     
@@ -905,7 +907,7 @@ if (argc > 1) 	//if a filename is given
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;   
 
 	            vars[k]=matrixname; 
 	            k++;
@@ -953,6 +955,8 @@ else // interactive prompt
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
 		
+std::string printedmatrixname=matrixname;
+	    if (endname == std::string::npos) printedmatrixname = "ans";
 
 		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	
@@ -1096,7 +1100,7 @@ else // interactive prompt
 		if (donothing==0)
 		{
 
-			if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;
+			if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;
 
 			vars[k]=matrixname; 
 			k++;
