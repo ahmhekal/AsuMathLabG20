@@ -500,6 +500,15 @@ test.replace(x,y-x+1,replacement);
 }
 
 }
+if(test[0]=='-'&&(!isdigit(test[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(test.substr(1,test.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+test=vars[k];
+
+}
 }
 
 void parthen_analysis(std::string& test2){
@@ -543,6 +552,8 @@ test2.replace(x,y-x+1,expression);
 }
 
 void mathematical_calc(std::string& a){
+	
+
 while(a.find("sin")!=std::string::npos){
 
 int first_pos=a.find("sin");
@@ -839,6 +850,7 @@ if (argc > 1) 	//if a filename is given
 	        {
 	        	
 	        mathematical_calc(stringvalue);
+
 	        parthen_analysis(stringvalue);
 	        math_piority_calc(stringvalue);
 
