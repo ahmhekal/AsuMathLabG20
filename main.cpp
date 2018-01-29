@@ -189,7 +189,7 @@ if(x==1&&test[0]=='-')
 x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -212,6 +212,24 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
+ if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand1=vars[k];
+
+}
+if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand2=vars[k];
+
+}
  if(operand2=="0"&&test[a]=='/')
     throw std::invalid_argument
 		    ("Division by Zero");
@@ -347,7 +365,7 @@ if(x==1&&test[0]=='-')
 x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -367,14 +385,31 @@ else{ operand1=test.substr(x,a-x);}
 if(test[y]=='.'){
 y-=1;
 }
-if(test[a-1]==' '||test[a-1]==';'){
+if(test[a-1]==' '||test[a-1]==';'||test[a-1]=='['){
 flag=a+1;
 continue;
 }
 
 
  operand2=test.substr(a+1,y-a);
+if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand1=vars[k];
 
+}
+if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand2=vars[k];
+
+}
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -508,7 +543,7 @@ test2.replace(x,y-x+1,expression);
 }
 
 void mathematical_calc(std::string& a){
-if(a.find("sin")!=std::string::npos){
+while(a.find("sin")!=std::string::npos){
 
 int first_pos=a.find("sin");
 int end_pos=a.find(')',first_pos);
@@ -543,7 +578,7 @@ delete [] buffer;
 
 }
 }
- if(a.find("cos")!=std::string::npos){
+ while(a.find("cos")!=std::string::npos){
 int first_pos=a.find("cos");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
@@ -578,7 +613,7 @@ delete [] buffer;
 
 
 }
- if(a.find("tan")!=std::string::npos){
+ while(a.find("tan")!=std::string::npos){
 int first_pos=a.find("tan");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
@@ -609,7 +644,7 @@ delete [] buffer;
 }
 
 }
-if(a.find("sqrt")!=std::string::npos){
+while(a.find("sqrt")!=std::string::npos){
 int first_pos=a.find("sqrt");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
