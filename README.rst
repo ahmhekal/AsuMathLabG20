@@ -42,7 +42,7 @@ Phases 3: Advanced system operations
 Input Format
 ------------
 
-- User can write directly in the CommandLine or type in a file
+- User can write directly in the CommandLine or type in a .m file
 
 - The inputs should be similar to the following formats(MATLAB Format)
 
@@ -70,3 +70,12 @@ Input Format
 > L = (1.2 + 3.4 - 5.6)/(2.1*3.2 + 4.6) - 12.1*3.1 + (1.2 + 5.2)^(4/(3.2+5.6)) //Support Support mathematical functions
 > X = ((C*D .+ 4)./2.1 + sqrt(D))./C.^2
 > Y = C^3 * sin(1./D) 
+
+How to Run the Project
+----------------------
+1.Get the repository on your device by downloading or cloning it using terminal
+2.Open the terminal in the directory of the project
+3.Type "make" in the terminal and enter it
+4.User can type the input manually or using a ready .m file 
+  >>in case of typing inputs manually ,user should type "./matrix" in the terminal then type the matrices he wants.
+  >>in case of using a ready .m file  ,user should type "./matrix <filename.m>" in the terminal then waits for results.
