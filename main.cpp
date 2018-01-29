@@ -784,7 +784,18 @@ if (argc > 1) 	//if a filename is given
 	        matrixname=sMatrix.substr(0,endname);
 	        
 	        std::string printedmatrixname=matrixname;
-	    if (endname == std::string::npos) printedmatrixname = "ans";
+	        if (
+	    		(sMatrix.find('=') == std::string::npos)
+	    		&& ( sMatrix.find('+')!= std::string::npos || sMatrix.find('-')!= std::string::npos 
+	    			|| sMatrix.find('*')!= std::string::npos || sMatrix.find('/')!= std::string::npos 
+	    			||sMatrix.find("sqrt")!= std::string::npos || sMatrix.find("sin")!= std::string::npos
+	    			|| sMatrix.find("cos")!= std::string::npos || sMatrix.find("tan")!= std::string::npos 
+	    			|| sMatrix.find('^')!= std::string::npos  ) 
+	    	
+	    		)
+	    		printedmatrixname = "ans";
+	    	
+
 
 	        std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	     
@@ -955,8 +966,17 @@ else // interactive prompt
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
 		
-std::string printedmatrixname=matrixname;
-	    if (endname == std::string::npos) printedmatrixname = "ans";
+ 			std::string printedmatrixname=matrixname;
+	        if (
+	    		(sMatrix.find('=') == std::string::npos)
+	    		&& ( sMatrix.find('+')!= std::string::npos || sMatrix.find('-')!= std::string::npos 
+	    			|| sMatrix.find('*')!= std::string::npos || sMatrix.find('/')!= std::string::npos 
+	    			||sMatrix.find("sqrt")!= std::string::npos || sMatrix.find("sin")!= std::string::npos
+	    			|| sMatrix.find("cos")!= std::string::npos || sMatrix.find("tan")!= std::string::npos 
+	    			|| sMatrix.find('^')!= std::string::npos  ) 
+	    	
+	    		)
+	    		printedmatrixname = "ans";
 
 		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	
