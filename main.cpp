@@ -386,9 +386,19 @@ if(test[y]=='.'){
 y-=1;
 }
 if(test[a-1]==' '||test[a-1]==';'||test[a-1]=='['){
+if(test[a]=='-'&&(!isdigit(test[a+1]))){
+std::string matrix=test.substr(a+1,y-a);
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(matrix,k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+test.replace(a,matrix.length()+1,vars[k]);
+}
 flag=a+1;
 continue;
 }
+
 
 
  operand2=test.substr(a+1,y-a);
