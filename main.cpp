@@ -216,7 +216,7 @@ y-=1;
     throw std::invalid_argument
 		    ("Division by Zero");
 
-if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&&&operand2[0]!='-'){
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
 double operand_double;
