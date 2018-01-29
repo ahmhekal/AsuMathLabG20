@@ -935,8 +935,6 @@ else // interactive prompt
 		std::string svalue="";
 		svalue=sMatrix.substr( endname+1,3);
 
-		
-
 		if (svalue=="zer")
 		{
 
@@ -1014,17 +1012,24 @@ else // interactive prompt
 							&& ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) ==std::string::npos) )
 					//if '[' found but no concatination
 				{	
-						int startcalc= sMatrix.find('[');
-							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+					mathematical_calc(stringvalue);
+					parthen_analysis(stringvalue);
+					math_piority_calc(stringvalue);
+					concat_analysis(stringvalue);
+					mvars[k]=concat(stringvalue);
+					
+						//int startcalc= stringvalue.find('[');
+						//	for(int i=startcalc; stringvalue[i]!='\0';i++) wantedvalue+=stringvalue[i];	
 								//std::cout<<wantedvalue<<std::endl;
-							mvars[k].CopyMatrix(wantedvalue);
+						//	mvars[k].CopyMatrix(wantedvalue);
 					
 				}
 
 				else
 				{
 
-				mathematical_calc(stringvalue);
+				
+				mathematical_calc(stringvalue);	
 				parthen_analysis(stringvalue);
 				math_piority_calc(stringvalue);
 
