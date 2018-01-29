@@ -454,6 +454,10 @@ void CMatrix::CopyMatrix(const char* s)   //need to be edited
 		if (row.nColumns > 0
 		    && (row.nColumns == nColumns || nRows == 0))
 			addRow(row);
+		else{
+					throw std::invalid_argument
+		    				("Invalid matrix dimensions");
+															}
 		line = strtok_r(0, lineSeparators, &lineContext);
 	}
 	delete[] buffer;
@@ -491,6 +495,10 @@ token = strtok_r(NULL, separators, &context);
 }
 if(row.nColumns>0 && (row.nColumns==nColumns || nRows==0))
 addRow(row);
+else{
+throw std::invalid_argument
+		    ("Invalid matrix dimensions");
+}
 line = strtok_r(NULL, lineSeparators, &lineContext);
 }
 delete[] buffer;
