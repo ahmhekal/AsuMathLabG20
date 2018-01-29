@@ -106,7 +106,7 @@ break;
 }
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -127,7 +127,7 @@ else{ operand1=test.substr(x,a-x);}
 
 
  operand2=test.substr(a+1,y-a);
-if(!isdigit(operand1[0])||!isdigit(operand2[0])){
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 double m=to_double(operand2);
 asu::CMatrix r ;
 if(test[a-1]=='.'){
