@@ -65,7 +65,7 @@ asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a s
 }
 std::string to_string(double operand){
 char buffer_test[50];
-sprintf(buffer_test,"%g",operand);
+sprintf(buffer_test,"%lf",operand);
 return(std::string)buffer_test;
 }
 double to_double(std::string operand){
@@ -106,7 +106,7 @@ break;
 }
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -127,7 +127,7 @@ else{ operand1=test.substr(x,a-x);}
 
 
  operand2=test.substr(a+1,y-a);
-if(!isdigit(operand1[0])||!isdigit(operand2[0])){
+if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 double m=to_double(operand2);
 asu::CMatrix r ;
 if(test[a-1]=='.'){
@@ -189,7 +189,7 @@ if(x==1&&test[0]=='-')
 x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -212,6 +212,24 @@ y-=1;
 
 
  operand2=test.substr(a+1,y-a);
+ if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand1=vars[k];
+
+}
+if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand2=vars[k];
+
+}
  if(operand2=="0"&&test[a]=='/')
     throw std::invalid_argument
 		    ("Division by Zero");
@@ -347,7 +365,7 @@ if(x==1&&test[0]=='-')
 x=0;
 }
 for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&test[a+1]!='-'){
+if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
 
 
 y=j-1;
@@ -367,14 +385,41 @@ else{ operand1=test.substr(x,a-x);}
 if(test[y]=='.'){
 y-=1;
 }
-if(test[a-1]==' '||test[a-1]==';'){
+if(test[a-1]==' '||test[a-1]==';'||test[a-1]=='['){
+if(test[a]=='-'&&(!isdigit(test[a+1]))){
+std::string matrix=test.substr(a+1,y-a);
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(matrix,k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+test.replace(a,matrix.length()+1,vars[k]);
+}
 flag=a+1;
 continue;
 }
 
 
- operand2=test.substr(a+1,y-a);
 
+ operand2=test.substr(a+1,y-a);
+if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand1=vars[k];
+
+}
+if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+operand2=vars[k];
+
+}
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
 asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
@@ -465,6 +510,15 @@ test.replace(x,y-x+1,replacement);
 }
 
 }
+if(test[0]=='-'&&(!isdigit(test[1]))){
+double negative=-1;
+k++;
+mvars[k].CopyMatrix(amul(stringtomatrix(test.substr(1,test.length()-1),k),negative));
+std::string s="result";
+vars[k]=s+to_string(k);
+test=vars[k];
+
+}
 }
 
 void parthen_analysis(std::string& test2){
@@ -508,7 +562,11 @@ test2.replace(x,y-x+1,expression);
 }
 
 void mathematical_calc(std::string& a){
-if(a.find("sin")!=std::string::npos){
+	if(a=="sin"||a=="cos"||a=="tan"||a=="sqrt")
+throw std::invalid_argument("error using " + a + "\n not enough input arguments");
+	
+
+while(a.find("sin")!=std::string::npos){
 
 int first_pos=a.find("sin");
 int end_pos=a.find(')',first_pos);
@@ -543,7 +601,7 @@ delete [] buffer;
 
 }
 }
- if(a.find("cos")!=std::string::npos){
+ while(a.find("cos")!=std::string::npos){
 int first_pos=a.find("cos");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
@@ -578,7 +636,7 @@ delete [] buffer;
 
 
 }
- if(a.find("tan")!=std::string::npos){
+ while(a.find("tan")!=std::string::npos){
 int first_pos=a.find("tan");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
@@ -609,7 +667,7 @@ delete [] buffer;
 }
 
 }
-if(a.find("sqrt")!=std::string::npos){
+while(a.find("sqrt")!=std::string::npos){
 int first_pos=a.find("sqrt");
 int end_pos=a.find(')',first_pos);
 std::string expression=a.substr(first_pos,end_pos-first_pos+1);
@@ -725,6 +783,19 @@ if (argc > 1) 	//if a filename is given
 	        int endname = sMatrix.find('=');
 	        matrixname=sMatrix.substr(0,endname);
 	        
+	        std::string printedmatrixname=matrixname;
+	        if (
+	    		(sMatrix.find('=') == std::string::npos)
+	    		&& ( sMatrix.find('+')!= std::string::npos || sMatrix.find('-')!= std::string::npos 
+	    			|| sMatrix.find('*')!= std::string::npos || sMatrix.find('/')!= std::string::npos 
+	    			||sMatrix.find("sqrt")!= std::string::npos || sMatrix.find("sin")!= std::string::npos
+	    			|| sMatrix.find("cos")!= std::string::npos || sMatrix.find("tan")!= std::string::npos 
+	    			|| sMatrix.find('^')!= std::string::npos  ) 
+	    	
+	    		)
+	    		printedmatrixname = "ans";
+	    	
+
 
 	        std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	     
@@ -804,6 +875,7 @@ if (argc > 1) 	//if a filename is given
 	        {
 	        	
 	        mathematical_calc(stringvalue);
+
 	        parthen_analysis(stringvalue);
 	        math_piority_calc(stringvalue);
 
@@ -846,7 +918,7 @@ if (argc > 1) 	//if a filename is given
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;   
 
 	            vars[k]=matrixname; 
 	            k++;
@@ -894,13 +966,22 @@ else // interactive prompt
 		int endname = sMatrix.find('=');
 		matrixname=sMatrix.substr(0,endname);
 		
+ 			std::string printedmatrixname=matrixname;
+	        if (
+	    		(sMatrix.find('=') == std::string::npos)
+	    		&& ( sMatrix.find('+')!= std::string::npos || sMatrix.find('-')!= std::string::npos 
+	    			|| sMatrix.find('*')!= std::string::npos || sMatrix.find('/')!= std::string::npos 
+	    			||sMatrix.find("sqrt")!= std::string::npos || sMatrix.find("sin")!= std::string::npos
+	    			|| sMatrix.find("cos")!= std::string::npos || sMatrix.find("tan")!= std::string::npos 
+	    			|| sMatrix.find('^')!= std::string::npos  ) 
+	    	
+	    		)
+	    		printedmatrixname = "ans";
 
 		std::string stringvalue=sMatrix.substr(endname+1, sMatrix.length()-endname-1);
 	
 		std::string svalue="";
 		svalue=sMatrix.substr( endname+1,3);
-
-		
 
 		if (svalue=="zer")
 		{
@@ -979,17 +1060,24 @@ else // interactive prompt
 							&& ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) ==std::string::npos) )
 					//if '[' found but no concatination
 				{	
-						int startcalc= sMatrix.find('[');
-							for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i];	
+					mathematical_calc(stringvalue);
+					parthen_analysis(stringvalue);
+					math_piority_calc(stringvalue);
+					concat_analysis(stringvalue);
+					mvars[k]=concat(stringvalue);
+					
+						//int startcalc= stringvalue.find('[');
+						//	for(int i=startcalc; stringvalue[i]!='\0';i++) wantedvalue+=stringvalue[i];	
 								//std::cout<<wantedvalue<<std::endl;
-							mvars[k].CopyMatrix(wantedvalue);
+						//	mvars[k].CopyMatrix(wantedvalue);
 					
 				}
 
 				else
 				{
 
-				mathematical_calc(stringvalue);
+				
+				mathematical_calc(stringvalue);	
 				parthen_analysis(stringvalue);
 				math_piority_calc(stringvalue);
 
@@ -1032,7 +1120,7 @@ else // interactive prompt
 		if (donothing==0)
 		{
 
-			if (print==1) std::cout<<matrixname<<" =\n"<<mvars[k]<<std::endl;
+			if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;
 
 			vars[k]=matrixname; 
 			k++;
