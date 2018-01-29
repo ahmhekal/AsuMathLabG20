@@ -562,6 +562,8 @@ test2.replace(x,y-x+1,expression);
 }
 
 void mathematical_calc(std::string& a){
+	if(a=="sin"||a=="cos"||a=="tan"||a="sqrt")
+throw std::invalid_argument("error using " + a + "\n not enough input arguments");
 	
 
 while(a.find("sin")!=std::string::npos){
