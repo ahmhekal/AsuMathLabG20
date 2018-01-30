@@ -890,11 +890,9 @@ if (argc > 1) 	//if a filename is given
 
 	                    else
 	                    {
-	                            int startcalc= sMatrix.find('[');
-	                            for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i]; 
-	                                //std::cout<<wantedvalue<<std::endl;
-	                            mvars[k].CopyMatrix(wantedvalue);
-	                
+	                    	 concat_analysis(stringvalue);
+	                        mvars[k]=concat(stringvalue);
+	                            
 	                    }
 	                }
 
