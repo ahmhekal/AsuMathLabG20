@@ -1,6 +1,56 @@
 #include "matrix.h"
 #include "math.h"
 
+/*
+ * Part 0: Introduction
+ * ====================
+ *
+ * We need to write functions for `sin`, `cos`, `sqrt`, etc that take a matrix
+ * and return a matrix, whose elements are the result of applying the function
+ * on the each element in the input matrix.
+ * eg, `sqrt([1 4; 9 16])` = `[1 2; 3 4]`.
+ *
+ * We implement all Trigonometry functions and most of Exponents and Logarithms
+ * functions: https://www.mathworks.com/help/matlab/functionlist.html
+ *
+ * All these functions are element-wise, so we need to have these functions
+ * take double and return double, first, then overload them to accept matrices.
+ *
+ * But, not all the required functions are available in C++ standard library,
+ * So we need to make those first.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Part 1: Trigonometry functions
+ * ==============================
+ *
+ * Section 0: Introduction
+ * -----------------------
+ *
+ * We need to implement 41 functions:
+ *   sin      cos      tan      csc      sec      cot
+ *   sind     cosd     tand     cscd     secd     cotd
+ *   sinh     cosh     tanh     csch     sech     coth
+ *   asin     acos     atan     acsc     asec     acot
+ *   asind    acosd    atand    acscd    asecd    acotd
+ *   asinh    acosh    atanh    acsch    asech    acoth
+ *   deg2rad  rad2deg
+ *   atan2    atan2d   hypot
+ *
+ * We assume that we have all these implemented on numbers (`double`), but
+ * because this is not the case, we need to fill in the gaps first.
+ *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * Section 1: Defining the reciprocals
+ * -----------------------------------
+ *
+ * We already have `sin`, `sinh`, `asin`, and `asinh`. But we don't have their
+ * reciprocals: `csc`, `csch`, `acsc`, and `acsch`. Similarly, we don't have
+ * any `sec` or `cot` functions; we need to define those first, for `double`s.
+ *
+ */
+
 double sec(double n)
 {
 	return 1 / cos(n);
@@ -60,6 +110,20 @@ double acoth(double n)
 {
 	return atanh(1 / n);
 }
+
+
+/*
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * Section 2: Defining the degrees functions
+ * -----------------------------------------
+ *
+ * In MATLAB, `sin` takes radians. Great! That's exactly how C++ `sin` works.
+ * Also, MATLAB presents `sind`, which take degrees. That means: for every trig
+ * function, you need another function that takes or returns degrees instead of
+ * radians.
+ *
+ */
 
 double sind(double n)
 {
@@ -121,6 +185,15 @@ double acscd(double n)
 	return acsc(n) * 180 / M_PI;
 }
 
+/*
+ *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+ * Section 3: All one-argument trig functions
+ * --------------------------------------------
+ * Now, it is the time! We can now implement  the 36 trig functions easily.
+ * all 36 trig functions will have the same syntax .
+ * each function will take CMatrix and returns the matrix after apllying element wise operation on it.
+*/
+ 
 asu::CMatrix sin(const asu::CMatrix& m)
 {
 	asu::CMatrix r(m.getnRows(), m.getnColumns());
@@ -128,6 +201,7 @@ asu::CMatrix sin(const asu::CMatrix& m)
 		r(i) = sin(m(i));
 	return r;
 }
+
 
 asu::CMatrix asin(const asu::CMatrix& m)
 {
@@ -409,6 +483,17 @@ asu::CMatrix acsch(const asu::CMatrix& m)
 	return r;
 }
 
+/*
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * Section 4: Radians-degrees Converters
+ * -------------------------------------
+ *
+ * MATLAB defines two functions to convert between radians and degrees.
+ * We first define the `double` functions, then generate the overloaded matrix.
+ *
+ */
+
 double rad2deg(double r)
 {
 	return r * 180 / M_PI;
@@ -434,6 +519,21 @@ asu::CMatrix deg2rad(const asu::CMatrix& m)
 		r(i) = deg2rad(m(i));
 	return r;
 }
+
+/*
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * Section 5: The two-argument functions
+ * -------------------------------------
+ *
+ * `atan2`, `atan2d`, and `hypot` take two arguments. We write an element-wise
+ * functions like the earlier, but make the implemented functions accept
+ * two arguments.
+ *
+ * As we don't have `atan2d` defined on `double`s yet, we need to define it
+ * before we implement the corresponding element-wise function.
+ *
+ */
 
 double atan2d(double x, double y)
 {
@@ -469,6 +569,33 @@ asu::CMatrix hypot(const asu::CMatrix& a, const asu::CMatrix& b)
 		r(i) = hypot(a(i), b(i));
 	return r;
 }
+
+/*
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Part 2: Exponents and Logarithms functions
+ * ==========================================
+ *
+ * Section 0: Introduction
+ * -----------------------
+ *
+ * We'll implement the following functions:
+ *   exp     log     log10   log2    log1p   sqrt    power
+ *
+ * Interestingly, all of them are available in C++ standard library, except
+ * `power`, which is called `pow`.
+ *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
+ * Section 1: Implementation
+ * -------------------------
+ *
+ * For more symmetric code, we implement the element-wise `pow` first, then
+ * write two `power` functions that returns the result of `pow`.
+ * An optimizing complier should inline these `power` functions, among others,
+ * so it should not cause a performance issue.
+ *
+ */
 
 asu::CMatrix exp(const asu::CMatrix& m)
 {
@@ -537,7 +664,9 @@ asu::CMatrix power(const asu::CMatrix& n, const asu::CMatrix& m)
 {
 	return pow(n, m);
 }
-
+/*
+ *modified element wise power which takes matrix and double and apply element wise  power operation on the matrix 
+ */
 asu::CMatrix power_modified_elementwise(const asu::CMatrix& n, double m)
 {
 	asu::CMatrix r(n.getnRows(), n.getnColumns());
@@ -550,7 +679,10 @@ asu::CMatrix power_modified_elementwise(const asu::CMatrix& n, double m)
 
 
 }
-
+/* 
+ * power modified whiche takes matrix and double and returns matrix to the power double.
+ * ex matrix^3 ----> matrix * matrix * matrix .
+ */
 asu::CMatrix power_modified(const asu::CMatrix& n, double m)
 {
 	asu::CMatrix r = n;
