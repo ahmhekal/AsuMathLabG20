@@ -2,7 +2,7 @@
 #include "string"
 #include "matrix.h"
 #include <stdlib.h>  
-#include "functions.h"
+#include "parser2.h"
 #include "math.h"
 #include <cstdlib>
 #include <cstring>
@@ -10,720 +10,15 @@
 #include <streambuf>
 using namespace asu;
 
-/**parns_are_incomplete function it takes string and return true if open brackets is more than closed brackets
-and returns false otherwise */
-bool parens_are_incomplete(std::string matrix_string)
-{
-  unsigned int open_counter = 0 , close_counter=0 ; 
-   
-  for (unsigned int i=0 ; i<matrix_string.length() ; i++)
-     {
-       if(matrix_string[i] == '[') 
-          open_counter++;
-       if(matrix_string[i] == ']')
-          close_counter++;
-     }
-  
-  if (open_counter > close_counter )
-      return true ;
-  else return false ;
-
-}
-
+ 
  
 
 
-std::string* vars; //matrices names in string ====  std::string vars[100];
-CMatrix* mvars;   //matrices values  ====  CMatrix mvars[100];
-int k=0; //matrix index (global variable)
-void concat_analysis(std::string& test2);
-CMatrix concat(std::string s );
-
-std::string removeSpaces(std::string input)   //remove spaces from the beginning to '[' or the end of the line
-{
-  //int length = input.length();
-	if (input == "\n" || input == "" ) return "";
-  for (int i = 0; !( (input[i]=='[') || (input[i]=='\0') ); i++) 
-  {
-     if(input[i] == ' ' )
-      {input.erase(i, 1);i--;}
-  }
-  return input;
-}
-
-
-
-asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a string name
-{
-	int i;
-	for (i =k+1 ; i>=0; i--)
-	{
-		if(vars[i]==s) return mvars[i];
-	}
-	if(i<=0) throw std::invalid_argument("Impossible variable name");
-	asu::CMatrix nomatrix; return nomatrix ;
-}
-std::string to_string(double operand){
-char buffer_test[50];
-sprintf(buffer_test,"%lf",operand);
-return(std::string)buffer_test;
-}
-double to_double(std::string operand){
-char * buffer=new char[operand.length()+1];
-strcpy(buffer,operand.c_str());
-double result=atof(buffer);
-delete [] buffer;
-return result;
-
-}
-
-void math_piority_calc(std::string& test){
-int count=0;
-
-while(test.find('^')!=std::string::npos){
-//int a=test.find('*');
-unsigned int a=0;
-for(unsigned int i=0;i<test.length();i++){
-if(test[i]=='^'){
-a=i;
-break;
-}
-}
-if(a==test.length()-1){
-throw std::invalid_argument
-		    ("Syntax Error");
-
-}
-
-int x=0;
-int y=test.length()-1;
-for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
- {
-x=i+1;
-break;
-
-}
-}
-for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
-
-
-y=j-1;
-//
-
-break;
-
-}
-
-}
-
-std::string operand1;
-std::string operand2;
-if(test[a-1]=='.'){
- operand1=test.substr(x,a-x-1);
-}
-else{ operand1=test.substr(x,a-x);}
-
-
- operand2=test.substr(a+1,y-a);
-if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
-double m=to_double(operand2);
-asu::CMatrix r ;
-if(test[a-1]=='.'){
-  r =power_modified_elementwise(stringtomatrix(operand1,k),m);
-}
-else{ r =power_modified(stringtomatrix(operand1,k),m);}
-
-
-count++;
-k++;
-mvars[k]=r;
-std::string s="result";
-vars[k]=s+to_string(k);
-test.replace(x,y-x+1,vars[k]);
-
-
-}
-else{
-double z=to_double(test.substr(x,a-x));
-double k=to_double(test.substr(a+1,y-a));
-
-
-double result=pow(z,k);
-
-std::string replacement=to_string(result);
-test.replace(x,y-x+1,replacement);
-
-
-}
- }
- while(test.find('*')!=std::string::npos||test.find('/')!=std::string::npos){
-//int a=test.find('*');
-unsigned int a=0;
-for(unsigned int i=0;i<test.length();i++){
-if(test[i]=='*'||test[i]=='/'){
-a=i;
-break;
-}
-}
-if(a==test.length()-1){
-throw std::invalid_argument
-		    ("Syntax Error");
-
-}
-
-int x=0;
-int y=test.length()-1;
-//&&test[0]!='-'
-for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
- {
-x=i+1;
-break;
-
-}
-}
-if(x==1&&test[0]=='-')
-{
-x=0;
-}
-for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
-
-
-y=j-1;
-//
-
-break;
-
-}
-
-}
-std::string operand1;
-std::string operand2;
-if(test[a-1]=='.'){
- operand1=test.substr(x,a-x-1);
-}
-else{ operand1=test.substr(x,a-x);}
-if(test[y]=='.'){
-y-=1;
-}
-
-
- operand2=test.substr(a+1,y-a);
- if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-operand1=vars[k];
-
-}
-if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-operand2=vars[k];
-
-}
- if(operand2=="0"&&test[a]=='/')
-    throw std::invalid_argument
-		    ("Division by Zero");
-
-if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
-asu::CMatrix firstmatrix;
-asu::CMatrix secondmatrix;
-double operand_double;
-if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-secondmatrix=stringtomatrix(operand2,k);
-if(test[a-1]=='.'){
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(amul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix)); break;
-
-}
-}
-else{
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
-
-
-}
-}
-}
-if(!isdigit(operand1[0])&&isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-operand_double=to_double(operand2);
-if(test[a-1]=='.'){
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(amul(firstmatrix,operand_double)); break;
-case '/': mvars[k].CopyMatrix(adiv(firstmatrix,operand_double)); break;
-
-}
-
-}
-else{
-secondmatrix=operand_double;
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
-
-
-}
-}
-
-
-}
-
-///
-if(isdigit(operand1[0])&&!isdigit(operand2[0])){
-operand_double=to_double(operand1);
-secondmatrix=stringtomatrix(operand2,k);
-
-if(test[a-1]=='.'){
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(amul(operand_double,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(adiv(operand_double,secondmatrix)); break;
-
-}
-
-}
-else{
-firstmatrix=operand_double;
-k++;
-switch(test[a]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
-
-
-}
-}
-
-
-}
-std::string s="result";
-vars[k]=s+to_string(k);
-test.replace(x,y-x+1,vars[k]);
-
-
-
-
-}
-else{
-double z=to_double(test.substr(x,a-x));
-double k=to_double(test.substr(a+1,y-a));
-double result;
-switch(test[a]){
-case '*': result=z*k; break;
-case '/': result=z/k; break;
-
-}
-std::string replacement=to_string(result);
-test.replace(x,y-x+1,replacement);
-
-}
-}
-int flag=0;
-while((test.find('+')!=std::string::npos||test.find('-',flag+1)!=std::string::npos)/*&&(test[0]!='-'||test.length()>10)*/){
-unsigned int a=0;
-for(unsigned int i=flag;i<test.length();i++){
-if((test[i]=='+'||test[i]=='-')&&i!=0){
-a=i;
-break;
-}
-}
-
-if(a==test.length()-1){
-throw std::invalid_argument
-		    ("Syntax Error");
-
-}
-
-int x=0;
-int y=test.length()-1;
-for(int i=a-1;i>=0;i--){
-if(!((test[i]>='.'&&test[i]<='9')&&test[i]!='/')&&(!(test[i]>='a'&&test[i]<='z'))&&(!(test[i]>='A'&&test[i]<='Z')))
- {
-x=i+1;
-break;
-
-}
-}
-if(x==1&&test[0]=='-')
-{
-x=0;
-}
-for(unsigned int j=a+1;j<test.length();j++){
-if(!((test[j]>='.'&&test[j]<='9')&&test[j]!='/')&&(!(test[j]>='a'&&test[j]<='z'))&&(!(test[j]>='A'&&test[j]<='Z'))&&(test[a+1]!='-'||j!=a+1)){
-
-
-y=j-1;
-//
-
-break;
-
-}
-
-}
-std::string operand1;
-std::string operand2;
-if(test[a-1]=='.'){
- operand1=test.substr(x,a-x-1);
-}
-else{ operand1=test.substr(x,a-x);}
-if(test[y]=='.'){
-y-=1;
-}
-if(test[a-1]==' '||test[a-1]==';'||test[a-1]=='['){
-if(test[a]=='-'&&(!isdigit(test[a+1]))){
-std::string matrix=test.substr(a+1,y-a);
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(matrix,k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-test.replace(a,matrix.length()+1,vars[k]);
-}
-flag=a+1;
-continue;
-}
-
-
-
- operand2=test.substr(a+1,y-a);
-if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-operand1=vars[k];
-
-}
-if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-operand2=vars[k];
-
-}
-if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
-asu::CMatrix firstmatrix;
-asu::CMatrix secondmatrix;
-double operand_double;
-if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-secondmatrix=stringtomatrix(operand2,k);
-k++;
-
-switch(test[a]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
-
-}
-}
-if(!isdigit(operand1[0])&&isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-operand_double=to_double(operand2);
-if(test[a-1]=='.'){
-k++;
-switch(test[a]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,operand_double)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,operand_double)); break;
-
-}
-
-}
-else{
-secondmatrix=operand_double;
-k++;
-switch(test[a]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
-
-
-}
-}
-
-
-}
-
-///
-if(isdigit(operand1[0])&&!isdigit(operand2[0])){
-operand_double=to_double(operand1);
-secondmatrix=stringtomatrix(operand2,k);
-
-if(test[a-1]=='.'){
-k++;
-switch(test[a]){
-case '+': mvars[k].CopyMatrix(add(operand_double,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(operand_double,secondmatrix)); break;
-
-}
-
-}
-else{
-firstmatrix=operand_double;
-k++;
-switch(test[a]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
-
-
-}
-}
-
-
-}
-std::string s="result";
-vars[k]=s+to_string(k);
-test.replace(x,y-x+1,vars[k]);
-
-
-
-}
-else{
-double z=to_double(test.substr(x,a-x));
-double k=to_double(test.substr(a+1,y-a));
-double result;
-switch(test[a]){
-case '+': result=z+k; break;
-case '-': result=z-k; break;
-
-}
-std::string replacement=to_string(result);
-test.replace(x,y-x+1,replacement);
-
-}
-
-}
-if(test[0]=='-'&&(!isdigit(test[1]))){
-double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(test.substr(1,test.length()-1),k),negative));
-std::string s="result";
-vars[k]=s+to_string(k);
-test=vars[k];
-
-}
-}
-
-void parthen_analysis(std::string& test2){
-while(test2.find('(')!=std::string::npos)
-{
-	unsigned int open_counter = 0 , close_counter=0 ;
-
-  for (unsigned int i=0 ; i<test2.length() ; i++)
-     {
-       if(test2[i] == '(')
-          open_counter++;
-       if(test2[i] == ')')
-          close_counter++;
-     }
-
-  if (open_counter > close_counter )
-  throw std::invalid_argument
-		    ("Syntax Error");
-unsigned int x=0;
-int y=test2.length()-1;
-for(unsigned int i=0;i<test2.length();i++){
-if(test2[i]=='(')
-x=i;
-
-}
-for(unsigned int i=0;i<test2.length();i++){
-if(test2[i]==')'&&i>x){
-y=i;
-break;
-}
-}
-
-std::string expression=test2.substr(x+1,y-x-1);
-
-math_piority_calc(expression);
-test2.replace(x,y-x+1,expression);
-
-
-}
-
-}
-
-void mathematical_calc(std::string& a){
-	if(a=="sin"||a=="cos"||a=="tan"||a=="sqrt")
-throw std::invalid_argument("error using " + a + "\n not enough input arguments");
-	
-
-while(a.find("sin")!=std::string::npos){
-
-int first_pos=a.find("sin");
-int end_pos=a.find(')',first_pos);
-std::string expression=a.substr(first_pos,end_pos-first_pos+1);
-std::string operand_str=expression.substr(4,a.length()-4-1);
-if(operand_str.find(')')!=std::string::npos){
-operand_str.erase(operand_str.find(')'),1);
-}
-math_piority_calc(operand_str);
-if(!isdigit(operand_str[0])){
-asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
-k++;
-mvars[k]=sin(firstmatrix);
-std::string s="result";
-vars[k]=s+to_string(k);
-a.replace(first_pos,end_pos-first_pos+1,vars[k]);
-
-
-
-}
-else{
-char * buffer=new char[operand_str.length()+1];
-strcpy(buffer,operand_str.c_str());
-double operand=atof(buffer);
-double result;
-result=sin(operand);
-char buffer_test[50];
-sprintf(buffer_test,"%g",result);
-a.replace(first_pos,end_pos-first_pos+1,(std::string)buffer_test);
-
-delete [] buffer;
-
-}
-}
- while(a.find("cos")!=std::string::npos){
-int first_pos=a.find("cos");
-int end_pos=a.find(')',first_pos);
-std::string expression=a.substr(first_pos,end_pos-first_pos+1);
-std::string operand_str=expression.substr(4,a.length()-4-1);
-if(operand_str.find(')')!=std::string::npos){
-operand_str.erase(operand_str.find(')'),1);
-}
-math_piority_calc(operand_str);
-if(!isdigit(operand_str[0])){
-asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
-k++;
-mvars[k]=cos(firstmatrix);
-std::string s="result";
-vars[k]=s+to_string(k);
-a.replace(first_pos,end_pos-first_pos+1,vars[k]);
-
-
-
-}
-else{
-char * buffer=new char[operand_str.length()+1];
-strcpy(buffer,operand_str.c_str());
-double operand=atof(buffer);
-double result=cos(operand);
-char buffer_test[50];
-sprintf(buffer_test,"%g",result);
-a.replace(first_pos,end_pos-first_pos+1,(std::string)buffer_test);
-
-delete [] buffer;
-}
-
-
-
-}
- while(a.find("tan")!=std::string::npos){
-int first_pos=a.find("tan");
-int end_pos=a.find(')',first_pos);
-std::string expression=a.substr(first_pos,end_pos-first_pos+1);
-std::string operand_str=expression.substr(4,a.length()-4-1);
-if(operand_str.find(')')!=std::string::npos){
-operand_str.erase(operand_str.find(')'),1);
-}
-math_piority_calc(operand_str);
-if(!isdigit(operand_str[0])){
-asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
-k++;
-mvars[k]=tan(firstmatrix);
-std::string s="result";
-vars[k]=s+to_string(k);
-a.replace(first_pos,end_pos-first_pos+1,vars[k]);
-}
-
-else{
-char * buffer=new char[operand_str.length()+1];
-strcpy(buffer,operand_str.c_str());
-double operand=atof(buffer);
-double result=tan(operand);
-char buffer_test[50];
-sprintf(buffer_test,"%g",result);
-a.replace(first_pos,end_pos-first_pos+1,(std::string)buffer_test);
-
-delete [] buffer;
-}
-
-}
-while(a.find("sqrt")!=std::string::npos){
-int first_pos=a.find("sqrt");
-int end_pos=a.find(')',first_pos);
-std::string expression=a.substr(first_pos,end_pos-first_pos+1);
-std::string operand_str=expression.substr(5,a.length()-5-1);
-if(operand_str.find(')')!=std::string::npos){
-operand_str.erase(operand_str.find(')'),1);
-}
-math_piority_calc(operand_str);
-
-if(!isdigit(operand_str[0])){
-asu::CMatrix firstmatrix=stringtomatrix(operand_str,k);
-k++;
-mvars[k]=sqrt(firstmatrix);
-std::string s="result";
-vars[k]=s+to_string(k);
-a.replace(first_pos,end_pos-first_pos+1,vars[k]);
-
-
-
-}
-else{
-char * buffer=new char[operand_str.length()+1];
-strcpy(buffer,operand_str.c_str());
-double operand=atof(buffer);
-double result=sqrt(operand);
-char buffer_test[50];
-sprintf(buffer_test,"%g",result);
-a.replace(first_pos,end_pos-first_pos+1,(std::string)buffer_test);
-
-delete [] buffer;
-}
-
-
-
-}
-
-
-
-}
- 
-
-
-bool getlinefile(std::string& stream, std::string& str)
-{
-	int i=0;stream=""; if(str[0]) ; else return 0; 
-  while((str[i]=='\n' && str[i+1]==' ' && str[i+2]==' ' && str[i+3]==' ' && str[i+4]==' ')
-  		|| (str[i]!='\n'))
-  		{
-  			stream+=str[i];
-  			i++;
-  		}
- 
-  		str=str.substr(i+1,str.size()-i-1);
-
-  return 1;
-}
+std::string* matrixNames; //matrices names in string ====  std::string matrixNames[100];
+CMatrix* matrixVariables;   //matrices values  ====  CMatrix matrixVariables[100];
+int numberofmatrixVariables=0; //matrix index (global variable)
+void concatinationAnalysis(std::string& test2);
+CMatrix concatinationCalculation(std::string s );
 
 
 
@@ -733,8 +28,8 @@ int stop=0; int donothing=0;
 std::string sMatrix; //input line as string
 
 
-vars=new std::string [100]; //matrices names in string ====  std::string vars[100];
-mvars=new CMatrix[100]; //matrices values  ====  CMatrix mvars[100];
+matrixNames=new std::string [100]; //matrices names in string ====  std::string matrixNames[100];
+matrixVariables=new CMatrix[100]; //matrices values  ====  CMatrix matrixVariables[100];
 	
 
 if (argc > 1) 	//if a filename is given
@@ -813,9 +108,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);  
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	    
 	        }
 
@@ -827,9 +122,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);   
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	         
 	        
 	        }
@@ -843,9 +138,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);    
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	        
 	        }
 
@@ -857,48 +152,50 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 	                            
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);   
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	                 
 	        }
 	        else if (sMatrix.find("'")!=std::string::npos)
 			{
 
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
+				CMatrix firstmatrix=stringtomatrix(firstvalue,numberofmatrixVariables);
+				matrixVariables[numberofmatrixVariables]=firstmatrix.getTranspose();
 
 			}	
 
 	        else 
 	        {
 	        	
-	        mathematical_calc(stringvalue);
+	        functionsCalculation(stringvalue);
 
 	        parthen_analysis(stringvalue);
-	        math_piority_calc(stringvalue);
+	        basicOperationCalculation(stringvalue);
 
 	                if (sMatrix.find('[')!=std::string::npos) //if '[' found
 	                {   
 	                    if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
 	                    {   //if found another '[' (concatination is found)
 	                        std::cout<<std::endl;
-	                        concat_analysis(stringvalue);
-	                        mvars[k]=concat(stringvalue);
+	                        concatinationAnalysis(stringvalue);
+	                        matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 	                    }
 
 	                    else
 	                    {
-	                    	 concat_analysis(stringvalue);
-	                        mvars[k]=concat(stringvalue);
-	                            
+	                            int startcalc= sMatrix.find('[');
+	                            for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i]; 
+	                                //std::cout<<wantedvalue<<std::endl;
+	                            matrixVariables[numberofmatrixVariables].CopyMatrix(wantedvalue);
+	                
 	                    }
 	                }
 
 	                else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
 	                {
-	                    mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+	                    matrixVariables[numberofmatrixVariables]=CMatrix( 1,1, to_double(stringvalue));
 	                }
 
 
@@ -906,7 +203,7 @@ if (argc > 1) 	//if a filename is given
 
 	                else if ((stringvalue.find('\n'))==std::string::npos)
 	                {   
-	                    mvars[k]=stringtomatrix(stringvalue,k);
+	                    matrixVariables[numberofmatrixVariables]=stringtomatrix(stringvalue,numberofmatrixVariables);
 	                }
 	              
 
@@ -916,10 +213,10 @@ if (argc > 1) 	//if a filename is given
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<matrixVariables[numberofmatrixVariables]<<std::endl;   
 
-	            vars[k]=matrixname; 
-	            k++;
+	            matrixNames[numberofmatrixVariables]=matrixname; 
+	            numberofmatrixVariables++;
 	        }
 
 	}
@@ -989,9 +286,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
-            mvars[k]=cc;
+            matrixVariables[numberofmatrixVariables]=cc;
 	
 		}
 
@@ -1003,9 +300,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
-		    mvars[k]=cc;
+		    matrixVariables[numberofmatrixVariables]=cc;
          
 		
 		}
@@ -1019,9 +316,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
-		    mvars[k]=cc;
+		    matrixVariables[numberofmatrixVariables]=cc;
 		
 		}
 
@@ -1033,9 +330,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
                    	 		
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
-			mvars[k]=cc;
+			matrixVariables[numberofmatrixVariables]=cc;
                  
 		}
 
@@ -1048,8 +345,8 @@ else // interactive prompt
 				{
 
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
+				CMatrix firstmatrix=stringtomatrix(firstvalue,numberofmatrixVariables);
+				matrixVariables[numberofmatrixVariables]=firstmatrix.getTranspose();
 
 				}
 
@@ -1058,16 +355,16 @@ else // interactive prompt
 							&& ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) ==std::string::npos) )
 					//if '[' found but no concatination
 				{	
-					mathematical_calc(stringvalue);
+					functionsCalculation(stringvalue);
 					parthen_analysis(stringvalue);
-					math_piority_calc(stringvalue);
-					concat_analysis(stringvalue);
-					mvars[k]=concat(stringvalue);
+					basicOperationCalculation(stringvalue);
+					concatinationAnalysis(stringvalue);
+					matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 					
 						//int startcalc= stringvalue.find('[');
 						//	for(int i=startcalc; stringvalue[i]!='\0';i++) wantedvalue+=stringvalue[i];	
 								//std::cout<<wantedvalue<<std::endl;
-						//	mvars[k].CopyMatrix(wantedvalue);
+						//	matrixVariables[numberofmatrixVariables].CopyMatrix(wantedvalue);
 					
 				}
 
@@ -1075,21 +372,21 @@ else // interactive prompt
 				{
 
 				
-				mathematical_calc(stringvalue);	
+				functionsCalculation(stringvalue);	
 				parthen_analysis(stringvalue);
-				math_piority_calc(stringvalue);
+				basicOperationCalculation(stringvalue);
 
 				std::cout<<std::endl;
 
 				if (sMatrix.find('[')!=std::string::npos) //if '[' found
 				{	
 					if ( sMatrix.find ( '[', (sMatrix.find('[')+1)  ) !=std::string::npos) 
-					{	//if found another '[' (concatination is found)
+					{	//if found another '[' (concatinationCalculationination is found)
 						
 						
-						concat_analysis(stringvalue);
+						concatinationAnalysis(stringvalue);
 					
-						mvars[k]=concat(stringvalue);
+						matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 
 						
 					}
@@ -1097,7 +394,7 @@ else // interactive prompt
 
 				else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
 				{
-					mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+					matrixVariables[numberofmatrixVariables]=CMatrix( 1,1, to_double(stringvalue));
 				}
 
 
@@ -1105,7 +402,7 @@ else // interactive prompt
 
 				else if ((stringvalue.find('\n'))==std::string::npos)
 				{	
-					mvars[k]=stringtomatrix(stringvalue,k);
+					matrixVariables[numberofmatrixVariables]=stringtomatrix(stringvalue,numberofmatrixVariables);
 				}
 
 
@@ -1118,10 +415,10 @@ else // interactive prompt
 		if (donothing==0)
 		{
 
-			if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;
+			if (print==1) std::cout<<printedmatrixname<<" =\n"<<matrixVariables[numberofmatrixVariables]<<std::endl;
 
-			vars[k]=matrixname; 
-			k++;
+			matrixNames[numberofmatrixVariables]=matrixname; 
+			numberofmatrixVariables++;
 		}
 		}
 
@@ -1133,8 +430,8 @@ else // interactive prompt
 	}
 }
 
-	delete[]mvars;
-	delete[]vars;
+	delete[]matrixVariables;
+	delete[]matrixNames;
 
 	return 0;
 }
@@ -1149,84 +446,3 @@ else // interactive prompt
 
 
 
-
-asu::CMatrix concat(std::string s ){
-asu::CMatrix r;
-char* buffer = new char[s.length()+1];
-strcpy(buffer, s.c_str());
-char* lineContext;
-char lineSeparators[3];
-lineSeparators[0] = ';';
-lineSeparators[1] = '\r';
-lineSeparators[2] = '\n';
-
-
-
-char* line = strtok_r(buffer, lineSeparators, &lineContext);
-while(line)
-{
-asu::CMatrix row;
-char* context;
-char separators[4];
-separators[0] = ' ';
-separators[1] = '[';
-separators[2] = ']';
-separators[3] = ',';
-char* token = strtok_r(line, separators, &context);
-while(token)
-{
-if(!isdigit(token[0])&&token[0]!='-'){
-row.addColumn(stringtomatrix(token,k));
-}
-else{
-asu::CMatrix item = atof(token);
-row.addColumn(item);}
-token = strtok_r(NULL, separators, &context);
-}
-
-if (row.getnColumns() > 0 && (row.getnColumns() == r.getnColumns() || r.getnRows() == 0)){
-r.addRow(row);
-
-}
-else{
-throw std::invalid_argument
-		    ("Invalid matrix dimensions");
-}
-
-
-
-
-line = strtok_r(NULL, lineSeparators, &lineContext);
-}
-delete[] buffer;
-return r;
-
-}
-void concat_analysis(std::string& test2){
-while(test2.find('[',1)!=std::string::npos)
-{
-unsigned int x=0;
-int y=test2.length()-1;
-for(unsigned int i=0;i<test2.length();i++){
-if(test2[i]=='[')
-x=i;
-
-}
-for(unsigned int i=0;i<test2.length()-1;i++){
-if(test2[i]==']'&&i>x){
-y=i;
-break;
-}
-}
-
-std::string expression=test2.substr(x+1,y-x-1);
-//std::cout<<expression<<std::endl;
-k++;
-mvars[k]=concat(expression);
-std::string s="result";
-vars[k]=s+to_string(k);
-test2.replace(x,y-x+1,vars[k]);
-//std::cout<<test2<<std::endl;
-
-}
-}
