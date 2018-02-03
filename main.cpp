@@ -14,8 +14,8 @@ using namespace asu;
  
 
 
-std::string* matrixNames; //matrices names in string ====  std::string matrixNames[100];
-CMatrix* matrixVariables;   //matrices values  ====  CMatrix matrixVariables[100];
+std::string* matrixNames; //matrices names in string array ====  std::string matrixNames[100];
+CMatrix* matrixVariables;   //matrices values array  ====  CMatrix matrixVariables[100];
 int numberofmatrixVariables=0; //matrix index (global variable)
 void concatinationAnalysis(std::string& test2);
 CMatrix concatinationCalculation(std::string s );
@@ -24,12 +24,13 @@ CMatrix concatinationCalculation(std::string s );
 
 int main(int argc, char** argv)
 {
-int stop=0; int donothing=0;
+int stop=0;
+int donothing=0; //if the line has no function (like emplty line)
 std::string sMatrix; //input line as string
 
 
-matrixNames=new std::string [100]; //matrices names in string ====  std::string matrixNames[100];
-matrixVariables=new CMatrix[100]; //matrices values  ====  CMatrix matrixVariables[100];
+matrixNames=new std::string [100]; //matrices names in string array ====  std::string matrixNames[100];
+matrixVariables=new CMatrix[100]; //matrices values array  ====  CMatrix matrixVariables[100];
 	
 
 if (argc > 1) 	//if a filename is given
