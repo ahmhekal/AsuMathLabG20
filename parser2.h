@@ -394,8 +394,8 @@ if(expression[endPosition]=='.'){
 endPosition-=1;
 }
 if(expression[operatorPosition-1]==' '||expression[operatorPosition-1]==';'||expression[operatorPosition-1]=='['){
-int index;
-for(int i=operatorPosition;i<expression.length();i++){
+int index=0;
+for(unsigned int i=operatorPosition;i<expression.length();i++){
 if(expression[i]==' '||expression[i]==']' ||expression[i]==';'){index=i-1; break;}
 }
 std::string matrixElement=expression.substr(operatorPosition,index-operatorPosition+1);
