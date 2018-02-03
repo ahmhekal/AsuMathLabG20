@@ -8,9 +8,9 @@
 #include "matrix.h"
 #include "functions.h"
 using namespace std;
-extern int k;
-extern std::string* vars; 
-extern asu::CMatrix* mvars;
+extern int numberofmatrixVariables;
+extern std::string* matrixNames; 
+extern asu::CMatrix* matrixVariables;
 /**parns_are_incomplete function it takes string and return true if open brackets is more than closed brackets
 and returns false otherwise */
 bool parens_are_incomplete(std::string matrix_string)
@@ -49,7 +49,7 @@ asu::CMatrix stringtomatrix (std::string s, int k)  //return matrix value of a s
 	int i;
 	for (i =k+1 ; i>=0; i--)
 	{
-		if(vars[i]==s) return mvars[i];
+		if(matrixNames[i]==s) return matrixVariables[i];
 	}
 	if(i<=0) throw std::invalid_argument("Impossible variable name");
 	asu::CMatrix nomatrix; return nomatrix ;
@@ -139,18 +139,18 @@ double powerValue=to_double(operand2);
 asu::CMatrix resultMatrix ;
 if(expression[operatorPosition-1]=='.'){
 	//elementwise operation
-  resultMatrix =power_modified_elementwise(stringtomatrix(operand1,k),powerValue);
+  resultMatrix =power_modified_elementwise(stringtomatrix(operand1,numberofmatrixVariables),powerValue);
 }
 else{//normal operation
- resultMatrix =power_modified(stringtomatrix(operand1,k),powerValue);}
+ resultMatrix =power_modified(stringtomatrix(operand1,numberofmatrixVariables),powerValue);}
 
 
 count++;
-k++;
-mvars[k]=resultMatrix;//saving the result in the array of matrices 
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables]=resultMatrix;//saving the result in the array of matrices 
 std::string s="result";
-vars[k]=s+to_string(k);//saving the name of resulting matrices 
-expression.replace(startPosition,endPosition-startPosition+1,vars[k]);//appending the expression with the result
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);//saving the name of resulting matrices 
+expression.replace(startPosition,endPosition-startPosition+1,matrixNames[numberofmatrixVariables]);//appending the expression with the result
 
 
 }
@@ -222,20 +222,20 @@ endPosition-=1;
  operand2=expression.substr(operatorPosition+1,endPosition-operatorPosition);
  if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
 double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),numberofmatrixVariables),negative));
 std::string s="result";
-vars[k]=s+to_string(k);
-operand1=vars[k];
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+operand1=matrixNames[numberofmatrixVariables];
 
 }
 if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
 double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),numberofmatrixVariables),negative));
 std::string s="result";
-vars[k]=s+to_string(k);
-operand2=vars[k];
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+operand2=matrixNames[numberofmatrixVariables];
 
 }
  if(operand2=="0"&&expression[operatorPosition]=='/')
@@ -247,44 +247,44 @@ asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
 double operand_double;
 if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-secondmatrix=stringtomatrix(operand2,k);
+firstmatrix=stringtomatrix(operand1,numberofmatrixVariables);
+secondmatrix=stringtomatrix(operand2,numberofmatrixVariables);
 if(expression[operatorPosition-1]=='.'){
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(amul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(adiv(firstmatrix,secondmatrix)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(amul(firstmatrix,secondmatrix)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(adiv(firstmatrix,secondmatrix)); break;
 
 }
 }
 else{
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 
 
 }
 }
 }
 if(!isdigit(operand1[0])&&isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
+firstmatrix=stringtomatrix(operand1,numberofmatrixVariables);
 operand_double=to_double(operand2);
 if(expression[operatorPosition-1]=='.'){
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(amul(firstmatrix,operand_double)); break;
-case '/': mvars[k].CopyMatrix(adiv(firstmatrix,operand_double)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(amul(firstmatrix,operand_double)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(adiv(firstmatrix,operand_double)); break;
 
 }
 
 }
 else{
 secondmatrix=operand_double;
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 
 
 }
@@ -296,23 +296,23 @@ case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 ///
 if(isdigit(operand1[0])&&!isdigit(operand2[0])){
 operand_double=to_double(operand1);
-secondmatrix=stringtomatrix(operand2,k);
+secondmatrix=stringtomatrix(operand2,numberofmatrixVariables);
 
 if(expression[operatorPosition-1]=='.'){
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(amul(operand_double,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(adiv(operand_double,secondmatrix)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(amul(operand_double,secondmatrix)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(adiv(operand_double,secondmatrix)); break;
 
 }
 
 }
 else{
 firstmatrix=operand_double;
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '*': mvars[k].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
-case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
+case '*': matrixVariables[numberofmatrixVariables].CopyMatrix(mul(firstmatrix,secondmatrix)); break;
+case '/': matrixVariables[numberofmatrixVariables].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 
 
 }
@@ -321,8 +321,8 @@ case '/': mvars[k].CopyMatrix(div(firstmatrix,secondmatrix)); break;
 
 }
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(startPosition,endPosition-startPosition+1,vars[k]);
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(startPosition,endPosition-startPosition+1,matrixNames[numberofmatrixVariables]);
 
 
 
@@ -412,20 +412,20 @@ continue;
  operand2=expression.substr(operatorPosition+1,endPosition-operatorPosition);
 if(operand1[0]=='-'&&(!isdigit(operand1[1]))){
 double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),k),negative));
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables].CopyMatrix(amul(stringtomatrix(operand1.substr(1,operand1.length()-1),numberofmatrixVariables),negative));
 std::string s="result";
-vars[k]=s+to_string(k);
-operand1=vars[k];
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+operand1=matrixNames[numberofmatrixVariables];
 
 }
 if(operand2[0]=='-'&&(!isdigit(operand2[1]))){
 double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),k),negative));
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables].CopyMatrix(amul(stringtomatrix(operand2.substr(1,operand2.length()-1),numberofmatrixVariables),negative));
 std::string s="result";
-vars[k]=s+to_string(k);
-operand2=vars[k];
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+operand2=matrixNames[numberofmatrixVariables];
 
 }
 if((!isdigit(operand1[0])||!isdigit(operand2[0]))&&operand1[0]!='-'&&operand2[0]!='-'){
@@ -433,35 +433,35 @@ asu::CMatrix firstmatrix;
 asu::CMatrix secondmatrix;
 double operand_double;
 if(!isdigit(operand1[0])&&!isdigit(operand2[0])){
-firstmatrix=stringtomatrix(operand1,k);
-secondmatrix=stringtomatrix(operand2,k);
-k++;
+firstmatrix=stringtomatrix(operand1,numberofmatrixVariables);
+secondmatrix=stringtomatrix(operand2,numberofmatrixVariables);
+numberofmatrixVariables++;
 
 switch(expression[operatorPosition]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+case '+': matrixVariables[numberofmatrixVariables].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': matrixVariables[numberofmatrixVariables].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 
 }
 }
 if((!isdigit(operand1[0]))&&((isdigit(operand2[0]))||(isdigit(operand2[1])&&operand2[0]=='-'))){
 	 
-firstmatrix=stringtomatrix(operand1,k);
+firstmatrix=stringtomatrix(operand1,numberofmatrixVariables);
 operand_double=to_double(operand2);
 if(expression[operatorPosition-1]=='.'){
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,operand_double)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,operand_double)); break;
+case '+': matrixVariables[numberofmatrixVariables].CopyMatrix(add(firstmatrix,operand_double)); break;
+case '-': matrixVariables[numberofmatrixVariables].CopyMatrix(sub(firstmatrix,operand_double)); break;
 
 }
 
 }
 else{
 secondmatrix=operand_double;
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+case '+': matrixVariables[numberofmatrixVariables].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': matrixVariables[numberofmatrixVariables].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 
 
 }
@@ -474,23 +474,23 @@ case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 if((isdigit(operand1[0])||(isdigit(operand1[1])&&operand1[0]=='-'))&&!isdigit(operand2[0])){
 
 operand_double=to_double(operand1);
-secondmatrix=stringtomatrix(operand2,k);
+secondmatrix=stringtomatrix(operand2,numberofmatrixVariables);
 
 if(expression[operatorPosition-1]=='.'){
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '+': mvars[k].CopyMatrix(add(operand_double,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(operand_double,secondmatrix)); break;
+case '+': matrixVariables[numberofmatrixVariables].CopyMatrix(add(operand_double,secondmatrix)); break;
+case '-': matrixVariables[numberofmatrixVariables].CopyMatrix(sub(operand_double,secondmatrix)); break;
 
 }
 
 }
 else{
 firstmatrix=operand_double;
-k++;
+numberofmatrixVariables++;
 switch(expression[operatorPosition]){
-case '+': mvars[k].CopyMatrix(add(firstmatrix,secondmatrix)); break;
-case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
+case '+': matrixVariables[numberofmatrixVariables].CopyMatrix(add(firstmatrix,secondmatrix)); break;
+case '-': matrixVariables[numberofmatrixVariables].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 
 
 }
@@ -499,8 +499,8 @@ case '-': mvars[k].CopyMatrix(sub(firstmatrix,secondmatrix)); break;
 
 }
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(startPosition,endPosition-startPosition+1,vars[k]);
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(startPosition,endPosition-startPosition+1,matrixNames[numberofmatrixVariables]);
 
 
 
@@ -522,11 +522,11 @@ expression.replace(startPosition,endPosition-startPosition+1,replacement);
 }
 if(expression[0]=='-'&&(!isdigit(expression[1]))){
 double negative=-1;
-k++;
-mvars[k].CopyMatrix(amul(stringtomatrix(expression.substr(1,expression.length()-1),k),negative));
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables].CopyMatrix(amul(stringtomatrix(expression.substr(1,expression.length()-1),numberofmatrixVariables),negative));
 std::string s="result";
-vars[k]=s+to_string(k);
-expression=vars[k];
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression=matrixNames[numberofmatrixVariables];
 
 }
 
@@ -605,12 +605,12 @@ expressionInsideFunction.erase(expressionInsideFunction.find(')'),1);
 basicOperationCalculation(expressionInsideFunction);//calculating the expression inside the function
 //if the expression was a matrix expression
 if(!isdigit(expressionInsideFunction[0])){
-asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,k);//getting the matrix variable inside the function
-k++;//increasing the number of matrix varibales to save the result
-mvars[k]=sin(firstmatrix);
+asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,numberofmatrixVariables);//getting the matrix variable inside the function
+numberofmatrixVariables++;//increasing the number of matrix varibales to save the result
+matrixVariables[numberofmatrixVariables]=sin(firstmatrix);
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(first_pos,end_pos-first_pos+1,vars[k]);//replacing the name of resulting matrix in the original matrix
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(first_pos,end_pos-first_pos+1,matrixNames[numberofmatrixVariables]);//replacing the name of resulting matrix in the original matrix
 
 
 
@@ -641,12 +641,12 @@ expressionInsideFunction.erase(expressionInsideFunction.find(')'),1);
 }
 basicOperationCalculation(expressionInsideFunction);
 if(!isdigit(expressionInsideFunction[0])){
-asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,k);
-k++;
-mvars[k]=cos(firstmatrix);
+asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,numberofmatrixVariables);
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables]=cos(firstmatrix);
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(first_pos,end_pos-first_pos+1,vars[k]);
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(first_pos,end_pos-first_pos+1,matrixNames[numberofmatrixVariables]);
 
 
 
@@ -676,12 +676,12 @@ expressionInsideFunction.erase(expressionInsideFunction.find(')'),1);
 }
 basicOperationCalculation(expressionInsideFunction);
 if(!isdigit(expressionInsideFunction[0])){
-asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,k);
-k++;
-mvars[k]=tan(firstmatrix);
+asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,numberofmatrixVariables);
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables]=tan(firstmatrix);
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(first_pos,end_pos-first_pos+1,vars[k]);
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(first_pos,end_pos-first_pos+1,matrixNames[numberofmatrixVariables]);
 }
 
 else{
@@ -708,12 +708,12 @@ expressionInsideFunction.erase(expressionInsideFunction.find(')'),1);
 basicOperationCalculation(expressionInsideFunction);
 
 if(!isdigit(expressionInsideFunction[0])){
-asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,k);
-k++;
-mvars[k]=sqrt(firstmatrix);
+asu::CMatrix firstmatrix=stringtomatrix(expressionInsideFunction,numberofmatrixVariables);
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables]=sqrt(firstmatrix);
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(first_pos,end_pos-first_pos+1,vars[k]);
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(first_pos,end_pos-first_pos+1,matrixNames[numberofmatrixVariables]);
 
 
 
@@ -767,7 +767,7 @@ char* token = strtok_r(line, separators, &context);
 while(token)
 {
 if(!isdigit(token[0])&&token[0]!='-'){
-row.addColumn(stringtomatrix(token,k));
+row.addColumn(stringtomatrix(token,numberofmatrixVariables));
 }
 else{
 asu::CMatrix item = atof(token);
@@ -817,11 +817,11 @@ break;
 }
 
 std::string insideBrackets=expression.substr(startPosition+1,endPosition-startPosition-1);//expression inside brackets
-k++;
-mvars[k]=concatinationCalculation(insideBrackets);//getting a matrix variable of the expression inside brackets
+numberofmatrixVariables++;
+matrixVariables[numberofmatrixVariables]=concatinationCalculation(insideBrackets);//getting a matrix variable of the expression inside brackets
 std::string s="result";
-vars[k]=s+to_string(k);
-expression.replace(startPosition,endPosition-startPosition+1,vars[k]);//replacing these brackets by a name refered to the resulting matrix 
+matrixNames[numberofmatrixVariables]=s+to_string(numberofmatrixVariables);
+expression.replace(startPosition,endPosition-startPosition+1,matrixNames[numberofmatrixVariables]);//replacing these brackets by a name refered to the resulting matrix 
 
 }
 }

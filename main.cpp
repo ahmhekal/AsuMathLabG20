@@ -14,9 +14,9 @@ using namespace asu;
  
 
 
-std::string* vars; //matrices names in string ====  std::string vars[100];
-CMatrix* mvars;   //matrices values  ====  CMatrix mvars[100];
-int k=0; //matrix index (global variable)
+std::string* matrixNames; //matrices names in string ====  std::string matrixNames[100];
+CMatrix* matrixVariables;   //matrices values  ====  CMatrix matrixVariables[100];
+int numberofmatrixVariables=0; //matrix index (global variable)
 void concatinationAnalysis(std::string& test2);
 CMatrix concatinationCalculation(std::string s );
 
@@ -28,8 +28,8 @@ int stop=0; int donothing=0;
 std::string sMatrix; //input line as string
 
 
-vars=new std::string [100]; //matrices names in string ====  std::string vars[100];
-mvars=new CMatrix[100]; //matrices values  ====  CMatrix mvars[100];
+matrixNames=new std::string [100]; //matrices names in string ====  std::string matrixNames[100];
+matrixVariables=new CMatrix[100]; //matrices values  ====  CMatrix matrixVariables[100];
 	
 
 if (argc > 1) 	//if a filename is given
@@ -108,9 +108,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);  
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	    
 	        }
 
@@ -122,9 +122,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);   
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	         
 	        
 	        }
@@ -138,9 +138,9 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);    
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	        
 	        }
 
@@ -152,17 +152,17 @@ if (argc > 1) 	//if a filename is given
 	            std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2));    
 	            std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 	                            
-	            vars[k]=matrixname;
+	            matrixNames[numberofmatrixVariables]=matrixname;
 	            CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);   
-	            mvars[k]=cc;
+	            matrixVariables[numberofmatrixVariables]=cc;
 	                 
 	        }
 	        else if (sMatrix.find("'")!=std::string::npos)
 			{
 
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
+				CMatrix firstmatrix=stringtomatrix(firstvalue,numberofmatrixVariables);
+				matrixVariables[numberofmatrixVariables]=firstmatrix.getTranspose();
 
 			}	
 
@@ -180,7 +180,7 @@ if (argc > 1) 	//if a filename is given
 	                    {   //if found another '[' (concatination is found)
 	                        std::cout<<std::endl;
 	                        concatinationAnalysis(stringvalue);
-	                        mvars[k]=concatinationCalculation(stringvalue);
+	                        matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 	                    }
 
 	                    else
@@ -188,14 +188,14 @@ if (argc > 1) 	//if a filename is given
 	                            int startcalc= sMatrix.find('[');
 	                            for(int i=startcalc; sMatrix[i]!='\0';i++) wantedvalue+=sMatrix[i]; 
 	                                //std::cout<<wantedvalue<<std::endl;
-	                            mvars[k].CopyMatrix(wantedvalue);
+	                            matrixVariables[numberofmatrixVariables].CopyMatrix(wantedvalue);
 	                
 	                    }
 	                }
 
 	                else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
 	                {
-	                    mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+	                    matrixVariables[numberofmatrixVariables]=CMatrix( 1,1, to_double(stringvalue));
 	                }
 
 
@@ -203,7 +203,7 @@ if (argc > 1) 	//if a filename is given
 
 	                else if ((stringvalue.find('\n'))==std::string::npos)
 	                {   
-	                    mvars[k]=stringtomatrix(stringvalue,k);
+	                    matrixVariables[numberofmatrixVariables]=stringtomatrix(stringvalue,numberofmatrixVariables);
 	                }
 	              
 
@@ -213,10 +213,10 @@ if (argc > 1) 	//if a filename is given
 	        
 	        if (donothing==0)
 	        {
-	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;   
+	            if (print==1) std::cout<<printedmatrixname<<" =\n"<<matrixVariables[numberofmatrixVariables]<<std::endl;   
 
-	            vars[k]=matrixname; 
-	            k++;
+	            matrixNames[numberofmatrixVariables]=matrixname; 
+	            numberofmatrixVariables++;
 	        }
 
 	}
@@ -286,9 +286,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ZEROS);	
-            mvars[k]=cc;
+            matrixVariables[numberofmatrixVariables]=cc;
 	
 		}
 
@@ -300,9 +300,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_ONES);	
-		    mvars[k]=cc;
+		    matrixVariables[numberofmatrixVariables]=cc;
          
 		
 		}
@@ -316,9 +316,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
 
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_EYE);	
-		    mvars[k]=cc;
+		    matrixVariables[numberofmatrixVariables]=cc;
 		
 		}
 
@@ -330,9 +330,9 @@ else // interactive prompt
 			std::string the_row=sMatrix.substr(index+2,sMatrix.find(',')-(index+2)); 	
 			std::string the_column=sMatrix.substr(sMatrix.find(',')+1,sMatrix.find(')')-sMatrix.find(',')+1-2);
                    	 		
-			vars[k]=matrixname;
+			matrixNames[numberofmatrixVariables]=matrixname;
 			CMatrix cc((int)to_double(the_row),(int)to_double(the_column),asu::CMatrix::MI_RAND);	
-			mvars[k]=cc;
+			matrixVariables[numberofmatrixVariables]=cc;
                  
 		}
 
@@ -345,8 +345,8 @@ else // interactive prompt
 				{
 
 				std::string firstvalue=sMatrix.substr(endname+1,sMatrix.find("'")-endname-1); //to get the string name of the first variable
-				CMatrix firstmatrix=stringtomatrix(firstvalue,k);
-				mvars[k]=firstmatrix.getTranspose();
+				CMatrix firstmatrix=stringtomatrix(firstvalue,numberofmatrixVariables);
+				matrixVariables[numberofmatrixVariables]=firstmatrix.getTranspose();
 
 				}
 
@@ -359,12 +359,12 @@ else // interactive prompt
 					parthen_analysis(stringvalue);
 					basicOperationCalculation(stringvalue);
 					concatinationAnalysis(stringvalue);
-					mvars[k]=concatinationCalculation(stringvalue);
+					matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 					
 						//int startcalc= stringvalue.find('[');
 						//	for(int i=startcalc; stringvalue[i]!='\0';i++) wantedvalue+=stringvalue[i];	
 								//std::cout<<wantedvalue<<std::endl;
-						//	mvars[k].CopyMatrix(wantedvalue);
+						//	matrixVariables[numberofmatrixVariables].CopyMatrix(wantedvalue);
 					
 				}
 
@@ -386,7 +386,7 @@ else // interactive prompt
 						
 						concatinationAnalysis(stringvalue);
 					
-						mvars[k]=concatinationCalculation(stringvalue);
+						matrixVariables[numberofmatrixVariables]=concatinationCalculation(stringvalue);
 
 						
 					}
@@ -394,7 +394,7 @@ else // interactive prompt
 
 				else if((stringvalue[0]>='0' && stringvalue[0]<('9'+1)) ||(stringvalue[0]=='-') )
 				{
-					mvars[k]=CMatrix( 1,1, to_double(stringvalue));
+					matrixVariables[numberofmatrixVariables]=CMatrix( 1,1, to_double(stringvalue));
 				}
 
 
@@ -402,7 +402,7 @@ else // interactive prompt
 
 				else if ((stringvalue.find('\n'))==std::string::npos)
 				{	
-					mvars[k]=stringtomatrix(stringvalue,k);
+					matrixVariables[numberofmatrixVariables]=stringtomatrix(stringvalue,numberofmatrixVariables);
 				}
 
 
@@ -415,10 +415,10 @@ else // interactive prompt
 		if (donothing==0)
 		{
 
-			if (print==1) std::cout<<printedmatrixname<<" =\n"<<mvars[k]<<std::endl;
+			if (print==1) std::cout<<printedmatrixname<<" =\n"<<matrixVariables[numberofmatrixVariables]<<std::endl;
 
-			vars[k]=matrixname; 
-			k++;
+			matrixNames[numberofmatrixVariables]=matrixname; 
+			numberofmatrixVariables++;
 		}
 		}
 
@@ -430,8 +430,8 @@ else // interactive prompt
 	}
 }
 
-	delete[]mvars;
-	delete[]vars;
+	delete[]matrixVariables;
+	delete[]matrixNames;
 
 	return 0;
 }
